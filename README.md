@@ -9,7 +9,7 @@ Currently the following boards are completed and are under test:
 * ROM / RAM card - 128K ROM & 1M RAM
 * Quad serial I/O card - with 2 68681 DUARTs
 
-![](./images/RCBusBoards.jpg)
+![](./images/RCBusBoards.JPG)
 
 These boards are waiting to be populated and tested:
 * Digital I/O card - with 2 68230 PI/Ts
