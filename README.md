@@ -2,7 +2,7 @@
 
 This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - not a 68008 - and is currently being tested on an [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) 6-slot RCBus backplane.
 
-![](./images/RCBus68000.jpg)
+![](./images/RCBus68000.JPG)
 
 Currently the following boards are completed and are under test:
 * 68000 procesor card
