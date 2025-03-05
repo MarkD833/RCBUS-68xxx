@@ -14,6 +14,7 @@ There is no intention to support any Zilog specific chips such as the PIO, SIO, 
 ## RCBus memory space
 
 My 68000 design partially decodes blocks of memory within the 68000 address range as follows:
+| Address Range | Signal |
 | :---- | :---- |
 | 0xE00000..0xEFFFFF | /MREQ goes low |
 | 0xF00000..0xFFFFFF | /IORQ goes low |
@@ -43,6 +44,7 @@ Currently the 68000 card, the ROM/RAM card and the serial I/O card are working a
 The monitor is currently being modified to support some of the EASy68K TRAP #15 text I/O functions.
 
 The following RCBus cards have also been tested:
+| Name | Description |
 | :---- | :---- |
 | [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) | digital I/O module |
 
