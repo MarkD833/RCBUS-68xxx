@@ -61,7 +61,7 @@ Simply displays the list of available commands that the monitor supports.
 
 ---
 
-# SC129 digital I/O module
+# SC129
 
 The code in this folder provides 2 simple demonstrations to exercise the [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) digital I/O module.
 
