@@ -5,7 +5,7 @@ This folder cotains the software that I've either developed myself or ported to 
 | Code | Description |
 | :---- | :---- |
 | [MON68K](#68000-monitor) | My simple monitor program for my RCBus 68000. |
-| [SC129](#sc129-digital-i/o-module) | SC129 digital i/o module. |
+| [SC129](#sc129) | SC129 digital i/o module. |
 
 ---
 
@@ -51,11 +51,15 @@ The monitor takes care of the mapping of the requested address into 68000 memory
 
 These commands are not entered directly by the user. They are detected by the monitor when Motorola S-records are transferred to it from a serial terminal program such as RealTerm. Each S-record is treated individually and is written to memory as it is received.
 
-As use memory starts at address 0x100000 on my RCBus 68000, all S-records will be S2 records.
+There is no need to initiate a download from the monitor by entering a command as the monitor will detect any lines beginning with an S and try and interpret them as Motorola S-records.
+ 
+As user memory starts at address 0x100000 on my RCBus 68000, all S-records will be S2 records.
 
 ## ?
 
 Simply displays the list of available commands that the monitor supports.
+
+---
 
 # SC129 digital I/O module
 
