@@ -1,0 +1,38 @@
+00110000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 08/03/2025 17:31:52
+
+00000000                             1  *------------------------------------------------------------------------------
+00000000                             2  * ECHO.X68
+00000000                             3  *------------------------------------------------------------------------------
+00000000                             4  * Simple program to echo the state of the digital inpuuts on LEDs on an SC129 I/O board.
+00000000                             5  * The SC129 should have jumpers set for I/O space address $00 (default).
+00000000                             6  *------------------------------------------------------------------------------
+00000000                             7  
+00000000                             8  *******************************************************************************
+00000000                             9  * Defines
+00000000                            10  *
+00000000  =00F00000                 11  IO_BASE         EQU     $F00000     * I/O space base addr = 00F0_0000
+00000000  =00F00001                 12  SC129           EQU     IO_BASE+1
+00000000                            13  
+00110000                            14      ORG     $110000
+00110000                            15  
+00110000                            16  START:
+00110000  1039 00F00001             17      move.b  SC129,d0        * read the digital inputs
+00110006  4E71                      18      nop
+00110008  13C0 00F00001             19      move.b  d0,SC129        * write them to the LEDs
+0011000E  4E71                      20      nop
+00110010  60EE                      21      bra.s   START
+00110012                            22  
+00110012                            23      END    START            * last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+IO_BASE             F00000
+SC129               F00001
+START               110000

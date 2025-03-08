@@ -1,0 +1,49 @@
+00110000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 08/03/2025 17:32:37
+
+00000000                             1  *------------------------------------------------------------------------------
+00000000                             2  * COUNT.X68
+00000000                             3  *------------------------------------------------------------------------------
+00000000                             4  * Simple up counter on LEDs on an SC129 I/O board.
+00000000                             5  * The SC129 should have jumpers set for I/O space address $00 (default).
+00000000                             6  *------------------------------------------------------------------------------
+00000000                             7  
+00000000                             8  *******************************************************************************
+00000000                             9  * Defines
+00000000                            10  *
+00000000  =00F00000                 11  IO_BASE         EQU     $F00000     * I/O space base addr = 00F0_0000
+00000000  =00F00001                 12  SC129           EQU     IO_BASE+1
+00000000                            13  
+00110000                            14      ORG     $110000
+00110000                            15  
+00110000                            16  START:
+00110000  4280                      17      clr.l   d0
+00110002                            18  .loop3: 
+00110002  7401                      19      move.l  #$01,d2 
+00110004                            20  .loop2:
+00110004  223C 0000FFFF             21      move.l  #$FFFF,d1
+0011000A                            22  .loop1:
+0011000A  4E71                      23      nop
+0011000C  51C9 FFFC                 24      dbra    d1,.loop1
+00110010  51CA FFF2                 25      dbra    d2,.loop2
+00110014                            26  
+00110014  5200                      27      add.b   #1,d0
+00110016  13C0 00F00001             28      move.b  d0,SC129
+0011001C  60E4                      29      bra.s   .loop3
+0011001E                            30  
+0011001E                            31      END    START            * last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+IO_BASE             F00000
+SC129               F00001
+START               110000
+START:LOOP1         11000A
+START:LOOP2         110004
+START:LOOP3         110002
