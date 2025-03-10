@@ -1,5 +1,4 @@
 # RCBUS 68000 Board
-
 This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - not a 68008 - and is currently being tested on Steve Cousins [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) 6-slot RCBus backplane.
 
 ![](./images/RCBus68000.JPG)
@@ -9,10 +8,9 @@ The initial design uses only the RCBus-40 pin connection and has a "private" con
 The RCBus specification doesn't specifically mention the 68000 in the backplane signal assignments table so there may be a bit of wiggle room on the pins used. I will detail the RCBus 80-pin signal assignments once I have something more concrete - most likely once the next iteration of the boards gets produced as I will remove the private connector between the 68000 and the ROM/RAM board.
 
 ## Zilog compatability
-There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the 68230 and 68681 chips. The KIO has a sort-of equivalent in the 68901. The CTC may not be needed as the 68230 and 68681 have their own timers.
+There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the 68230 and 68681 chips. The KIO has a sort-of equivalent in the 68901. A  CTC type chip may not be needed as the 68230 and 68681 have their own timers and the 68901 has 4 simple timers.
 
 ## RCBus memory space
-
 My 68000 design partially decodes blocks of memory within the 68000 address range as follows:
 | Address Range | Signal |
 | :---- | :---- |
@@ -41,7 +39,7 @@ These boards are waiting to be populated and tested:
 ## Progress
 Currently the 68000 card, the ROM/RAM card and the serial I/O card are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 & S3 record types are handled.
 
-The monitor is currently being modified to support some of the EASy68K TRAP #15 text I/O functions.
+The monitor currently supports a few of the EASy68K TRAP #15 text I/O functions - currently just tasks 0, 1, 5, 6, 13 & 14 - which are all related to text input/output. Further tasks may be added as I need them.
 
 The following RCBus cards have also been tested:
 | Name | Description |
@@ -55,7 +53,6 @@ Further details available shortly once sufficient testing is done.
 
 # Still to do
 * Tidy up the monitor program
-* Add EASy68K TRAP #15 support for a few text I/O functions
 * Build and test the 68230 digital I/O card
 * Firm up the RCBus-80 pin usage for the 68000
 * Re-design boards to use the full RCBus-80 pin connectors (and remove private connector)
