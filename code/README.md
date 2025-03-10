@@ -6,7 +6,8 @@ This folder cotains the software that I've either developed myself or ported to 
 | :---- | :---- |
 | [MON68K](#68000-monitor) | My simple monitor program for the RCBus 68000. |
 | [SC129](#sc129) | SC129 digital i/o module. |
-| [SC704](#sc704) | SC704 I2C bus master module. |
+| [SC704](#sc704) | SC704 I2C bus master module + SC406 temperature sensor module. |
+| [SC705](#sc705) | SC705 serial ACIA module. |
 
 ---
 
@@ -15,6 +16,8 @@ This folder cotains the software that I've either developed myself or ported to 
 I wanted a simple monitor that supported a few simple commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 board.
 
 None of the commands support any use of cursor keys or the backspace/delete keys.
+
+The monitor operates at 38400 baud without any handshaking.
 
 There a few basic commands that the monitor understands as follows:
 
@@ -32,7 +35,7 @@ Once the code is executing, there isn't a way back into the monitor, except by p
 
 ## Iaa
 
-Displays the 8-bit value at address aa in IO space. Address aa is an address between 0x00 and 0xFF. This command will activate the /IORQ signal on the RCBus.
+Displays the 8-bit value at address aa in IO space. Address aa is an address between 0x00 and 0xFF. This command will activate the /IORQ signal on the RCBus. Similar to the Z80 IN instruction.
 
 The monitor takes care of the mapping of the requested address into 68000 memory space.
 
@@ -46,7 +49,7 @@ The command doesn't support going forwards or backwards or editing memory as 16-
 
 ## Oaabb
 
-Writes the 8-bit value bb to address aa in IO space. Both the address and the value are 8-bit hexadecimal numbers between 0x00 and 0xFF. This command will activate the /IORQ signal on the RCBus.
+Writes the 8-bit value bb to address aa in IO space. Both the address and the value are 8-bit hexadecimal numbers between 0x00 and 0xFF. This command will activate the /IORQ signal on the RCBus. Similar to the Z80 OUT instruction.
 
 The monitor takes care of the mapping of the requested address into 68000 memory space.
 
@@ -84,3 +87,14 @@ The first program is i2c_scan.x68 and it scans the I2C bus reporting back the ad
 
 The second program works in conjunction with the [SC406](https://smallcomputercentral.com/i2c-bus-modules/sc406-i2c-temperature-sensor-module/) I2C temperature sensor module. It simply interrogates the TC74 temperature sensor and reports back the temperature in deg C.
 
+---
+
+# SC705
+
+The code in this folder provides 2 simple demonstrations to exercise the [SC705](https://smallcomputercentral.com/rcbus/sc700-series/sc705-rcbus-serial-acia/) serial ACIA module.
+
+Note that the ACIA serial port is configured for 57600,8,N,1 as my SC705 has a 3.6864MHz crystal fitted instead of a 7.3728MHz crystal. If your board uses a 7.3728MHz crystal, then the baud rate doubles to 115200.
+
+The first program is hello.x68 and it simply outputs the message "Hello World!" + CR & LF to the ACIA serial port.
+
+The second program is echo.x68 and it simply echoes back any characters recevied by the ACIA.
