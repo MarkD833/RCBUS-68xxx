@@ -4,14 +4,17 @@ This folder cotains the software that I've either developed myself or ported to 
 
 | Code | Description |
 | :---- | :---- |
-| [MON68K](#68000-monitor) | My simple monitor program for my RCBus 68000. |
+| [MON68K](#68000-monitor) | My simple monitor program for the RCBus 68000. |
 | [SC129](#sc129) | SC129 digital i/o module. |
+| [SC704](#sc704) | SC704 I2C bus master module. |
 
 ---
 
 # 68000 monitor
 
 I wanted a simple monitor that supported a few simple commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 board.
+
+None of the commands support any use of cursor keys or the backspace/delete keys.
 
 There a few basic commands that the monitor understands as follows:
 
@@ -23,7 +26,7 @@ The command doesn't support going forwards or backwards in 256 byte pages or any
 
 ## Gnnnn
 
-Executres the code starting at address nnnn. The address is in hexaddecimal and can be any address from 0x00000000 to 0xFFFFFFFF.
+Executes the code starting at address nnnn. The address is in hexaddecimal and can be any address from 0x00000000 to 0xFFFFFFFF.
 
 Once the code is executing, there isn't a way back into the monitor, except by pressing the reset button on the RCBus backplane.
 
@@ -70,4 +73,14 @@ The first program is count.x68 and it simply counts up in binary on the 8 LEDs o
 The second prgram is echo.x68 and it simply reads the 8 bits on the input port and then echoes them back out on the 8 bits of the output port of the SC129 board.
 
 Both programs assume that the SC129 has been configured for the default address of 0x00. 
+
+---
+
+# SC704
+
+The code in this folder provides 2 simple demonstrations to exercise the [SC704](https://smallcomputercentral.com/rcbus/sc700-series/sc704-rcbus-i2c-bus-master/) I2C bus master module.
+
+The first program is i2c_scan.x68 and it scans the I2C bus reporting back the addresses of any devices it finds. With no external devices connected, it should report back a device at address $50 (if the on-board 24LC256 EEPROM is fitted).
+
+The second program works in conjunction with the [SC406](https://smallcomputercentral.com/i2c-bus-modules/sc406-i2c-temperature-sensor-module/) I2C temperature sensor module. It simply interrogates the TC74 temperature sensor and reports back the temperature in deg C.
 
