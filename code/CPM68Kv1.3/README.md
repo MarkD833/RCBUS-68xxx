@@ -38,7 +38,8 @@ This BIOS supports 8 drives hosted on the one CompactFlash card. Each drive is c
 
 The drive contents were created using CPMTOOLS. The diskdefs entry I created looks like this:
 
-> diskdef M68K_1024SPT
+```
+diskdef M68K_1024SPT
   seclen 128
   tracks 64
   sectrk 1024
@@ -47,3 +48,4 @@ The drive contents were created using CPMTOOLS. The diskdefs entry I created loo
   skew 0
   boottrk 0
 end
+```

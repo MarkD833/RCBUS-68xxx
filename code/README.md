@@ -13,7 +13,7 @@ This folder contains the software that I've either developed myself or ported to
 
 # 68000 monitor
 
-I wanted a simple monitor that supported a few simple commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 board.
+I wanted a simple monitor that supported a few basic commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 board.
 
 None of the commands support any use of cursor keys or the backspace/delete keys.
 

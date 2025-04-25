@@ -19,9 +19,9 @@ My 68000 design partially decodes blocks of memory within the 68000 address rang
 | 0xE00000..0xEFFFFF | /MREQ goes low |
 | 0xF00000..0xFFFFFF | /IORQ goes low |
 
-The partial decoding of the RCBus memory space (0x0000..0xFFFF) results in address 0x0000 in RCBus memory space appearing multiple times (actually 16 times) in the 68000 address space at addresses 0xE00000, 0xE10000, 0xE20000 etc up to 0xEF0000.
+The partial decoding of the 16-bit RCBus memory space results in 16 sequential blocks of M68K memory accessing the same RCBus memory space.
   
-The partial decoding of the RCBus I/O space (0x00..0xFF) results in address 0x00 in RCBus I/O space appearing multiple times (actualy 4096 times) in the 68000 address space at addresses 0xF00000, 0xF00100, 0xF002000 etc up to 0xFFFF00.
+The partial decoding of the 8-bit RCBus I/O space results in 4096 sequential blocks of M68K memory accessing the same RCBus I/O space.
 
 The current design places the SIO, PIO and MFP boards in RCBus I/O space and uses the fixed /DTACK generator on the processor card to signal completion of the cycle. The next iteration of boards will likely move these boards into a third memory space in the range 0xD00000..0xDFFFFF where the 68681, 68230 and 68901 will signal completion of a bus cycle using their own /DTACK signals.
 
