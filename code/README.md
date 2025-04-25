@@ -1,6 +1,6 @@
 # RCBUS MC68000 Software
 
-This folder cotains the software that I've either developed myself or ported to my RCBus 68000 board(s).
+This folder contains the software that I've either developed myself or ported to my RCBus 68000 board(s).
 
 | Code | Description |
 | :---- | :---- |
@@ -8,7 +8,7 @@ This folder cotains the software that I've either developed myself or ported to 
 | [SC129](#sc129) | SC129 digital i/o module. |
 | [SC704](#sc704) | SC704 I2C bus master module + SC406 temperature sensor module. |
 | [SC705](#sc705) | SC705 serial ACIA module. |
-
+| [CP/M-68K v1.3](#cpm-68k) | Digital Research CP/M-68K v1.3 |
 ---
 
 # 68000 monitor
@@ -21,6 +21,12 @@ The monitor operates at 38400 baud without any handshaking.
 
 There a few basic commands that the monitor understands as follows:
 
+## C
+
+Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first.
+
+The CP/M68K v1.3 BIOS uses Steve Cousin's SC145 (or SC729) CompactFlash module to provide disk drives for CP/M. Please see the readme in the CP/M-68K code folder for more details.
+ 
 ## Dnnnn
 
 Displays a block of 256 bytes starting at address nnnn. The address is in hexaddecimal and can be any address from 0x00000000 to 0xFFFFFFFF. Any printable ASCII characters are also displayed to aid in showing text strings etc.
@@ -55,7 +61,7 @@ The monitor takes care of the mapping of the requested address into 68000 memory
 
 ## S1 / S2
 
-These commands are not entered directly by the user. They are detected by the monitor when Motorola S-records are transferred to it from a serial terminal program such as RealTerm. Each S-record is treated individually and is written to memory as it is received.
+These commands are not entered directly by the user. They are detected by the monitor when Motorola S-records are transferred via a serial terminal program such as RealTerm. Each S-record is treated individually and is written to memory as it is received.
 
 There is no need to initiate a download from the monitor by entering a command as the monitor will detect any lines beginning with an S and try and interpret them as Motorola S-records.
  
@@ -98,3 +104,11 @@ Note that the ACIA serial port is configured for 57600,8,N,1 as my SC705 has a 3
 The first program is hello.x68 and it simply outputs the message "Hello World!" + CR & LF to the ACIA serial port.
 
 The second program is echo.x68 and it simply echoes back any characters recevied by the ACIA.
+
+---
+
+# CPM-68K
+
+The code in this folder contains a modified version of CP/M-68K v1.3. This version of CP/M-68K runs direct from ROM (no copying into RAM etc) at address $0400 but has been retargeted so that the RAM storage it uses for its internal variables has been moved up to address $1FE000 (in RAM).
+
+Also in this folder is my BIOS to support CP/M-68K on the RCBus 68000 hardware.
