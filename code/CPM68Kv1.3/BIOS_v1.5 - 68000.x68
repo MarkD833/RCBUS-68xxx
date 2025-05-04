@@ -1,7 +1,7 @@
 *****************************************************************
 *                                                               *
 *                 CP/M-68K BIOS                                 *
-*       Basic Input/Output Subsystem v1.0                       *
+*       Basic Input/Output Subsystem v1.5                       *
 *           For my RCBus 68000 board                            *
 *             CompactFlash Version                              *
 *                                                               *
@@ -20,15 +20,8 @@
 * drives (A..H), each of 8Mb.
 *****************************************************************
 
-*****************************************************************
-* Define some memory sizes etc
-*
-RAM_BASE    EQU     $100000       * RAM base addr = 0010_0000
-RAM_LEN     EQU     $100000       * 1M RAM fitted
-MON_PRIV    EQU     2048          * Reserve 2K at the top of RAM for monitor
-BIOS_PRIV   EQU     4096          * Reserve 4K at the top of RAM for this BIOS
-CCP_PRIV    EQU     4096          * Reserve 4K at the top of RAM for CCP & BDOS
-IO_BASE     EQU     $F00000       * RCBus I/O space base addr = 00F0_0000
+	INCLUDE "..\asm-inc\memory.inc"
+	INCLUDE "..\asm-inc\devices.inc"
 
 *****************************************************************
 * The location for _ccp comes from the CPM400.MAP file and it is
@@ -43,27 +36,7 @@ CCP_ENTRY   EQU     $04BC         * ccp entry point
 * change INIT_ENTRY to match the address in the BIOS stub file.
 *
 INIT_ENTRY  EQU     $6000         * BIOS init entry point
-*INIT_ENTRY  EQU     $1F0000       * RAM BIOS init entry point
-
-*****************************************************************
-* The location of the exception vector table placed in RAM by the
-* monitor program. Currently the start of RAM.
-*
-VEC_BASE    EQU     RAM_BASE      * Exception vectors table in RAM
-VEC_SIZE    EQU     $400          * table takes up 1024 bytes
-
-*****************************************************************
-* These addresses are as configured on the individual boards in
-* what would be the Z80 8-bit I/O space.
-*
-SC145ADDR   EQU     $10           * SC145 base address is 0x10
-DUARTADDR   EQU     $C0           * 68681 base address is 0xC0
-
-*****************************************************************
-* These are the same addresses converted into 68000 memory space
-*
-SC145       EQU     IO_BASE+(SC145ADDR<<1)
-DUART       EQU     IO_BASE+(DUARTADDR<<1)
+*INIT_ENTRY  EQU     $1F0000       * RAM BIOS init entry point (for development)
 
 *****************************************************************
 * Set DEBUG to a 1 to enable serial port B on the SCC68692. Any
@@ -73,76 +46,13 @@ DUART       EQU     IO_BASE+(DUARTADDR<<1)
 DEBUG       EQU     0
 
 *****************************************************************
-* SCC68692 Duart Register Addresses
-* DUART 8-bit data is on D0..D7 - i.e. the odd addresses
-*
-MRA         EQU DUART+1           * Mode Register A             (R/W)
-SRA         EQU DUART+3           * Status Register A           (R)
-CSRA        EQU DUART+3           * Clock Select Register A     (W)
-CRA         EQU DUART+5           * Commands Register A         (W)
-RBA         EQU DUART+7           * Receiver Buffer A           (R)
-TBA         EQU DUART+7           * Transmitter Buffer A        (W)
-ACR         EQU DUART+9           * Aux. Control Register       (R/W)
-ISR         EQU DUART+11          * Interrupt Status Register   (R)
-IMR         EQU DUART+11          * Interrupt Mask Register     (W)
-MRB         EQU DUART+17          * Mode Register B             (R/W)
-SRB         EQU DUART+19          * Status Register B           (R)
-CSRB        EQU DUART+19          * Clock Select Register B     (W)
-CRB         EQU DUART+21          * Commands Register B         (W)
-RBB         EQU DUART+23          * Reciever Buffer B           (R)
-TBB         EQU DUART+23          * Transmitter Buffer B        (W)
-IVR         EQU DUART+25          * Interrupt Vector Register   (R/W)
-IPR         EQU DUART+27          * Input Port Register         (R)
-OPCR        EQU DUART+27          * Output Port Config Register (W)
-BCNT        EQU DUART+29          * Start Counter               (R)
-SOPR        EQU DUART+29          * Set Output Port Register    (W)
-ECNT        EQU DUART+31          * Stop Counter                (R)
-ROPR        EQU DUART+31          * Reset Output Port Register  (W)
-
-*****************************************************************
-* CompactFlash register addresses
-* CF 8-bit data is on D0..D7 - i.e. the odd addresses
-*
-CF_DATA	    EQU SC145+1           * Data               (R/W)
-CF_FEATURES EQU SC145+3           * Features           (W)
-CF_ERROR    EQU SC145+3           * Error              (R)
-CF_SECCOUNT EQU SC145+5           * Sector Count       (R/W)
-CF_SECTOR   EQU SC145+7           * Sector Number      (R/W)
-CF_CYL_LOW  EQU SC145+9           * Cylinder Low Byte  (R/W) 
-CF_CYL_HI   EQU SC145+11          * Cylinder High Byte (R/W)
-CF_HEAD     EQU SC145+13          * Drive / Head       (R/W)
-CF_STATUS   EQU SC145+15          * Status             (R)
-CF_COMMAND  EQU SC145+15          * Command            (W)
-*
-* CompactFlash Logical Block Address registers
-*
-CF_LBA0007  EQU SC145+7           * LBA bits 07..00    (R/W)
-CF_LBA0815  EQU SC145+9           * LBA bits 15..08    (R/W)
-CF_LBA1623  EQU SC145+11          * LBA bits 23..16    (R/W)
-CF_LBA2427  EQU SC145+13          * LBA bits 27..24    (R/W)
-
-*****************************************************************
-* CompactFlash Features
-*
-CF_8BIT		EQU	1
-CF_NOCACHE	EQU	$82
-
-*****************************************************************
-* CompactFlash Commands
-*
-CF_RD_SEC   EQU $20               * Read Sector Command
-CF_WR_SEC   EQU $30               * Write Sector Command
-CF_SET_FEAT EQU $EF               * Set Feature Command
-CF_LBAMODE  EQU $E0               * LBA mode
-
-*****************************************************************
 * Define the maximum number of drives supported
 *
-MAXDISK     EQU    8              * this BIOS supports 8 drives
+MAXDISK     EQU    6              * this BIOS supports 6 drives
 
 *****************************************************************
 * CP/M-68K will jump to this code to setup the hardware etc.
-* The start of this code has to be at a specific memory location.
+* The start address of this code is hard coded within CP/M-68K.
 *
     org     INIT_ENTRY            * bios initialization entry point
 _init:
@@ -165,7 +75,8 @@ _init:
     move.b  #CF_NOCACHE,CF_FEATURES
     move.b  #CF_SET_FEAT,CF_COMMAND
 
-    * display our own CP/M-68K banner as CP/M-68K doesn't do this itself
+    * display our copy of the CP/M-68K banner as CP/M-68K doesn't
+    * do this itself
     movea.l #strCPMBanner,a0
 .loop:
     move.b  (a0)+, d1             * Get character
@@ -858,15 +769,14 @@ strCPMBanner:
 * Memory regions
 * There's only 1 memory region and it must be WORD aligned.
 *  START: just above the RAM vector table - i.e. VEC_BASE+VEC_SIZE
-* LENGTH: RAM_LEN-BIOS_PRIV-MON_PRIV-CCP_PRIV-VEC_SIZE
+* LENGTH: from START all the way up to CCP_BSS_BASE
 *
     org     (*+1)&-2              * force word alignment
 memrgn:
     dc.w    1
     dc.l    VEC_BASE+VEC_SIZE
-    dc.l    RAM_LEN-BIOS_PRIV-MON_PRIV-CCP_PRIV-VEC_SIZE
-*    dc.l    $E0000
-
+    dc.l    CCP_BSS_BASE-VEC_BASE-VEC_SIZE
+	
 *****************************************************************
 * disk parameter headers - 1 per drive
 *****************************************************************
@@ -933,36 +843,16 @@ dph5:
     dc.l    0                     * (CSV) fixed disk so no check vector needed
     dc.l    alv5                  * (ALV) pointer to allocation vector
 
-dph6:
-    dc.l    0                     * (XLT) no sector translation table
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.l    dirbuf                * (DIRBUF) pointer to directory buffer
-    dc.l    dpb                   * (DPB) pointer to disk parameter block
-    dc.l    0                     * (CSV) fixed disk so no check vector needed
-    dc.l    alv6                  * (ALV) pointer to allocation vector
-
-dph7:
-    dc.l    0                     * (XLT) no sector translation table
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.w    0                     * Scratchpad word - used by BDOS
-    dc.l    dirbuf                * (DIRBUF) pointer to directory buffer
-    dc.l    dpb                   * (DPB) pointer to disk parameter block
-    dc.l    0                     * (CSV) fixed disk so no check vector needed
-    dc.l    alv7                  * (ALV) pointer to allocation vector
-
-
 *****************************************************************
 * Disk Parameter Blocks
 *****************************************************************
+* All my disks are the same size so I only need 1 DPB descriptor.
 *
-* Choose a BLS (block size) of 4096 bytes, therefore:
-*   BSH = 5 and BLM = 31 (from table 5-3 in the CP/M-68K System Guide)
+* Choose a BLS (block size) of 2048 bytes, therefore:
+*   BSH = 4 and BLM = 15 (from table 5-3 in the CP/M-68K System Guide)
 *
-* Assume we want 8Mb disks, then DSM+1 = 8 Megabyte / BLS = 2048
-*   Therefore DSM = 2047
+* Assume we want 8Mb disks, then DSM+1 = 8 Megabyte / BLS = 4096
+*   Therefore DSM = 4095
 *
 * EXM = 1 (from table 5-4 in the CP/M-68K System Guide, as DSM > 255)
 *
@@ -976,11 +866,11 @@ dph7:
 * We can use the same DPB decriptor for all 8 drives
 dpb:
     dc.w    1024                  * (SPT) 1024 sectors per track
-    dc.b    5                     * (BSH) block shift for BLS of 4096
-    dc.b    31                    * (BLM) block mask for BLS of 4096
-    dc.b    1                     * (EXM) extent mask
+    dc.b    4                     * (BSH) block shift for BLS of 2048
+    dc.b    15                    * (BLM) block mask for BLS of 2048
+    dc.b    0                     * (EXM) extent mask
     dc.b    0
-    dc.w    2047                  * (DSM)
+    dc.w    4095                  * (DSM)
     dc.w    511                   * (DRM) 512 directory entries
     dc.w    0                     * reserved
     dc.w    0                     * permanently mounted drive, check size is zero
@@ -999,20 +889,18 @@ dpb:
 
     org        RAM_BASE+RAM_LEN-BIOS_PRIV-MON_PRIV
 
-dirbuf:     ds.b    128           * CP/M directory buffer
+dirbuf:     ds.b    128           * 128 byte CP/M directory buffer scratchpad area
 cfBuffer:   ds.b    512           * space for 1 CompactFlash logical block of 512 bytes
 
 * ALV size is calculated as (DSM/8)+1 (from table 5-1) - 1 per drive
  
     org     (*+1)&-2              * force word alignment
-alv0:       ds.b    258           * allocation vector, DSM/8+1 = 2048/8+1 = 257 (use 258)
-alv1:       ds.b    258
-alv2:       ds.b    258
-alv3:       ds.b    258
-alv4:       ds.b    258
-alv5:       ds.b    258
-alv6:       ds.b    258
-alv7:       ds.b    258
+alv0:       ds.b    514           * allocation vector, DSM/8+1 = 4096/8+1 = 513 (use 514)
+alv1:       ds.b    514
+alv2:       ds.b    514
+alv3:       ds.b    514
+alv4:       ds.b    514
+alv5:       ds.b    514
 
     org     (*+1)&-2              * force word alignment
 
@@ -1036,8 +924,6 @@ rdph2:      ds.b    dphlen
 rdph3:      ds.b    dphlen
 rdph4:      ds.b    dphlen
 rdph5:      ds.b    dphlen
-rdph6:      ds.b    dphlen
-rdph7:      ds.b    dphlen
 
 *****************************************************************
 * Make sure we have not exceeded the available RAM
@@ -1048,6 +934,9 @@ rdph7:      ds.b    dphlen
     endc
 
     end    0
+
+
+
 
 
 

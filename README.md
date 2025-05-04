@@ -3,7 +3,7 @@ This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - n
 
 ![](./images/RCBus68000.JPG)
 
-There are no programable logic devices (PALs, GALs, CPLDs etc) in my design. The only programmable devices are the 2 EEPROMs.
+There are no programable logic devices (PALs, GALs, CPLDs etc) in my design. The only programmable devices are the 2 EEPROMs containing the monitor, CP/M-68K and EhBASIC.
 
 The initial design uses only the RCBus-40 pin connection and has a "private" connector between the 68000 board and the ROM/RAM board. This connector carries D8..D15, A17..A23, /AS, /UDS, /LDS, R/W, /DTACK & /RCBUS_DTACK as well as bunch of unassigned pins for use if needed during testing. However, I should have used a connector with longer pins. When the 2 boards are mated together, they are about 5mm closer together than the spacing of the SC701 backplane connectors which causes them to lean towards eachother.
 
@@ -58,8 +58,13 @@ The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 
 Further details available shortly once sufficient testing is done.
 
 # Still to do
-* Tidy up the monitor program
 * Build and test the 68230 digital I/O card
-* Firm up the RCBus-80 pin usage for the 68000
-* Re-design boards to use the full RCBus-80 pin connectors (and remove private connector)
 * Further testing with various RCBus boards I have
+
+# Conclusion
+
+I'm happy with the current state of the prototype system as it has proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards.
+
+The next step is to utilise the full RCBus-80 signals. There are new board designs in progress for the 68000 board and ROM/RAM memory board that utilise the RCBus-80 signals and do away with the private connector. There are also new designs for the serial i/o, parallel i/o and multifunction cards that place them in 68000 memory space so that they don't take up any space in the /IORQ memory space.
+
+I've also recently acquired an [SC611 micro SD card storage module](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) and an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with.

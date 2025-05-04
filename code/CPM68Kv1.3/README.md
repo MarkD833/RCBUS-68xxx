@@ -1,6 +1,6 @@
 # RCBUS MC68000 CP/M-68K v1.3
 
-This folder cotains the various files for CP/M-68K v1.3 on my RCBus 68000 system.
+This folder contains the various files for CP/M-68K v1.3 on my RCBus 68000 system.
 
 ---
 
@@ -8,7 +8,7 @@ This folder cotains the various files for CP/M-68K v1.3 on my RCBus 68000 system
 
 This code is only needed when tweaking & testing the CP/M BIOS. It allows the BIOS to be downloaded into RAM whilst testing to save constantly programming the EEPROMs!
   
-This is a very simple piece of assembler code that places a jump instruction at address $6000 in ROM. It jumps to address $F10000 where the BIOS under test gets loaded to.
+This is a very simple piece of assembler code that places a jump instruction at address $6000 in ROM. It jumps to address $1F0000 where the BIOS under test gets loaded to.
 
 # BIOS
 
@@ -18,7 +18,7 @@ The value of DEBUG can be changed from 0 (normal) to 1 (debug). If it is set to 
 
 The BIOS works with the RAM based exception vector table that the monitor has already set up.
 
-Note that if you are modifying the BIOS in RAM, then you need to change the address of INIT_ENTRY to match the RAM address in the BIOS_JMP code. You also need to alter the length of the memory region to reduce the size of the transient program area (TPA) so that CP/M-68K doesn't trash the RAM BIOS.
+Note that if you want to modify or further develop the BIOS in RAM, then you need to change the address of INIT_ENTRY to match the RAM address in the BIOS_JMP code - i.e. change it to $1F0000. You also need to alter the length of the memory region to reduce the size of the transient program area (TPA) so that CP/M-68K doesn't trash the RAM BIOS.
 
 Initially the BIOS would work correctly as long as it was in debug mode (i.e. printing out lots of debug information). As soon as debug mode was turned off, then issues started to appear when using PIP to transfer files from drive A to drive B. PIP would generate the error "ERROR: CLOSE FILE - {filename}" and frequently the directory information would become corrupted.
 
@@ -34,18 +34,18 @@ This version of CP/M-68K has been rebuilt so that the internal variables now res
 
 # CP/M-68K filesystem
 
-This BIOS supports 8 drives hosted on the one CompactFlash card. Each drive is configured to be 8Mb (8,388,608 bytes) in size, requiring at least a 64Mb CompactFlash card.
+This BIOS supports 6 drives hosted on the one CompactFlash card. Each drive is configured to be 8Mb (8,388,608 bytes) in size, requiring at least a 48Mb CompactFlash card.
 
 The drive contents were created using CPMTOOLS. The diskdefs entry I created looks like this:
 
 ```
-diskdef M68K_1024SPT
+diskdef RC68K_1024SPT
   seclen 128
   tracks 64
   sectrk 1024
-  blocksize 4096
+  blocksize 2048
   maxdir 512
-  skew 0
   boottrk 0
+  skew 0
 end
 ```

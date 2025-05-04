@@ -1,5 +1,5 @@
 *******************************************************************************
-* rcMon-68k v1.1
+* rcMon-68k v1.3
 *******************************************************************************
 * Written to support my own RCBus 68000 board. Supports simple S-Record loading as
 * well as memory display & modification. No breakpoints, single stepping or
@@ -25,73 +25,30 @@
 * overwritten to point to a user supplied handler in RAM. 
 *
 * BUS ERROR & ADDRESS ERROR handlers always use the ROM vector table addresses.
-* Some Easy68k TRAP #15 text I/O routines are implemented. 
-* NOTE THAT FOR TESTING TRAP #14 IS USED AS SIM68K STILL INTERCEPTS TRAP #15.
-*******************************************************************************
-* EASy68K TRAP #15 Support:
+* Some Easy68k TRAP #15 text I/O routines are implemented as follows:
 * Currently only tasks 0,1,5,6,13 & 14 are supported.
-
 *******************************************************************************
-* Constants
+* CP/M-68K Support
+* V1.3 of CP/M-68K is now supported. The CPM400 s-record file should be
+* programmed into the EEPROMs at the same time as this monitor. CP/M will
+* reside at address 0x0400 onwards.
 *
-ROM_BASE		EQU		$00000		* ROM base addr = 0000_0000
-RAM_BASE		EQU		$100000		* RAM base addr = 0010_0000
-RAM_LEN			EQU		$100000		* 1M RAM fitted
-VEC_BASE		EQU		RAM_BASE	* Exception vectors table in RAM
-DUART_BASE		EQU		$F00180		* SCC68692 base addr = $80 in IO space
-IO_BASE			EQU		$F00000		* I/O space base address = 00F0_0000
+* The hardware specific BIOS should also be programmed into the EEPROMs. The
+* BIOS must reside at address 0x6000 onwards. 
+*******************************************************************************
 
-* Set the stack pointer to RAM_BASE + RAM_LEN - 256 allowing space
-* for 256 bytes of monitor variables at the top of RAM if needed.
-*
-STACK_START		EQU		RAM_BASE+RAM_LEN-256
-
-* Set USE_REAL_UART so:
-*  1 = use the real UART
+	INCLUDE "..\asm-inc\memory.inc"
+	INCLUDE "..\asm-inc\devices.inc"
+	
+*******************************************************************************
+* Set USE_REAL_UART as follows:
+*  1 = use the real MC6861 DUART hardware
 *  0 = use Easy68k Sim68k I/O window
 * -1 = use Easy68k Sim68k COM port
 *
-* COM port is defined at the end of this file - change accordingly
+* Sim68K COM port is defined at the end of this file - change accordingly
 *
 USE_REAL_UART     EQU     1
-
-*-----------------------------------------------------------------------------
-* Baud rates with ACR[7]=0 straight from the SCC68692 datasheet table
-*-----------------------------------------------------------------------------
-BAUD_1200       EQU     $66         * 1200 baud
-BAUD_2400       EQU     $88         * 2400 baud
-BAUD_4800       EQU     $99         * 4800 baud
-BAUD_9600       EQU     $BB         * 9600 baud
-BAUD_38400      EQU     $CC         * 38400 baud
-
-BAUD_RATE       EQU     BAUD_38400
-
-*------------------------------------------------------------------------------
-* SCC68692 Duart Register Addresses
-* DUART 8-bit data is on D0..D7
-*
-MRA   equ DUART_BASE+1       * Mode Register A             (R/W)
-SRA   equ DUART_BASE+3       * Status Register A           (R)
-CSRA  equ DUART_BASE+3       * Clock Select Register A     (W)
-CRA   equ DUART_BASE+5       * Commands Register A         (W)
-RBA   equ DUART_BASE+7       * Receiver Buffer A           (R)
-TBA   equ DUART_BASE+7       * Transmitter Buffer A        (W)
-ACR   equ DUART_BASE+9       * Aux. Control Register       (R/W)
-ISR   equ DUART_BASE+11      * Interrupt Status Register   (R)
-IMR   equ DUART_BASE+11      * Interrupt Mask Register     (W)
-MRB   equ DUART_BASE+17      * Mode Register B             (R/W)
-SRB   equ DUART_BASE+19      * Status Register B           (R)
-CSRB  equ DUART_BASE+19      * Clock Select Register B     (W)
-CRB   equ DUART_BASE+21      * Commands Register B         (W)
-RBB   equ DUART_BASE+23      * Reciever Buffer B           (R)
-TBB   equ DUART_BASE+23      * Transmitter Buffer B        (W)
-IVR   equ DUART_BASE+25      * Interrupt Vector Register   (R/W)
-IPR   equ DUART_BASE+27      * Input Port Register         (R)
-OPCR  equ DUART_BASE+27      * Output Port Config Register (W)
-BCNT  equ DUART_BASE+29      * Start Counter               (R)
-SOPR  equ DUART_BASE+29      * Set Output Port Register    (W)
-ECNT  equ DUART_BASE+31      * Stop Counter                (R)
-ROPR  equ DUART_BASE+31      * Reset Output Port Register  (W)
 
 *------------------------------------------------------------------------------
 * Macro to "jump" to exception handler pointed to in the RAM vector table
@@ -117,8 +74,8 @@ CR    equ $0D
 
     ORG     $0000
 
-    DC.l    STACK_START  * Supervisor stack pointer
-    DC.l    START        * Initial PC    
+    DC.l    STACK_START    * Supervisor stack pointer
+    DC.l    START          * Initial PC    
 
     DC.L    handleBusErr   *02 Bus Error     (** ROM handler **)
     DC.L    handleAddrErr  *03 Address Error (** ROM handler **)
@@ -166,19 +123,22 @@ CR    equ $0D
     DC.L    jmpTrap13      *2D TRAP #13 Instruction Vector
     DC.L    jmpTrap14      *2E TRAP #14 Instruction Vector
     DC.L    easy68kTrap15  *2E TRAP #15 Instruction Vector (** ROM handler **)
-*    DC.L    jmpTrap15      *2F TRAP #15 Instruction Vector
-	
-	
+		
 *------------------------------------------------------------------------------
 * Exception Vectors 30 to FF are not used on my system so just point them
 * all to the default handler.
 
 	DCB.L	208,jmpUnused
-	
+
+*------------------------------------------------------------------------------
+* Start the monitor program after the CP/M BIOS code.
+*------------------------------------------------------------------------------
+	ORG		MON_BASE
+
 *------------------------------------------------------------------------------
 * The hard coded ROM exception vector table entries point to these individual
-* handlers that then jump to the address specified in the RAM exception vector
-* table.
+* handlers that then jump to (actually RETurn to) the address specified in the
+* RAM exception vector table.
 *------------------------------------------------------------------------------
     ORG		(*+1)&-2	* make sure the table is word aligned
 
@@ -721,6 +681,7 @@ START:
     trap    #15             ; D0=0 success, 1 invalid PID, 2 error, 3 port not initialized
 	
     endc
+	
 *------------------------------------------------------------------------------
 * Warm Restart entry point
 *------------------------------------------------------------------------------
@@ -742,6 +703,12 @@ monLoop_NP:
 	cmpi.b	#LF,d0			* ignore Line-Feed
     beq.s   monLoop
 	
+    cmp.b   #'B', d0        * Boot EhBASIC v3.54
+    beq.w   cmdBootEHBASIC
+
+    cmp.b   #'C', d0        * Boot CP/M-68K
+    beq.w   cmdBootCPM
+
     cmp.b   #'D', d0        * Dump memory command
     beq.w   cmdDispMemory
 
@@ -771,10 +738,68 @@ monLoop_NP:
     bsr.w   putString
 	move.b	d1,d0			* get unnknown char back
 	bsr.w	writeByte		* print it
-
+	
 monLoop_CRLF:
 	bsr.w	putCRLF
     bra.s   monLoop
+	
+*------------------------------------------------------------------------------
+* (B) Boot EhBASIC v3.54
+*------------------------------------------------------------------------------
+cmdBootEHBASIC:
+	* perform a simple check to see if EhBASIC has been programmed into the
+	* EEPROM by reading address 0x9000 in the EEPROM. If it contains 0xFFFF,
+	* then EhBASIC hasn't been programmed in!
+	cmpi.w	#$FFFF,EHBASIC_BASE
+	bne.s	.bootEHBASIC
+    lea		strBASICErr1(PC), a0
+    bsr.w   putString
+    bra.w   monLoop
+
+.bootEHBASIC:
+	move.l	#EHBASIC_BASE,a0
+    jsr     (a0)            * jump to EhBASIC 
+
+    * I don't think EhBASIC can return back to the monitor but just in case it can
+    * print out a message and wait for a reset.
+    lea		strBASICReturn(PC), a0
+    bsr.w   putString
+.forever:
+    bra.s	.forever
+
+*------------------------------------------------------------------------------
+* (C) Boot CP/M-68K v1.3
+*------------------------------------------------------------------------------
+cmdBootCPM:
+	* perform a simple check to see if CP/M has been programmed into the EEPROM
+	* by reading address 0x0400 in the EEPROM. If it contains 0xFFFF then CP/M
+	* hasn't been programmed in!
+	cmpi.w	#$FFFF,CPM_BASE
+	bne.s	.chkBIOS
+    lea		strCPMErr1(PC), a0
+    bsr.w   putString
+    bra.w   monLoop
+	
+.chkBIOS:	
+	* perform a simple check to see if the BIOS has been programmed into the EEPROM
+	* by reading address 0x0400 in the EEPROM. If it contains 0xFFFF then the CP/M
+	* BIOS hasn't been programmed in!
+	cmpi.w	#$FFFF,$6000
+	bne.s	.bootCPM
+    lea		strCPMErr2(PC), a0
+    bsr.w   putString
+    bra.w   monLoop
+	
+.bootCPM:
+	move.l	#CPM_BASE,a0
+    jsr     (a0)            * jump to CP/M-68K 
+	
+    * I don't think CP/M-68K can return back to the moitor but just in case it can
+    * print out a message and wait for a reset.
+    lea		strCPMReturn(PC), a0
+    bsr.w   putString
+.forever:
+    bra.s	.forever
 	
 *------------------------------------------------------------------------------
 * (D)ump memory
@@ -1234,8 +1259,7 @@ easy68kTaskTable:
 
 easyTask2: 
 easyTask3:
-easyTask4:   
-easyTask7: 
+easyTask4:
 easyTask8: 
 easyTask9: 
 easyTask10:
@@ -1253,12 +1277,13 @@ easyTask23:
 easyTask24:
 easyTask25:
 easyTaskUnsupported:
-	move.b	d0,d1			; copy the task number into D1
+	exg		d0,d1			; put the task number into D1
     lea     strEasyTask1(PC), a0
     bsr.w   putString
-	divu	#10,d1			; divide task number by 10
+	exg		d0,d1			; put the task number back into D0
+	divu	#10,d0			; divide task number by 10
     bsr.w   writeNibble		; output the 10's digit
-	swap	d1
+	swap	d0
     bsr.w   writeNibble		; output the 1's digit
     lea     strEasyTask2(PC), a0
     bsr.w   putString
@@ -1317,6 +1342,16 @@ easyTask6:
 	rts
 
 *------------------------------------------------------------------------------
+* EASy68K TRAP #15 - Task 7
+* Check for keyboard input. Set D1.B to 1 if keyboard input is pending,
+* otherwise set to 0.
+*------------------------------------------------------------------------------
+easyTask7:
+	move.b	SRA,d1			* get DUART status register
+	andi.b	#$01,d1			* mask all but the RxRDY bit
+	rts
+
+*------------------------------------------------------------------------------
 * EASy68K TRAP #15 - Task 13
 * Display the NULL terminated string at (A1) with CR, LF.
 *------------------------------------------------------------------------------
@@ -1365,7 +1400,7 @@ easy68kTrap15:
 	rte
 	
 *==============================================================================
-* These are the various printing rouitnes that handle displaying of bytes,
+* These are the various printing routines that handle displaying of bytes,
 * words, long words and 24-bit values as ASCII hexadecimal text. The routines
 * must be kept in this order as program flow is meant to fall out of one
 * routine and into the next, often without a return statement.
@@ -1433,8 +1468,6 @@ writeNibble:
     move.b  (sp)+,d0    ; restore D0
     rts
 
-endc
-
 *------------------------------------------------------------------------------
 * Prints a newline (CR, LF)
 * NOTE: the putString function must follow this function
@@ -1455,7 +1488,6 @@ putString:
     bra.s   .loop        * And continue
 .end:
     rts
-
 
 *------------------------------------------------------------------------------
 * Write a character to UART Port A, blocking if UART is not ready
@@ -1564,11 +1596,13 @@ getc:
 *------------------------------------------------------------------------------
 strBanner1:
 	dc.b 10,13
-	dc.b 'Simple RCBus 68000 ROM Monitor v1.0',10,13
+	dc.b 'Simple RCBus 68000 ROM Monitor v1.3',10,13
 	dc.b 'ROM: 0x000000 .. 0x01FFFF',10,13
 	dc.b 'RAM: 0x100000 .. 0x1FFFFF',10,13,0
 strCommands:
     dc.b 10,13,'Commands: ',10,13
+	dc.b 'B     : Start EhBASIC v3.54',10,13
+	dc.b 'C     : Start CP/M-68K v1.3',10,13
 	dc.b 'Dnnnn : Display 256 bytes of memory starting at address nnnn',10,13
 	dc.b 'Gnnnn : Execute code starting at address nnnn',10,13
 	dc.b 'Iaa   : Read a byte from address aa in I/O space',10,13
@@ -1592,6 +1626,16 @@ strEasyTask1:
 	dc.b	10,13,'STOP: EASy68K TRAP #15 - Task ',0
 strEasyTask2:
 	dc.b	' not yet implemented',10,13,0
+strCPMErr1:
+	dc.b	10,13,'Cannot boot CP/M-68K - CP/M-68K missing from EEPROM',10,13,0
+strCPMErr2:
+	dc.b	10,13,'Cannot boot CP/M-68K - CP/M-68K BIOS missing from EEPROM',10,13,0
+strCPMReturn:
+	dc.b	10,13,'CP/M-68K returned to Monitor. Press RESET to restart.',10,13,0
+strBASICErr1:
+	dc.b	10,13,'Cannot boot EhBASIC - EhBASIC missing from EEPROM',10,13,0
+strBASICReturn:
+	dc.b	10,13,'EhBASIC returned to Monitor. Press RESET to restart.',10,13,0
 	
     iflt USE_REAL_UART
 	; using Sim68K COM port
@@ -1612,6 +1656,7 @@ serBuff:
 	ds.b	8
 	
     END    START            * last line of source
+
 
 
 
