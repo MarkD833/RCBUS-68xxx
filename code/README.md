@@ -22,6 +22,10 @@ The monitor operates at 38400 baud without any handshaking.
 
 There a few basic commands that the monitor understands as follows:
 
+## B
+
+Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first.
+
 ## C
 
 Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first.
