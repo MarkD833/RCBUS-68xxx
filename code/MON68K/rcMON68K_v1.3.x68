@@ -646,7 +646,7 @@ START:
 	* copy the exception vector table into RAM
 	move.l	#rom2ramIVT,a0		* start of exception table in ROM
 	move.l	#VEC_BASE,a1		* location in RAM to copy table to
-	move.l	#256,d0				* 256 entries to copy
+	move.l	#255,d0				* 256 entries to copy
 .copy:
     move.l  (a0)+,(a1)+     * copy the byte from ROM to RAM
     dbra    d0,.copy
@@ -834,7 +834,11 @@ cmdRun:
 	bcs.w	monLoop			* back to prompt if there's an error
 
     move.l  d0, a0			* copy start address into A0
-    jsr     (a0)            * jump to user code 
+    jsr     (a0)            * jump to user code
+	
+	lea		strUserReturn(PC),a0
+    bsr.w   putString
+	
     bra.w	monLoop
 
 *------------------------------------------------------------------------------
@@ -1622,6 +1626,8 @@ strColonSpace:
     dc.b ': ',0
 strUninitInt:
     dc.b 'Unhandled interrupt.',10,13,0
+strUserReturn:
+    dc.b 10,13,'User program completed.',10,13,0
 strEasyTask1:
 	dc.b	10,13,'STOP: EASy68K TRAP #15 - Task ',0
 strEasyTask2:

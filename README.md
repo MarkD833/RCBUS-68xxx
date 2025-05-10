@@ -1,43 +1,56 @@
 # RCBUS 68000 Board
 This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - not a 68008 - and is currently being tested on Steve Cousins [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) 6-slot RCBus backplane.
 
-![](./images/RCBus68000.JPG)
+This is essentially version 2 of my design as version 1 was more of a proof of concept that relied on an additional connector between the CPU and ROM/RAM boards as well as partial use of the second row of bus pins.
+
+Version 2 removed the additional connector between the CPU and ROM/RAM boards and relies entirely on the RCBus-80 pin connector for inter-board communication.
+
+
+![](./images/Board_Set_#1.JPG)
 
 There are no programable logic devices (PALs, GALs, CPLDs etc) in my design. The only programmable devices are the 2 EEPROMs containing the monitor, CP/M-68K and EhBASIC.
 
-The initial design uses only the RCBus-40 pin connection and has a "private" connector between the 68000 board and the ROM/RAM board. This connector carries D8..D15, A17..A23, /AS, /UDS, /LDS, R/W, /DTACK & /RCBUS_DTACK as well as bunch of unassigned pins for use if needed during testing. However, I should have used a connector with longer pins. When the 2 boards are mated together, they are about 5mm closer together than the spacing of the SC701 backplane connectors which causes them to lean towards eachother.
+## RCBus Signals
+The RCBus specification doesn't specifically mention the 68000 in the backplane signal assignments table so there's a bit of wiggle room on the pins used.
 
-The RCBus specification doesn't specifically mention the 68000 in the backplane signal assignments table so there may be a bit of wiggle room on the pins used. I will detail the RCBus 80-pin signal assignments once I have something more concrete - most likely once the next iteration of the boards gets produced as I will remove the private connector between the 68000 and the ROM/RAM board.
+I've stuck to the same signals for pins 1-40 with the exception of the M1 signal which is currently unconnected but may need a pullup resistor and the USER1..USER4 which are used for the level 1, 3, 5 & 6 autovector interrupts.
+
+Pins 41-80 carry D8..D15 as well as the higher address bits. Pins 41..44 have been used to carry some 68000 specific signals.
+
+The current signal list is in the RCBus-68000 Pinout PDF.
 
 ## Zilog compatability
 There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the 68230 and 68681 chips. The KIO has a sort-of equivalent in the 68901. A  CTC type chip may not be needed as the 68230 and 68681 have their own timers and the 68901 has 4 simple timers.
 
+## 68000 memory space
+The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
+
+The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
+
+The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
+ 
+The multifunction peripheral board is populated with two 68901 (or equivalent). Each MFP can reside at one of 8 selectable 2K memory addresses from $D10000 to $D13FFF.
+
 ## RCBus memory space
-My 68000 design partially decodes blocks of memory within the 68000 address range as follows:
+My 68000 design partially decodes 2 blocks of memory within the 68000 address range as follows:
 | Address Range | Signal |
 | :---- | :---- |
-| 0xE00000..0xEFFFFF | /MREQ goes low |
-| 0xF00000..0xFFFFFF | /IORQ goes low |
+| 0xF00000..0xF7FFFF | /MREQ goes low |
+| 0xF80000..0xFFFFFF | /IORQ goes low |
 
-The partial decoding of the 16-bit RCBus memory space results in 16 sequential blocks of M68K memory accessing the same RCBus memory space.
-  
-The partial decoding of the 8-bit RCBus I/O space results in 4096 sequential blocks of M68K memory accessing the same RCBus I/O space.
-
-The current design places the SIO, PIO and MFP boards in RCBus I/O space and uses the fixed /DTACK generator on the processor card to signal completion of the cycle. The next iteration of boards will likely move these boards into a third memory space in the range 0xD00000..0xDFFFFF where the 68681, 68230 and 68901 will signal completion of a bus cycle using their own /DTACK signals.
+This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
 
 ## What works so far
-Currently the following boards are completed and are under test:
-* 68000 procesor card
-* ROM / RAM card - 128K ROM & 1M RAM
-* Quad serial I/O card - with 2 68681 DUARTs
-* Multifunction card - with 2 68901s (not shown)
-
-![](./images/RCBusBoards.JPG)
+Currently the following v2 boards are completed and are under test:
+* 68000 procesor board
+* ROM / RAM board - 128K ROM & 1M RAM
+* Quad serial I/O board - with 2 68681 DUARTs
 
 ## To do
-These boards are waiting to be populated and tested:
-* Digital I/O card - with 2 68230 PI/Ts
-
+These v2 boards are waiting to be populated and tested:
+* Digital I/O board - with 2 68230 PI/Ts
+* Mutifunction board - with 2 68901 MFPs
+ 
 ## Progress
 Currently the 68000 card, the ROM/RAM card and the serial I/O card are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 & S3 record types are handled.
 
@@ -55,16 +68,13 @@ The following RCBus cards have also been tested:
 
 The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 and appear to operate correctly.
 
-Further details available shortly once sufficient testing is done.
-
 # Still to do
-* Build and test the 68230 digital I/O card
+* Build and test the 68230 digital I/O board
+* Build and test the 68901 MFP board
 * Further testing with various RCBus boards I have
 
 # Conclusion
+The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
 
-I'm happy with the current state of the prototype system as it has proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards.
-
-The next step is to utilise the full RCBus-80 signals. There are new board designs in progress for the 68000 board and ROM/RAM memory board that utilise the RCBus-80 signals and do away with the private connector. There are also new designs for the serial i/o, parallel i/o and multifunction cards that place them in 68000 memory space so that they don't take up any space in the /IORQ memory space.
-
-I've also recently acquired an [SC611 micro SD card storage module](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) and an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with.
+# News
+I've recently purchased an [SC611 micro SD card storage module](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) from Steve Cousins and an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with. Hopefully there will be good news in the near future on these 2 boards.

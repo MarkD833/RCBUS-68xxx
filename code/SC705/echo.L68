@@ -1,6 +1,6 @@
 00110000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 10/03/2025 18:15:12
+Created On: 10/05/2025 14:20:05
 
 00000000                             1  *------------------------------------------------------------------------------
 00000000                             2  * ECHO.X68
@@ -9,59 +9,94 @@ Created On: 10/03/2025 18:15:12
 00000000                             5  * Simply echoes back any character received.
 00000000                             6  *
 00000000                             7  * My board has a 3.3864MHz crystal fitted as X1. The SC705 design actually
-00000000                             8  * uses a 7.3728MHz crystal but I didn't have one to hand!
-00000000                             9  *
-00000000                            10  * Assumes that the SC705 is at I/O address 0xD0.
-00000000                            11  *
-00000000                            12  
-00000000  =00F00000                 13  IO_BASE     EQU     $F00000     * I/O space base addr = 00F0_0000
-00000000  =000000D0                 14  SC705ADDR   EQU     $D0         * SC705 address is 0xD0
+00000000                             8  * uses a 7.3728MHz crystal but I didn't have one to hand, therefore the
+00000000                             9  * baud rate is 57600 (for 3.3864MHz) instead of 115200 (for 7.3728MHz).
+00000000                            10  *
+00000000                            11  * Assumes that the SC705 is at I/O address 0xD0.
+00000000                            12  *
+00000000                            13  
+00000000                            14      INCLUDE "..\asm-inc\memory.inc"
 00000000                            15  
-00000000  =00F001A1                 16  SC705       EQU     IO_BASE+1+(SC705ADDR<<1)
+00000000  =00007000                 16  MON_BASE        EQU     $7000
 00000000                            17  
-00000000                            18  * MC6850 UART register definitions
-00000000  =00F001A1                 19  CTRL        EQU     SC705
-00000000  =00F001A3                 20  TXRX        EQU     SC705+2
-00000000                            21  
-00110000                            22      ORG     $110000
-00110000                            23  
-00110000                            24  START:
-00110000  43FA 003E                 25      lea     strTitle(PC), a1    * Show the program details
-00110004  103C 000E                 26      move.b  #14,d0              * EASy68K task 14
-00110008  4E4F                      27      trap    #15
-0011000A                            28  
-0011000A  103C 0016                 29      move.b  #$16,d0             * div 64, 8N1, INT disabled
-0011000E  13C0 00F001A1             30      move.b  d0,CTRL
-00110014                            31      
-00110014  4E71                      32      nop
-00110016  4E71                      33      nop
-00110018  4E71                      34      nop
-0011001A                            35  
-0011001A                            36      * wait for rx buffer to hold a character
-0011001A                            37  .loop:
-0011001A  1239 00F001A1             38      move.b  CTRL,d1             * get current UART status
-00110020  0201 0001                 39      andi.b  #$01,d1             * mask all but bit 0 (RDRF bit)
-00110024  67F4                      40      beq.s   .loop
-00110026                            41  
-00110026                            42      * a characer has been received so read it in
-00110026  1039 00F001A3             43      move.b  TXRX,d0             * D0 = character recevied
-0011002C                            44      
-0011002C                            45      * wait for tx buffer to be empty
-0011002C                            46  .wait:
-0011002C  1239 00F001A1             47      move.b  CTRL,d1             * get current UART status
-00110032  0201 0002                 48      andi.b  #$02,d1             * mask all but bit 1 (TDRE bit)
-00110036  67F4                      49      beq.s   .wait
-00110038                            50  
-00110038                            51      * tx buffer is empty so write the character back out
-00110038  13C0 00F001A3             52      move.b  d0,TXRX             * write the character to the UART
-0011003E  60DA                      53      bra.s   .loop               * go back for next character
-00110040                            54  
-00110040                            55  strTitle:
-00110040= 52 43 42 75 73 20 ...     56      dc.b    'RCBus 68000 SC705 68B50 UART demo #2.',10,13
-00110067= 41 73 73 75 6D 65 ...     57      dc.b    'Assumes SC705 is present at I/O address 0xD0.',10,13
-00110096= 0A 0D 50 72 65 73 ...     58      dc.b    10,13,'Press RESET to return to the monitor.',10,13,0
-001100C0                            59  
-001100C0                            60      END     START
+00000000  =00009000                 18  EHBASIC_BASE    EQU     $9000
+00000000                            19  
+00000000  =00100000                 20  RAM_BASE        EQU     $100000
+00000000  =00100000                 21  RAM_LEN         EQU     $100000
+00000000                            22  
+00000000  =00100000                 23  VEC_BASE        EQU     RAM_BASE
+00000000  =00000400                 24  VEC_SIZE        EQU     $400         * table takes up 1024 bytes
+00000000                            25  
+00000000  =00F80000                 26  IO_BASE         EQU     $F80000     * I/O space base address = 00F8_0000
+00000000                            27  
+00000000  =00F00000                 28  MEM_BASE        EQU     $F00000     * Mem space base address = 00F0_0000
+00000000                            29  
+00000000  =00000400                 30  CPM_BASE        EQU     $0400       * CP/M-68K entry point
+00000000                            31  
+00000000  =001FD800                 32  CCP_BSS_BASE    EQU     $1FD800
+00000000  =00001000                 33  CCP_PRIV        EQU     4096
+00000000                            34  
+00000000  =00000800                 35  MON_PRIV        EQU     2048
+00000000                            36  
+00000000  =00001000                 37  BIOS_PRIV       EQU     4096
+00000000                            38  
+00000000  =001FF800                 39  STACK_START     EQU     RAM_BASE+RAM_LEN-MON_PRIV
+00000000  =001FF800                 40  -------------------- end include --------------------
+00000000                            41  
+00000000                            42  *******************************************************************************
+00000000                            43  * These addresses are as configured on the individual boards in what would be
+00000000                            44  * the Z80 8-bit I/O space.
+00000000                            45  *
+00000000  =000000D0                 46  SC705ADDR   EQU     $D0         * SC705 address is 0xD0
+00000000                            47  
+00000000                            48  *******************************************************************************
+00000000                            49  * These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+00000000                            50  *
+00000000  =00F801A1                 51  SC705       EQU     IO_BASE+(SC705ADDR<<1)+1
+00000000                            52  
+00000000                            53  * MC6850 UART register definitions
+00000000  =00F801A1                 54  CTRL        EQU     SC705
+00000000  =00F801A3                 55  TXRX        EQU     SC705+2
+00000000                            56  
+00110000                            57      ORG     $110000
+00110000                            58  
+00110000                            59  START:
+00110000  43FA 003E                 60      lea     strTitle(PC), a1    * Show the program details
+00110004  103C 000E                 61      move.b  #14,d0              * EASy68K task 14
+00110008  4E4F                      62      trap    #15
+0011000A                            63  
+0011000A  103C 0016                 64      move.b  #$16,d0             * div 64, 8N1, INT disabled
+0011000E  13C0 00F801A1             65      move.b  d0,CTRL
+00110014                            66      
+00110014  4E71                      67      nop
+00110016  4E71                      68      nop
+00110018  4E71                      69      nop
+0011001A                            70  
+0011001A                            71      * wait for rx buffer to hold a character
+0011001A                            72  .loop:
+0011001A  1239 00F801A1             73      move.b  CTRL,d1             * get current UART status
+00110020  0201 0001                 74      andi.b  #$01,d1             * mask all but bit 0 (RDRF bit)
+00110024  67F4                      75      beq.s   .loop
+00110026                            76  
+00110026                            77      * a characer has been received so read it in
+00110026  1039 00F801A3             78      move.b  TXRX,d0             * D0 = character recevied
+0011002C                            79      
+0011002C                            80      * wait for tx buffer to be empty
+0011002C                            81  .wait:
+0011002C  1239 00F801A1             82      move.b  CTRL,d1             * get current UART status
+00110032  0201 0002                 83      andi.b  #$02,d1             * mask all but bit 1 (TDRE bit)
+00110036  67F4                      84      beq.s   .wait
+00110038                            85  
+00110038                            86      * tx buffer is empty so write the character back out
+00110038  13C0 00F801A3             87      move.b  d0,TXRX             * write the character to the UART
+0011003E  60DA                      88      bra.s   .loop               * go back for next character
+00110040                            89  
+00110040                            90  strTitle:
+00110040= 52 43 42 75 73 20 ...     91      dc.b    'RCBus 68000 SC705 68B50 UART demo #2.',10,13
+00110067= 41 73 73 75 6D 65 ...     92      dc.b    'Assumes SC705 is present at I/O address 0xD0.',10,13
+00110096= 0A 0D 50 72 65 73 ...     93      dc.b    10,13,'Press RESET to return to the monitor.',10,13,0
+001100C0                            94  
+001100C0                            95      END     START
 
 No errors detected
 No warnings generated
@@ -70,12 +105,25 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-CTRL                F001A1
-IO_BASE             F00000
-SC705               F001A1
+BIOS_PRIV           1000
+CCP_BSS_BASE        1FD800
+CCP_PRIV            1000
+CPM_BASE            400
+CTRL                F801A1
+EHBASIC_BASE        9000
+IO_BASE             F80000
+MEM_BASE            F00000
+MON_BASE            7000
+MON_PRIV            800
+RAM_BASE            100000
+RAM_LEN             100000
+SC705               F801A1
 SC705ADDR           D0
+STACK_START         1FF800
 START               110000
 START:LOOP          11001A
 START:WAIT          11002C
 STRTITLE            110040
-TXRX                F001A3
+TXRX                F801A3
+VEC_BASE            100000
+VEC_SIZE            400

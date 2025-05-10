@@ -10,5 +10,5 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | 68000_MFP_Board | Dual MC68901 multifunction peripheral board |
 | 68000_PIO_Board | Dual MC68230 parallel interface / timer board |
 
-Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far.
+Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 

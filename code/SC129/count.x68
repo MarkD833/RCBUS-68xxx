@@ -5,12 +5,19 @@
 * The SC129 should have jumpers set for I/O space address $00 (default).
 *------------------------------------------------------------------------------
 
-*******************************************************************************
-* Defines
-*
-IO_BASE			EQU		$F00000		* I/O space base addr = 00F0_0000
-SC129			EQU		IO_BASE+1
+	INCLUDE "..\asm-inc\memory.inc"
 
+*******************************************************************************
+* These addresses are as configured on the individual boards in what would be
+* the Z80 8-bit I/O space.
+*
+SC129ADDR   EQU     $00           * SC129 base address is 0x00
+
+*******************************************************************************
+* These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+*
+SC129       EQU     IO_BASE+(SC129ADDR<<1)+1
+	
     ORG     $110000
 
 START:
@@ -29,6 +36,7 @@ START:
 	bra.s	.loop3
 
     END    START            * last line of source
+
 
 
 *~Font name~Courier New~

@@ -7,11 +7,19 @@
 * SCL is controlled by bit 0 and SDA is controlled by bit 7.
 *
 
-IO_BASE		EQU		$F00000		* I/O space base addr = 00F0_0000
-SC704ADDR	EQU		$0C			* SC704 default address is 12 (0x0C)
+	INCLUDE "..\asm-inc\memory.inc"
 
-SC704		EQU		IO_BASE+1+(SC704ADDR<<1)
+*******************************************************************************
+* These addresses are as configured on the individual boards in what would be
+* the Z80 8-bit I/O space.
+*
+SC704ADDR   EQU     $0C           * SC704 default address is 12 (0x0C)
 
+*******************************************************************************
+* These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+*
+SC704       EQU     IO_BASE+(SC704ADDR<<1)+1
+	
 SDALO		EQU		$7F			* AND with this value
 SDAHI		EQU		$80			* OR  with this value
 SCLLO		EQU		$FE			* AND with this value

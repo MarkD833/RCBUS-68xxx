@@ -49,10 +49,17 @@ VEC_SIZE		EQU     $400         * table takes up 1024 bytes
 
 *******************************************************************************
 * IO_BASE is the start address of a block of memory in MC68000 memory space
-* that maps onto the RCBus IO space. Accessing this memory will generate an
-* /IORQ on the RCBus.
+* that maps onto the RCBus 256 byte IO space. Accessing this memory will
+* generate an /IORQ on the RCBus.
 * 
-IO_BASE			EQU		$F00000		* I/O space base address = 00F0_0000
+IO_BASE			EQU		$F80000		* I/O space base address = 00F8_0000
+
+*******************************************************************************
+* MEM_BASE is the start address of a block of memory in MC68000 memory space
+* that maps onto the RCBus 64K Memory space. Accessing this memory will
+* generate an /MREQ on the RCBus.
+* 
+MEM_BASE		EQU		$F00000		* Mem space base address = 00F0_0000
 
 *******************************************************************************
 * CPM_BASE is the start address in ROM for CP/M-68K v1.3 and has to match the

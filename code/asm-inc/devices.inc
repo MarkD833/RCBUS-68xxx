@@ -14,19 +14,23 @@
 *******************************************************************************
 
 *******************************************************************************
+* These addresses are as configured on the individual boards in 68000 memory
+* space.
+* DUART1 = my own dual MC68681 serial module
+*
+DUART1      EQU     $D00000
+
+*******************************************************************************
 * These addresses are as configured on the individual boards in what would be
 * the Z80 8-bit I/O space.
 * SC145 = CompactFlash module
-* DUART = my own dual MC68681 serial module
 *
 SC145ADDR   EQU     $10           * SC145 base address is 0x10
-DUART1ADDR  EQU     $C0           * 68681 base address is 0xC0
 
 *******************************************************************************
-* These are the same addresses converted into 68000 memory space
+* These are the Z80 8-bit I/O space addresses converted into 68000 memory space
 *
 SC145       EQU     IO_BASE+(SC145ADDR<<1)
-DUART1      EQU     IO_BASE+(DUART1ADDR<<1)
 
 *******************************************************************************
 *    ######   #     #     #     ######   ####### 

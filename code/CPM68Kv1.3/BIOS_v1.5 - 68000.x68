@@ -16,22 +16,23 @@
 * For my CPM400, _init is defined as $6000 in the MAP file.
 *****************************************************************
 * This code is configured so it can be assembled using EASY68K.
-* Assumes at least a 64Mb CompactFlash card as BIOS assumes 8
-* drives (A..H), each of 8Mb.
+* Assumes at least a 64Mb CompactFlash card as BIOS assumes 6
+* drives (A..F), each of 8Mb.
 *****************************************************************
 
 	INCLUDE "..\asm-inc\memory.inc"
 	INCLUDE "..\asm-inc\devices.inc"
 
 *****************************************************************
-* The location for _ccp comes from the CPM400.MAP file and it is
-* hard coded to $04BC.
+* The location for the CCP entry point comes from the CPM400.MAP
+* file and it is hard coded to $04BC.
 * 
 CCP_ENTRY   EQU     $04BC         * ccp entry point
 
 *****************************************************************
-* The location for _init comes from the CPM400.MAP file and it
-* is hard coded to $6000
+* The location for INIT entry point comes from the CPM400.MAP
+* file and it is hard coded to $6000.
+*
 * Only change this address if you are using the dummy BIOS and
 * change INIT_ENTRY to match the address in the BIOS stub file.
 *
@@ -75,8 +76,8 @@ _init:
     move.b  #CF_NOCACHE,CF_FEATURES
     move.b  #CF_SET_FEAT,CF_COMMAND
 
-    * display our copy of the CP/M-68K banner as CP/M-68K doesn't
-    * do this itself
+    * display our copy of the original CP/M-68K banner as CP/M-68K
+    * doesn't do this itself.
     movea.l #strCPMBanner,a0
 .loop:
     move.b  (a0)+, d1             * Get character

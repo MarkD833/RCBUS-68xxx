@@ -5,15 +5,24 @@
 * Simply echoes back any character received.
 *
 * My board has a 3.3864MHz crystal fitted as X1. The SC705 design actually
-* uses a 7.3728MHz crystal but I didn't have one to hand!
+* uses a 7.3728MHz crystal but I didn't have one to hand, therefore the
+* baud rate is 57600 (for 3.3864MHz) instead of 115200 (for 7.3728MHz).
 *
 * Assumes that the SC705 is at I/O address 0xD0.
 *
 
-IO_BASE		EQU		$F00000		* I/O space base addr = 00F0_0000
+	INCLUDE "..\asm-inc\memory.inc"
+
+*******************************************************************************
+* These addresses are as configured on the individual boards in what would be
+* the Z80 8-bit I/O space.
+*
 SC705ADDR	EQU		$D0			* SC705 address is 0xD0
 
-SC705		EQU		IO_BASE+1+(SC705ADDR<<1)
+*******************************************************************************
+* These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+*
+SC705		EQU		IO_BASE+(SC705ADDR<<1)+1
 
 * MC6850 UART register definitions
 CTRL		EQU		SC705

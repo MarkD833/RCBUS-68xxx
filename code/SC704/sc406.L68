@@ -1,6 +1,6 @@
 00110000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 10/03/2025 16:30:49
+Created On: 10/05/2025 14:10:39
 
 00000000                             1  *------------------------------------------------------------------------------
 00000000                             2  * SC406.X68
@@ -11,231 +11,265 @@ Created On: 10/03/2025 16:30:49
 00000000                             7  * SCL is controlled by bit 0 and SDA is controlled by bit 7.
 00000000                             8  *
 00000000                             9  
-00000000  =00F00000                 10  IO_BASE     EQU     $F00000     * I/O space base addr = 00F0_0000
-00000000  =0000000C                 11  SC704ADDR   EQU     $0C         * SC704 default address is 12 (0x0C)
-00000000                            12  
-00000000  =00F00019                 13  SC704       EQU     IO_BASE+1+(SC704ADDR<<1)
-00000000                            14  
-00000000  =0000004D                 15  TC74ADDR    EQU     $4D         * I2C bus address of the TC74
-00000000  =00000000                 16  TC74READCMD EQU     $00         * TC74 read temperature command
-00000000                            17  
-00000000  =0000007F                 18  SDALO       EQU     $7F         * AND with this value
-00000000  =00000080                 19  SDAHI       EQU     $80         * OR  with this value
-00000000  =000000FE                 20  SCLLO       EQU     $FE         * AND with this value
-00000000  =00000001                 21  SCLHI       EQU     $01         * OR  with this value
-00000000                            22  
-00110000                            23      ORG     $110000
-00110000                            24  
-00110000                            25  START:
-00110000  43FA 01B6                 26      lea     strTitle(PC), a1    * Show the program details
-00110004  103C 000E                 27      move.b  #14,d0              * EASy68K task 14
-00110008  4E4F                      28      trap    #15
-0011000A                            29  
-0011000A  4287                      30      clr.l   d7
-0011000C                            31      
-0011000C  6100 0082                 32      bsr.w   I2CSTART            * START condition
-00110010  103C 004D                 33      move.b  #TC74ADDR,d0        * address of TC74 on I2C bus
-00110014  E300                      34      asl.b   #1,d0               * shift address left 1 bit
-00110016  6100 0090                 35      bsr.w   I2CWRITE
-0011001A  5207                      36      addi.b  #1,d7
-0011001C  6552                      37      bcs.s   NACK                * NACK = no device at that address
-0011001E                            38  
-0011001E  103C 0000                 39      move.b  #TC74READCMD,d0     * TC74 READ command
-00110022  6100 0084                 40      bsr.w   I2CWRITE
-00110026  5207                      41      addi.b  #1,d7
-00110028  6546                      42      bcs.s   NACK                * if NACK = no device at that address
-0011002A  6100 013C                 43      bsr.w   I2CSTOP             * STOP condition
-0011002E                            44      
-0011002E  6100 0060                 45      bsr.w   I2CSTART            * START condition
-00110032  103C 004D                 46      move.b  #TC74ADDR,d0        * address of TC74 on I2C bus
-00110036  E300                      47      asl.b   #1,d0               * shift address left 1 bit
-00110038  0000 0001                 48      ori.b   #1,d0               * set the READ bit
-0011003C  6100 006A                 49      bsr.w   I2CWRITE
-00110040  5207                      50      addi.b  #1,d7
-00110042  652C                      51      bcs.s   NACK                * NACK = no device at that address
-00110044                            52  
-00110044  6100 00C4                 53      bsr.w   I2CREAD
-00110048  5207                      54      addi.b  #1,d7
-0011004A  6524                      55      bcs.s   NACK                * if NACK = no device at that address
-0011004C  6100 011A                 56      bsr.w   I2CSTOP             * STOP condition
-00110050                            57  
-00110050                            58      * D0 should now hold the temperature in deg C
-00110050  0280 000000FF             59      andi.l  #$FF,d0             * clear upper 24 bits of D0
-00110056  80FC 000A                 60      divu    #10,d0
-0011005A  6100 013A                 61      bsr.w   writeNibble         * output the 10's digit
-0011005E  4840                      62      swap    d0
-00110060  6100 0134                 63      bsr.w   writeNibble         * output the 1's digit
-00110064                            64  
-00110064  43FA 01C0                 65      lea     strDEGC(PC), a1 * Show the program details
-00110068  103C 000E                 66      move.b  #14,d0              * EASy68K task 14
-0011006C  4E4F                      67      trap    #15
-0011006E  6014                      68      bra.s   DONE                * stay here till reset
-00110070                            69  
-00110070                            70  NACK:
-00110070  6100 00F6                 71      bsr.w   I2CSTOP             * STOP condition
-00110074  43FA 019F                 72      lea     strNACK(PC), a1     * Show the NAK message
-00110078  103C 000E                 73      move.b  #14,d0              * EASy68K task 14
-0011007C  4E4F                      74      trap    #15 
-0011007E                            75  
-0011007E  1007                      76      move.b  d7,d0
-00110080  6100 010C                 77      bsr.w   writeByte
-00110084                            78  
-00110084                            79  DONE:
-00110084  43FA 01A9                 80      lea     strReturn(PC), a1   * Show the program details
-00110088  103C 000E                 81      move.b  #14,d0              * EASy68K task 14
-0011008C  4E4F                      82      trap    #15
-0011008E                            83      
-0011008E                            84  ENDLESS:
-0011008E  60FE                      85      bra.s   ENDLESS             * stay here till reset
-00110090                            86      
-00110090                            87  *------------------------------------------------------------------------------
-00110090                            88  * Send START condition
-00110090                            89  * Assumes SDA and SCL are both HIGH already
-00110090                            90  * D1 holds the last value written to the SC704
-00110090                            91  *------------------------------------------------------------------------------
-00110090                            92  I2CSTART:
-00110090  123C 0001                 93      move.b  #SCLHI,d1
-00110094  13C1 00F00019             94      move.b  d1,SC704        * set SCL HIGH & SDA LOW
-0011009A  4E71                      95      nop
-0011009C  4E71                      96      nop
-0011009E  4201                      97      clr.b   d1
-001100A0  13C1 00F00019             98      move.b  d1,SC704        * set SCL LOW & SDA LOW
-001100A6  4E75                      99      rts
-001100A8                           100      
-001100A8                           101  *------------------------------------------------------------------------------
-001100A8                           102  * write a byte - D0 holds the byte to send
-001100A8                           103  * C is set for a NACK and clear for an ACK
-001100A8                           104  * State of SCL & SDA held in D1
-001100A8                           105  *------------------------------------------------------------------------------
-001100A8                           106  I2CWRITE:
-001100A8  363C 0007                107      move.w  #7,d3           * number of bits to send minus 1
-001100AC                           108  .loop1:
-001100AC  3F00                     109      move.w  d0,-(sp)        * save the byte
-001100AE  0200 0080                110      andi.b  #$80,d0         * get just MSB of the byte
-001100B2  13C0 00F00019            111      move.b  d0,SC704        * write out the bit with SCL LOW
-001100B8  0000 0001                112      ori.b   #SCLHI,d0       * SCL bit HIGH
-001100BC  13C0 00F00019            113      move.b  d0,SC704        * write out the bit with SCL HIGH
-001100C2  4E71                     114      nop
-001100C4  4E71                     115      nop
-001100C6  4E71                     116      nop
-001100C8  4E71                     117      nop
-001100CA  0200 00FE                118      andi.b  #SCLLO,d0
-001100CE  13C0 00F00019            119      move.b  d0,SC704        * write out the bit with SCL LOW
-001100D4  301F                     120      move.w  (sp)+,d0        * get the byte back
-001100D6  E318                     121      rol.b   #1,d0           * shift so next bit to send is in the MSB
-001100D8  51CB FFD2                122      dbra    d3,.loop1
-001100DC                           123  
-001100DC                           124      * done 8 bits so check for ACK or NACK
-001100DC  103C 0080                125      move.b  #SDAHI,d0
-001100E0  13C0 00F00019            126      move.b  d0,SC704        * release the SDA line with SCL LOW
-001100E6  4E71                     127      nop
-001100E8  4E71                     128      nop
-001100EA  0000 0001                129      ori.b   #SCLHI,d0       * SCL bit HIGH
-001100EE  13C0 00F00019            130      move.b  d0,SC704        * write out SCL HIGH (and SDA HIGH)
-001100F4  4E71                     131      nop
-001100F6  4E71                     132      nop
-001100F8  1039 00F00019            133      move.b  SC704,d0        * read the current SCL & SDA states
-001100FE  13FC 0080 00F00019       134      move.b  #SDAHI,SC704    * set SCL LOW (and SDA HIGH)
-00110106                           135  
-00110106                           136      * bit 7 in D0 now holds the ACK (=0) or NACK (=1) response
-00110106  E300                     137      asl.b   #1,d0           * carry flag now holds ACK/NACK response
-00110108  4E75                     138      rts
-0011010A                           139  
-0011010A                           140  *------------------------------------------------------------------------------
-0011010A                           141  * read a byte - D0 holds the byte read in
-0011010A                           142  * C is set for a NACK and clear for an ACK
-0011010A                           143  *------------------------------------------------------------------------------
-0011010A                           144  I2CREAD:
-0011010A  363C 0007                145      move.w  #7,d3           * number of bits to read minus 1
-0011010E  4282                     146      clr.l   d2
-00110110                           147  .loop1:
-00110110  103C 0081                148      move.b  #(SCLHI+SDAHI),d0
-00110114  13C0 00F00019            149      move.b  d0,SC704        * set SCL HIGH & SDA HIGH
-0011011A  4E71                     150      nop
-0011011C  4E71                     151      nop
-0011011E  1039 00F00019            152      move.b  SC704,d0        * read the current SCL & SDA states
-00110124  E30A                     153      lsl.b   #1,d2           * shift D2 1 bit left ready for new bit
-00110126  EE08                     154      lsr.b   #7,d0           * I2C data bit now in bit 0 of D0
-00110128  8400                     155      or.b    d0,d2           * D2 now updated with new I2C bit
-0011012A  103C 0080                156      move.b  #SDAHI,d0
-0011012E  13C0 00F00019            157      move.b  d0,SC704        * set SCL LOW
-00110134  4E71                     158      nop
-00110136  4E71                     159      nop
-00110138  51CB FFD6                160      dbra    d3,.loop1
-0011013C                           161  
-0011013C                           162      * D2 now holds the 8-bit value read in
-0011013C  1002                     163      move.b  d2,d0           * move the value into D0
-0011013E                           164  
-0011013E                           165      * read in 8 bits so check for ACK or NACK
-0011013E  13FC 0080 00F00019       166      move.b  #SDAHI,SC704    * release the SDA line with SCL LOW
-00110146  4E71                     167      nop
-00110148  4E71                     168      nop
-0011014A  13FC 0081 00F00019       169      move.b  #(SCLHI+SDAHI),SC704        * write out SCL HIGH (and SDA HIGH)
-00110152  4E71                     170      nop
-00110154  4E71                     171      nop
-00110156  1439 00F00019            172      move.b  SC704,d2        * read the current SCL & SDA states
-0011015C  13FC 0080 00F00019       173      move.b  #SDAHI,SC704    * set SCL LOW (and SDA HIGH)
-00110164                           174  
-00110164                           175      * bit 7 in D2 now holds the ACK (=0) or NACK (=1) response
-00110164  E302                     176      asl.b   #1,d2           * carry flag now holds ACK/NACK response
-00110166  4E75                     177      rts
-00110168                           178  
-00110168                           179  *------------------------------------------------------------------------------
-00110168                           180  * Send STOP condition
-00110168                           181  * SCL will already be low
-00110168                           182  *------------------------------------------------------------------------------
-00110168                           183  I2CSTOP:
-00110168  13FC 0000 00F00019       184      move.b  #$00,SC704      * set SCL LOW & SDA LOW
-00110170  4E71                     185      nop
-00110172  4E71                     186      nop
-00110174  4E71                     187      nop
-00110176  13FC 0001 00F00019       188      move.b  #$01,SC704      * set SCL HIGH & SDA LOW
-0011017E  4E71                     189      nop
-00110180  4E71                     190      nop
-00110182  4E71                     191      nop
-00110184  13FC 0081 00F00019       192      move.b  #$81,SC704      * set SCL HIGH & SDA HIGH
-0011018C  4E75                     193      rts
-0011018E                           194  
-0011018E                           195  *------------------------------------------------------------------------------
-0011018E                           196  * Output a byte as 2 ASCII hexadecimal digits
-0011018E                           197  * D0 holds the byte in bits 0..7
-0011018E                           198  * NOTE: the writeNibble function must be directly after this function
-0011018E                           199  *------------------------------------------------------------------------------
-0011018E                           200  writeByte:
-0011018E  1F00                     201      move.b  d0,-(sp)    ; save D0 first
-00110190  E818                     202      ror.b   #4,d0       ; get upper nibble
-00110192  6102                     203      bsr.s   writeNibble
-00110194  101F                     204      move.b  (sp)+,d0    ; restore D0
-00110196                           205      
-00110196                           206  *------------------------------------------------------------------------------
-00110196                           207  * Output 4 bits as an ASCII hexadecimal digit
-00110196                           208  * D0 holds the nibble in bits 0..3
-00110196                           209  *------------------------------------------------------------------------------
-00110196                           210  writeNibble:
-00110196  48E7 C000                211      movem.l  d0/d1,-(sp)    ; save D0 & D1 first
-0011019A  0200 000F                212      andi.b  #$0F,d0     ; make sure we only have the lower 4 bits
-0011019E  0C00 000A                213      cmpi.b  #10,d0      ; compare D0 to 10
-001101A2  6502                     214      bcs.b   .wn1        ; less than 10 so don't add 7
-001101A4  5E00                     215      addi.b  #07,d0      ; add 7
-001101A6                           216  .wn1:
-001101A6  0600 0030                217      addi.b  #'0',d0     ; add ASCII code for char zero
-001101AA  1200                     218      move.b  d0,d1
-001101AC  103C 0006                219      move.b  #6,d0       ; EASy68K task 6
-001101B0  4E4F                     220      trap    #15         ; display the character 
-001101B2  4CDF 0003                221      movem.l  (sp)+,d0/d1 ; restore D0 & D1
-001101B6  4E75                     222      rts
-001101B8                           223      
-001101B8                           224  strTitle:
-001101B8= 52 43 42 75 73 20 ...    225      dc.b    'RCBus 68000 TC74 Temperature sensor reader.',10,13
-001101E5= 41 73 73 75 6D 65 ...    226      dc.b    'Assumes SC704 is present at I/O address 0x0C.',10,13,0
-00110215                           227  strNACK:
-00110215= 4E 41 43 4B 20 72 ...    228      dc.b    'NACK received.',10,13,0
-00110226                           229  strDEGC:
-00110226= 20 44 65 67 20 43 ...    230      dc.b    ' Deg C',10,13,0
-0011022F                           231  strReturn:
-0011022F= 0A 0D 50 72 65 73 ...    232      dc.b    10,13,'Press RESET to return to the monitor.',10,13,0
-00110259                           233      
-00110259                           234      END     START
+00000000                            10      INCLUDE "..\asm-inc\memory.inc"
+00000000                            11  
+00000000  =00007000                 12  MON_BASE        EQU     $7000
+00000000                            13  
+00000000  =00009000                 14  EHBASIC_BASE    EQU     $9000
+00000000                            15  
+00000000  =00100000                 16  RAM_BASE        EQU     $100000
+00000000  =00100000                 17  RAM_LEN         EQU     $100000
+00000000                            18  
+00000000  =00100000                 19  VEC_BASE        EQU     RAM_BASE
+00000000  =00000400                 20  VEC_SIZE        EQU     $400         * table takes up 1024 bytes
+00000000                            21  
+00000000  =00F80000                 22  IO_BASE         EQU     $F80000     * I/O space base address = 00F8_0000
+00000000                            23  
+00000000  =00F00000                 24  MEM_BASE        EQU     $F00000     * Mem space base address = 00F0_0000
+00000000                            25  
+00000000  =00000400                 26  CPM_BASE        EQU     $0400       * CP/M-68K entry point
+00000000                            27  
+00000000  =001FD800                 28  CCP_BSS_BASE    EQU     $1FD800
+00000000  =00001000                 29  CCP_PRIV        EQU     4096
+00000000                            30  
+00000000  =00000800                 31  MON_PRIV        EQU     2048
+00000000                            32  
+00000000  =00001000                 33  BIOS_PRIV       EQU     4096
+00000000                            34  
+00000000  =001FF800                 35  STACK_START     EQU     RAM_BASE+RAM_LEN-MON_PRIV
+00000000  =001FF800                 36  -------------------- end include --------------------
+00000000                            37  
+00000000                            38  *******************************************************************************
+00000000                            39  * These addresses are as configured on the individual boards in what would be
+00000000                            40  * the Z80 8-bit I/O space.
+00000000                            41  *
+00000000  =0000000C                 42  SC704ADDR   EQU     $0C           * SC704 default address is 12 (0x0C)
+00000000                            43  
+00000000                            44  *******************************************************************************
+00000000                            45  * These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+00000000                            46  *
+00000000  =00F80019                 47  SC704       EQU     IO_BASE+(SC704ADDR<<1)+1
+00000000                            48  
+00000000  =0000004D                 49  TC74ADDR    EQU     $4D         * I2C bus address of the TC74
+00000000  =00000000                 50  TC74READCMD EQU     $00         * TC74 read temperature command
+00000000                            51  
+00000000  =0000007F                 52  SDALO       EQU     $7F         * AND with this value
+00000000  =00000080                 53  SDAHI       EQU     $80         * OR  with this value
+00000000  =000000FE                 54  SCLLO       EQU     $FE         * AND with this value
+00000000  =00000001                 55  SCLHI       EQU     $01         * OR  with this value
+00000000                            56  
+00110000                            57      ORG     $110000
+00110000                            58  
+00110000                            59  START:
+00110000  43FA 01B6                 60      lea     strTitle(PC), a1    * Show the program details
+00110004  103C 000E                 61      move.b  #14,d0              * EASy68K task 14
+00110008  4E4F                      62      trap    #15
+0011000A                            63  
+0011000A  4287                      64      clr.l   d7
+0011000C                            65      
+0011000C  6100 0082                 66      bsr.w   I2CSTART            * START condition
+00110010  103C 004D                 67      move.b  #TC74ADDR,d0        * address of TC74 on I2C bus
+00110014  E300                      68      asl.b   #1,d0               * shift address left 1 bit
+00110016  6100 0090                 69      bsr.w   I2CWRITE
+0011001A  5207                      70      addi.b  #1,d7
+0011001C  6552                      71      bcs.s   NACK                * NACK = no device at that address
+0011001E                            72  
+0011001E  103C 0000                 73      move.b  #TC74READCMD,d0     * TC74 READ command
+00110022  6100 0084                 74      bsr.w   I2CWRITE
+00110026  5207                      75      addi.b  #1,d7
+00110028  6546                      76      bcs.s   NACK                * if NACK = no device at that address
+0011002A  6100 013C                 77      bsr.w   I2CSTOP             * STOP condition
+0011002E                            78      
+0011002E  6100 0060                 79      bsr.w   I2CSTART            * START condition
+00110032  103C 004D                 80      move.b  #TC74ADDR,d0        * address of TC74 on I2C bus
+00110036  E300                      81      asl.b   #1,d0               * shift address left 1 bit
+00110038  0000 0001                 82      ori.b   #1,d0               * set the READ bit
+0011003C  6100 006A                 83      bsr.w   I2CWRITE
+00110040  5207                      84      addi.b  #1,d7
+00110042  652C                      85      bcs.s   NACK                * NACK = no device at that address
+00110044                            86  
+00110044  6100 00C4                 87      bsr.w   I2CREAD
+00110048  5207                      88      addi.b  #1,d7
+0011004A  6524                      89      bcs.s   NACK                * if NACK = no device at that address
+0011004C  6100 011A                 90      bsr.w   I2CSTOP             * STOP condition
+00110050                            91  
+00110050                            92      * D0 should now hold the temperature in deg C
+00110050  0280 000000FF             93      andi.l  #$FF,d0             * clear upper 24 bits of D0
+00110056  80FC 000A                 94      divu    #10,d0
+0011005A  6100 013A                 95      bsr.w   writeNibble         * output the 10's digit
+0011005E  4840                      96      swap    d0
+00110060  6100 0134                 97      bsr.w   writeNibble         * output the 1's digit
+00110064                            98  
+00110064  43FA 01C0                 99      lea     strDEGC(PC), a1 * Show the program details
+00110068  103C 000E                100      move.b  #14,d0              * EASy68K task 14
+0011006C  4E4F                     101      trap    #15
+0011006E  6014                     102      bra.s   DONE                * stay here till reset
+00110070                           103  
+00110070                           104  NACK:
+00110070  6100 00F6                105      bsr.w   I2CSTOP             * STOP condition
+00110074  43FA 019F                106      lea     strNACK(PC), a1     * Show the NAK message
+00110078  103C 000E                107      move.b  #14,d0              * EASy68K task 14
+0011007C  4E4F                     108      trap    #15 
+0011007E                           109  
+0011007E  1007                     110      move.b  d7,d0
+00110080  6100 010C                111      bsr.w   writeByte
+00110084                           112  
+00110084                           113  DONE:
+00110084  43FA 01A9                114      lea     strReturn(PC), a1   * Show the program details
+00110088  103C 000E                115      move.b  #14,d0              * EASy68K task 14
+0011008C  4E4F                     116      trap    #15
+0011008E                           117      
+0011008E                           118  ENDLESS:
+0011008E  60FE                     119      bra.s   ENDLESS             * stay here till reset
+00110090                           120      
+00110090                           121  *------------------------------------------------------------------------------
+00110090                           122  * Send START condition
+00110090                           123  * Assumes SDA and SCL are both HIGH already
+00110090                           124  * D1 holds the last value written to the SC704
+00110090                           125  *------------------------------------------------------------------------------
+00110090                           126  I2CSTART:
+00110090  123C 0001                127      move.b  #SCLHI,d1
+00110094  13C1 00F80019            128      move.b  d1,SC704        * set SCL HIGH & SDA LOW
+0011009A  4E71                     129      nop
+0011009C  4E71                     130      nop
+0011009E  4201                     131      clr.b   d1
+001100A0  13C1 00F80019            132      move.b  d1,SC704        * set SCL LOW & SDA LOW
+001100A6  4E75                     133      rts
+001100A8                           134      
+001100A8                           135  *------------------------------------------------------------------------------
+001100A8                           136  * write a byte - D0 holds the byte to send
+001100A8                           137  * C is set for a NACK and clear for an ACK
+001100A8                           138  * State of SCL & SDA held in D1
+001100A8                           139  *------------------------------------------------------------------------------
+001100A8                           140  I2CWRITE:
+001100A8  363C 0007                141      move.w  #7,d3           * number of bits to send minus 1
+001100AC                           142  .loop1:
+001100AC  3F00                     143      move.w  d0,-(sp)        * save the byte
+001100AE  0200 0080                144      andi.b  #$80,d0         * get just MSB of the byte
+001100B2  13C0 00F80019            145      move.b  d0,SC704        * write out the bit with SCL LOW
+001100B8  0000 0001                146      ori.b   #SCLHI,d0       * SCL bit HIGH
+001100BC  13C0 00F80019            147      move.b  d0,SC704        * write out the bit with SCL HIGH
+001100C2  4E71                     148      nop
+001100C4  4E71                     149      nop
+001100C6  4E71                     150      nop
+001100C8  4E71                     151      nop
+001100CA  0200 00FE                152      andi.b  #SCLLO,d0
+001100CE  13C0 00F80019            153      move.b  d0,SC704        * write out the bit with SCL LOW
+001100D4  301F                     154      move.w  (sp)+,d0        * get the byte back
+001100D6  E318                     155      rol.b   #1,d0           * shift so next bit to send is in the MSB
+001100D8  51CB FFD2                156      dbra    d3,.loop1
+001100DC                           157  
+001100DC                           158      * done 8 bits so check for ACK or NACK
+001100DC  103C 0080                159      move.b  #SDAHI,d0
+001100E0  13C0 00F80019            160      move.b  d0,SC704        * release the SDA line with SCL LOW
+001100E6  4E71                     161      nop
+001100E8  4E71                     162      nop
+001100EA  0000 0001                163      ori.b   #SCLHI,d0       * SCL bit HIGH
+001100EE  13C0 00F80019            164      move.b  d0,SC704        * write out SCL HIGH (and SDA HIGH)
+001100F4  4E71                     165      nop
+001100F6  4E71                     166      nop
+001100F8  1039 00F80019            167      move.b  SC704,d0        * read the current SCL & SDA states
+001100FE  13FC 0080 00F80019       168      move.b  #SDAHI,SC704    * set SCL LOW (and SDA HIGH)
+00110106                           169  
+00110106                           170      * bit 7 in D0 now holds the ACK (=0) or NACK (=1) response
+00110106  E300                     171      asl.b   #1,d0           * carry flag now holds ACK/NACK response
+00110108  4E75                     172      rts
+0011010A                           173  
+0011010A                           174  *------------------------------------------------------------------------------
+0011010A                           175  * read a byte - D0 holds the byte read in
+0011010A                           176  * C is set for a NACK and clear for an ACK
+0011010A                           177  *------------------------------------------------------------------------------
+0011010A                           178  I2CREAD:
+0011010A  363C 0007                179      move.w  #7,d3           * number of bits to read minus 1
+0011010E  4282                     180      clr.l   d2
+00110110                           181  .loop1:
+00110110  103C 0081                182      move.b  #(SCLHI+SDAHI),d0
+00110114  13C0 00F80019            183      move.b  d0,SC704        * set SCL HIGH & SDA HIGH
+0011011A  4E71                     184      nop
+0011011C  4E71                     185      nop
+0011011E  1039 00F80019            186      move.b  SC704,d0        * read the current SCL & SDA states
+00110124  E30A                     187      lsl.b   #1,d2           * shift D2 1 bit left ready for new bit
+00110126  EE08                     188      lsr.b   #7,d0           * I2C data bit now in bit 0 of D0
+00110128  8400                     189      or.b    d0,d2           * D2 now updated with new I2C bit
+0011012A  103C 0080                190      move.b  #SDAHI,d0
+0011012E  13C0 00F80019            191      move.b  d0,SC704        * set SCL LOW
+00110134  4E71                     192      nop
+00110136  4E71                     193      nop
+00110138  51CB FFD6                194      dbra    d3,.loop1
+0011013C                           195  
+0011013C                           196      * D2 now holds the 8-bit value read in
+0011013C  1002                     197      move.b  d2,d0           * move the value into D0
+0011013E                           198  
+0011013E                           199      * read in 8 bits so check for ACK or NACK
+0011013E  13FC 0080 00F80019       200      move.b  #SDAHI,SC704    * release the SDA line with SCL LOW
+00110146  4E71                     201      nop
+00110148  4E71                     202      nop
+0011014A  13FC 0081 00F80019       203      move.b  #(SCLHI+SDAHI),SC704        * write out SCL HIGH (and SDA HIGH)
+00110152  4E71                     204      nop
+00110154  4E71                     205      nop
+00110156  1439 00F80019            206      move.b  SC704,d2        * read the current SCL & SDA states
+0011015C  13FC 0080 00F80019       207      move.b  #SDAHI,SC704    * set SCL LOW (and SDA HIGH)
+00110164                           208  
+00110164                           209      * bit 7 in D2 now holds the ACK (=0) or NACK (=1) response
+00110164  E302                     210      asl.b   #1,d2           * carry flag now holds ACK/NACK response
+00110166  4E75                     211      rts
+00110168                           212  
+00110168                           213  *------------------------------------------------------------------------------
+00110168                           214  * Send STOP condition
+00110168                           215  * SCL will already be low
+00110168                           216  *------------------------------------------------------------------------------
+00110168                           217  I2CSTOP:
+00110168  13FC 0000 00F80019       218      move.b  #$00,SC704      * set SCL LOW & SDA LOW
+00110170  4E71                     219      nop
+00110172  4E71                     220      nop
+00110174  4E71                     221      nop
+00110176  13FC 0001 00F80019       222      move.b  #$01,SC704      * set SCL HIGH & SDA LOW
+0011017E  4E71                     223      nop
+00110180  4E71                     224      nop
+00110182  4E71                     225      nop
+00110184  13FC 0081 00F80019       226      move.b  #$81,SC704      * set SCL HIGH & SDA HIGH
+0011018C  4E75                     227      rts
+0011018E                           228  
+0011018E                           229  *------------------------------------------------------------------------------
+0011018E                           230  * Output a byte as 2 ASCII hexadecimal digits
+0011018E                           231  * D0 holds the byte in bits 0..7
+0011018E                           232  * NOTE: the writeNibble function must be directly after this function
+0011018E                           233  *------------------------------------------------------------------------------
+0011018E                           234  writeByte:
+0011018E  1F00                     235      move.b  d0,-(sp)    ; save D0 first
+00110190  E818                     236      ror.b   #4,d0       ; get upper nibble
+00110192  6102                     237      bsr.s   writeNibble
+00110194  101F                     238      move.b  (sp)+,d0    ; restore D0
+00110196                           239      
+00110196                           240  *------------------------------------------------------------------------------
+00110196                           241  * Output 4 bits as an ASCII hexadecimal digit
+00110196                           242  * D0 holds the nibble in bits 0..3
+00110196                           243  *------------------------------------------------------------------------------
+00110196                           244  writeNibble:
+00110196  48E7 C000                245      movem.l  d0/d1,-(sp)    ; save D0 & D1 first
+0011019A  0200 000F                246      andi.b  #$0F,d0     ; make sure we only have the lower 4 bits
+0011019E  0C00 000A                247      cmpi.b  #10,d0      ; compare D0 to 10
+001101A2  6502                     248      bcs.b   .wn1        ; less than 10 so don't add 7
+001101A4  5E00                     249      addi.b  #07,d0      ; add 7
+001101A6                           250  .wn1:
+001101A6  0600 0030                251      addi.b  #'0',d0     ; add ASCII code for char zero
+001101AA  1200                     252      move.b  d0,d1
+001101AC  103C 0006                253      move.b  #6,d0       ; EASy68K task 6
+001101B0  4E4F                     254      trap    #15         ; display the character 
+001101B2  4CDF 0003                255      movem.l  (sp)+,d0/d1 ; restore D0 & D1
+001101B6  4E75                     256      rts
+001101B8                           257      
+001101B8                           258  strTitle:
+001101B8= 52 43 42 75 73 20 ...    259      dc.b    'RCBus 68000 TC74 Temperature sensor reader.',10,13
+001101E5= 41 73 73 75 6D 65 ...    260      dc.b    'Assumes SC704 is present at I/O address 0x0C.',10,13,0
+00110215                           261  strNACK:
+00110215= 4E 41 43 4B 20 72 ...    262      dc.b    'NACK received.',10,13,0
+00110226                           263  strDEGC:
+00110226= 20 44 65 67 20 43 ...    264      dc.b    ' Deg C',10,13,0
+0011022F                           265  strReturn:
+0011022F= 0A 0D 50 72 65 73 ...    266      dc.b    10,13,'Press RESET to return to the monitor.',10,13,0
+00110259                           267      
+00110259                           268      END     START
 
 No errors detected
 No warnings generated
@@ -244,7 +278,12 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+BIOS_PRIV           1000
+CCP_BSS_BASE        1FD800
+CCP_PRIV            1000
+CPM_BASE            400
 DONE                110084
+EHBASIC_BASE        9000
 ENDLESS             11008E
 I2CREAD             11010A
 I2CREAD:LOOP1       110110
@@ -252,14 +291,20 @@ I2CSTART            110090
 I2CSTOP             110168
 I2CWRITE            1100A8
 I2CWRITE:LOOP1      1100AC
-IO_BASE             F00000
+IO_BASE             F80000
+MEM_BASE            F00000
+MON_BASE            7000
+MON_PRIV            800
 NACK                110070
-SC704               F00019
+RAM_BASE            100000
+RAM_LEN             100000
+SC704               F80019
 SC704ADDR           C
 SCLHI               1
 SCLLO               FE
 SDAHI               80
 SDALO               7F
+STACK_START         1FF800
 START               110000
 STRDEGC             110226
 STRNACK             110215
@@ -267,6 +312,8 @@ STRRETURN           11022F
 STRTITLE            1101B8
 TC74ADDR            4D
 TC74READCMD         0
+VEC_BASE            100000
+VEC_SIZE            400
 WRITEBYTE           11018E
 WRITENIBBLE         110196
 WRITENIBBLE:WN1     1101A6
