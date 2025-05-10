@@ -6,7 +6,7 @@ This is essentially version 2 of my design as version 1 was more of a proof of c
 Version 2 removed the additional connector between the CPU and ROM/RAM boards and relies entirely on the RCBus-80 pin connector for inter-board communication.
 
 
-![](./images/Board_Set_#1.JPG)
+![](./images/Board_Set_1.JPG)
 
 There are no programable logic devices (PALs, GALs, CPLDs etc) in my design. The only programmable devices are the 2 EEPROMs containing the monitor, CP/M-68K and EhBASIC.
 
