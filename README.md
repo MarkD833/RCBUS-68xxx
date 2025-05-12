@@ -61,6 +61,7 @@ The following RCBus cards have also been tested:
 | :---- | :---- |
 | [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) | digital I/O module |
 | [SC145](https://smallcomputercentral.com/rcbus/sc100-series/sc145-compact-flash-rc2014/) | CompactFlash module |
+| [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) | SC611 MicroSD module |
 | [SC704](https://smallcomputercentral.com/rcbus/sc700-series/sc704-rcbus-i2c-bus-master/) | I2C bus master module |
 | [SC406](https://smallcomputercentral.com/i2c-bus-modules/sc406-i2c-temperature-sensor-module/) | I2C temperature sensor module |
 | [SC705](https://smallcomputercentral.com/rcbus/sc700-series/sc705-rcbus-serial-acia/) | serial ACIA module |
@@ -71,10 +72,11 @@ The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 
 # Still to do
 * Build and test the 68230 digital I/O board
 * Build and test the 68901 MFP board
-* Further testing with various RCBus boards I have
 
 # Conclusion
 The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
 
-# News
-I've recently purchased an [SC611 micro SD card storage module](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) from Steve Cousins and an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with. Hopefully there will be good news in the near future on these 2 boards.
+# Latest News
+I've recently purchased an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with. Hopefully there will be good news to report in the near future on this board.
+
+I've also started making headway with generating some programs written in C using GCC and I hope to share progress on that shortly.

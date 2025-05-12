@@ -6,6 +6,7 @@ This folder contains the software that I've either developed myself or ported to
 | :---- | :---- |
 | [MON68K](#68000-monitor) | My simple monitor program for the RCBus 68000. |
 | [SC129](#sc129) | SC129 digital i/o module. |
+| [SC611](#sc611) | SC611 MicroSD module. |
 | [SC704](#sc704) | SC704 I2C bus master module + SC406 temperature sensor module. |
 | [SC705](#sc705) | SC705 serial ACIA module. |
 | [CP/M-68K v1.3](#cpm-68k) | Digital Research CP/M-68K v1.3 |
@@ -87,6 +88,16 @@ The first program is count.x68 and it simply counts up in binary on the 8 LEDs o
 The second prgram is echo.x68 and it simply reads the 8 bits on the input port and then echoes them back out on the 8 bits of the output port of the SC129 board.
 
 Both programs assume that the SC129 has been configured for the default address of 0x00. 
+
+---
+
+# SC611
+
+The code in this folder provides a simple demonstration of sending bit banged SPI data out using an [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) MicroSD module.
+
+The program spi_xfer.x68 simply sends out 4 individual bytes followed by 2 16-bit words. The PNG image shows an LA trace of the data being sent.
+
+I was going to try and read the card ID register of an actual SD card but it became rather cumbersome in assembly language so I'll save that for when I get GCC applications up and running.
 
 ---
 
