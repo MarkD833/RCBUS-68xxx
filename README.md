@@ -1,10 +1,9 @@
 # RCBUS 68000 Board
 This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - not a 68008 - and is currently being tested on Steve Cousins [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) 6-slot RCBus backplane.
 
-This is essentially version 2 of my design as version 1 was more of a proof of concept that relied on an additional connector between the CPU and ROM/RAM boards as well as partial use of the second row of bus pins.
+Release 1.0 was my proof of concept that relied on an additional connector between the CPU and ROM/RAM boards as well as partial use of the second row of bus pins.
 
-Version 2 removed the additional connector between the CPU and ROM/RAM boards and relies entirely on the RCBus-80 pin connector for inter-board communication.
-
+This is now a work in progress building up to release 2.0 which has removed the additional connector between the CPU and ROM/RAM boards and relies entirely on the RCBus-80 pin connector for inter-board communication.
 
 ![](./images/Board_Set_1.JPG)
 
@@ -17,7 +16,7 @@ I've stuck to the same signals for pins 1-40 with the exception of the M1 signal
 
 Pins 41-80 carry D8..D15 as well as the higher address bits. Pins 41..44 have been used to carry some 68000 specific signals.
 
-The current signal list is in the RCBus-68000 Pinout PDF.
+The current signal list is in the RCBus-68000_Pinout PDF file.
 
 ## Zilog compatability
 There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the 68230 and 68681 chips. The KIO has a sort-of equivalent in the 68901. A  CTC type chip may not be needed as the 68230 and 68681 have their own timers and the 68901 has 4 simple timers.
@@ -41,22 +40,22 @@ My 68000 design partially decodes 2 blocks of memory within the 68000 address ra
 This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
 
 ## What works so far
-Currently the following v2 boards are completed and are under test:
+Currently the following boards are assembled and are working as intended:
 * 68000 procesor board
 * ROM / RAM board - 128K ROM & 1M RAM
 * Quad serial I/O board - with 2 68681 DUARTs
 
 ## To do
-These v2 boards are waiting to be populated and tested:
+These boards are waiting to be populated and tested:
 * Digital I/O board - with 2 68230 PI/Ts
 * Mutifunction board - with 2 68901 MFPs
  
 ## Progress
-Currently the 68000 card, the ROM/RAM card and the serial I/O card are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 & S3 record types are handled.
+Currently the 68000 board, the ROM/RAM board and the serial I/O board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 & S3 record types are handled.
 
 The monitor currently supports a few of the EASy68K TRAP #15 text I/O functions - currently just tasks 0, 1, 5, 6, 13 & 14 - which are all related to text input/output. Further tasks may be added as I need them.
 
-The following RCBus cards have also been tested:
+I have a number of Steve Cousin's RC2014 / RCBus boards that I have been able to use successfully in the 68000 system. The code folder holds some example code for these boards as well as CP/M-68K v1.3 using the CompactFlash boards.
 | Name | Description |
 | :---- | :---- |
 | [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) | digital I/O module |

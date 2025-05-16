@@ -79,7 +79,10 @@ Simply displays the list of available commands that the monitor supports.
 
 ---
 
-# SC129
+# RCBus / RC2014 boards
+The folders hold 1 or 2 simple example assembly source files that demonstrate basic functionality of that particular board.
+
+## SC129
 
 The code in this folder provides 2 simple demonstrations to exercise the [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) digital I/O module.
 
@@ -91,17 +94,15 @@ Both programs assume that the SC129 has been configured for the default address 
 
 ---
 
-# SC611
+## SC611
 
-The code in this folder provides a simple demonstration of sending bit banged SPI data out using an [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) MicroSD module.
+The code in this folder provides a simple demonstration of sending bit banged SPI data out using an [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) MicroSD module to read some information from a Microchip 25LC256 SPI EEPROM.
 
-The program spi_xfer.x68 simply sends out 4 individual bytes followed by 2 16-bit words. The PNG image shows an LA trace of the data being sent.
-
-I was going to try and read the card ID register of an actual SD card but it became rather cumbersome in assembly language so I'll save that for when I get GCC applications up and running.
+The program reads a 16-bit address from location $0000 in the EEPROM. It then reads and prints characters starting at that 16-bit address until a NULL is read. The PNG images shows an LA trace of the reading of location $000 and the reading of the null terminated string. I've included the hex file of the data in the EEPROM. It's the vocabulary from my Arduino SP0256 module.
 
 ---
 
-# SC704
+## SC704
 
 The code in this folder provides 2 simple demonstrations to exercise the [SC704](https://smallcomputercentral.com/rcbus/sc700-series/sc704-rcbus-i2c-bus-master/) I2C bus master module.
 
@@ -111,7 +112,7 @@ The second program works in conjunction with the [SC406](https://smallcomputerce
 
 ---
 
-# SC705
+## SC705
 
 The code in this folder provides 2 simple demonstrations to exercise the [SC705](https://smallcomputercentral.com/rcbus/sc700-series/sc705-rcbus-serial-acia/) serial ACIA module.
 

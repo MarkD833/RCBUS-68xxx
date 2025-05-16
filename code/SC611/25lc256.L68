@@ -1,0 +1,310 @@
+00110000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 13/05/2025 17:40:41
+
+00000000                             1  *------------------------------------------------------------------------------
+00000000                             2  * 25LC256.X68
+00000000                             3  *------------------------------------------------------------------------------
+00000000                             4  * Simple program to read some bytes from a Microchip 25LC256 SPI EEPROM that is
+00000000                             5  * connected to the SD card adapter slot on the SC611.
+00000000                             6  *
+00000000                             7  * The SC611 should have jumpers set for I/O space address $69.
+00000000                             8  *
+00000000                             9  * SD card adapter CS is controlled by bit 3
+00000000                            10  * MOSI is controlled by bit 0
+00000000                            11  * SCK  is controlled by bit 4
+00000000                            12  * MISO is read in on bit 7
+00000000                            13  *
+00000000                            14  * Register D1 holds a working copy of the last byte written to the SC611
+00000000                            15  *
+00000000                            16  
+00000000                            17      INCLUDE "..\asm-inc\memory.inc"
+00000000                            18  
+00000000  =00007000                 19  MON_BASE        EQU     $7000
+00000000                            20  
+00000000  =00009000                 21  EHBASIC_BASE    EQU     $9000
+00000000                            22  
+00000000  =00100000                 23  RAM_BASE        EQU     $100000
+00000000  =00100000                 24  RAM_LEN         EQU     $100000
+00000000                            25  
+00000000  =00100000                 26  VEC_BASE        EQU     RAM_BASE
+00000000  =00000400                 27  VEC_SIZE        EQU     $400         * table takes up 1024 bytes
+00000000                            28  
+00000000  =00F80000                 29  IO_BASE         EQU     $F80000     * I/O space base address = 00F8_0000
+00000000                            30  
+00000000  =00F00000                 31  MEM_BASE        EQU     $F00000     * Mem space base address = 00F0_0000
+00000000                            32  
+00000000  =00000400                 33  CPM_BASE        EQU     $0400       * CP/M-68K entry point
+00000000                            34  
+00000000  =001FD800                 35  CCP_BSS_BASE    EQU     $1FD800
+00000000  =00001000                 36  CCP_PRIV        EQU     4096
+00000000                            37  
+00000000  =00000800                 38  MON_PRIV        EQU     2048
+00000000                            39  
+00000000  =00001000                 40  BIOS_PRIV       EQU     4096
+00000000                            41  
+00000000  =001FF800                 42  STACK_START     EQU     RAM_BASE+RAM_LEN-MON_PRIV
+00000000  =001FF800                 43  -------------------- end include --------------------
+00000000                            44  
+00000000  =00000010                 45  SCK         EQU     $10
+00000000  =00000008                 46  SDCS        EQU     $08
+00000000  =00000001                 47  MOSI        EQU     $01
+00000000  =00000080                 48  MISO        EQU     $80
+00000000                            49  
+00000000  =00000003                 50  READCMD     EQU     $03
+00000000                            51  
+00000000                            52  *******************************************************************************
+00000000                            53  * These addresses are as configured on the individual boards in what would be
+00000000                            54  * the Z80 8-bit I/O space.
+00000000                            55  *
+00000000  =00000069                 56  SC611ADDR   EQU     $69           * SC611 base address is 0x69
+00000000                            57  
+00000000                            58  *******************************************************************************
+00000000                            59  * These are the Z80 8-bit I/O space addresses converted into 68000 memory space
+00000000                            60  *
+00000000  =00F800D3                 61  SC611       EQU     IO_BASE+(SC611ADDR<<1)+1
+00000000                            62      
+00110000                            63      ORG     $110000
+00110000                            64  
+00110000                            65  START:
+00110000  43FA 015A                 66      lea     strTitle(PC), a1    * Show the program details
+00110004  103C 000E                 67      move.b  #14,d0              * EASy68K task 14
+00110008  4E4F                      68      trap    #15
+0011000A                            69  
+0011000A  4281                      70      clr.l   d1
+0011000C                            71  
+0011000C                            72      ; SPI Mode 0 so set SCK low (and make sure CS is high)
+0011000C  123C 0008                 73      move.b  #SDCS,d1
+00110010  13C1 00F800D3             74      move.b  d1,SC611
+00110016                            75  
+00110016                            76      ; silly delay to let port settle
+00110016  203C 0000FFFF             77      move.l  #$FFFF,d0
+0011001C                            78  .loop1:
+0011001C  51C8 FFFE                 79      dbra    d0,.loop1
+00110020                            80      
+00110020                            81      * Read 2 bytes from address $0000.
+00110020                            82      * The 2 bytes are an address of a null termianted string in the EEPROM.
+00110020  0201 00F7                 83      andi.b  #~SDCS,d1           * set the EEPROM CS low
+00110024  13C1 00F800D3             84      move.b  d1,SC611
+0011002A  103C 0003                 85      move.b  #READCMD,d0
+0011002E  6100 006A                 86      bsr.w   spiXfer             * send READ command
+00110032  303C 0000                 87      move.w  #$0000,d0
+00110036  6100 00A0                 88      bsr.w   spiXfer16           * send 16 bit memory address
+0011003A  303C FFFF                 89      move.w  #$FFFF,d0
+0011003E  6100 0098                 90      bsr.w   spiXfer16           * get 16 bit address of text string
+00110042  0001 0008                 91      ori.b   #SDCS,d1            * set the SD card CS high
+00110046  13C1 00F800D3             92      move.b  d1,SC611
+0011004C                            93      
+0011004C  E158                      94      rol.w   #8,d0               * swap high and low bytes
+0011004E  3F00                      95      move.w  d0,-(sp)            * save the 16-bit address
+00110050  6100 00C4                 96      bsr.w   writeWord           * display the start address of the text string
+00110054                            97      
+00110054  43FA 018C                 98      lea     strText(PC), a1     * Show text
+00110058  103C 000E                 99      move.b  #14,d0              * EASy68K task 14
+0011005C  4E4F                     100      trap    #15
+0011005E                           101  
+0011005E                           102      * Read the null terminated text string from EEPROM
+0011005E  0201 00F7                103      andi.b  #~SDCS,d1           * set the EEPROM CS low
+00110062  13C1 00F800D3            104      move.b  d1,SC611
+00110068  103C 0003                105      move.b  #READCMD,d0
+0011006C  6100 002C                106      bsr.w   spiXfer             * send READ command
+00110070  301F                     107      move.w  (sp)+,d0            * restore the 16-bit address
+00110072  6100 0064                108      bsr.w   spiXfer16           * send 16 bit memory address
+00110076                           109  rdloop:
+00110076  103C 00FF                110      move.b  #$FF,d0
+0011007A  6100 001E                111      bsr.w   spiXfer             * get the character
+0011007E  0C00 0000                112      cmpi.b  #0,d0               * is it a NULL?
+00110082  6706                     113      beq.s   done                * if NULL then we're done
+00110084  6100 00C6                114      bsr.w   putc                * display character
+00110088  60EC                     115      bra.s   rdloop              * go back for next character
+0011008A                           116  done:
+0011008A  0001 0008                117      ori.b   #SDCS,d1            * set the SD card CS high
+0011008E  13C1 00F800D3            118      move.b  d1,SC611
+00110094                           119  
+00110094  6100 00AA                120      bsr.w   putCRLF
+00110098  4E75                     121      rts
+0011009A                           122      
+0011009A                           123  *------------------------------------------------------------------------------
+0011009A                           124  * Exchange a single byte via SPI
+0011009A                           125  * D0 holds the byte to send and the received byte
+0011009A                           126  * D1 holds a working copy of the last byte written to the SC611 
+0011009A                           127  * D2 holds the bit count
+0011009A                           128  * D3 holds current read state of the SC611 port
+0011009A                           129  *------------------------------------------------------------------------------
+0011009A                           130  spiXfer:
+0011009A  0280 000000FF            131      andi.l  #$FF,d0             * clear all bits but the lower 8 bits
+001100A0  7407                     132      move.l  #7,d2               * 8 bits (DBRA needs 1 less)
+001100A2                           133  .nextBit:
+001100A2  E209                     134      lsr.b   #1,d1               * shift working copy right 1 bit
+001100A4  E308                     135      lsl.b   #1,d0               * extend bit holds MOSI bit to send
+001100A6  E311                     136      roxl.b  #1,d1               * shift extend bit into working copy
+001100A8                           137      
+001100A8  13C1 00F800D3            138      move.b  d1,SC611            * write the new data bit out
+001100AE  0001 0010                139      ori.b   #SCK,d1
+001100B2  13C1 00F800D3            140      move.b  d1,SC611            * write the new clock bit out
+001100B8                           141  
+001100B8  4840                     142      swap    d0                  * get rx bits into LSW
+001100BA  1639 00F800D3            143      move.b  SC611,d3            * read the current state of the SC611
+001100C0  E30B                     144      lsl.b   #1,d3               * extend bit holds MISO bit received
+001100C2  E310                     145      roxl.b  #1,d0               * shift extend bit into received byte
+001100C4                           146      
+001100C4  0201 00EF                147      andi.b  #~SCK,d1
+001100C8  13C1 00F800D3            148      move.b  d1,SC611            * write the new clock bit out
+001100CE                           149  
+001100CE  4840                     150      swap    d0                  * get tx bits into LSW
+001100D0  51CA FFD0                151      dbra    d2,.nextBit         * repeat for next bit
+001100D4                           152  
+001100D4                           153      * exchange done so switch the rx bits into the LSW
+001100D4  4840                     154      swap    d0                  * get rx bits back into LSW
+001100D6  4E75                     155      rts
+001100D8                           156      
+001100D8                           157  *------------------------------------------------------------------------------
+001100D8                           158  * Exchange a 16-bit word via SPI
+001100D8                           159  * D0 holds the word to send and the received byte
+001100D8                           160  * D1 holds a working copy of the last byte written to the SC611 
+001100D8                           161  * D2 holds the bit count
+001100D8                           162  * D3 holds current read state of the SC611 port
+001100D8                           163  *------------------------------------------------------------------------------
+001100D8                           164  spiXfer16:
+001100D8  0280 0000FFFF            165      andi.l  #$FFFF,d0           * clear upper 16 bits
+001100DE  740F                     166      move.l  #15,d2              * 16 bits (DBRA needs 1 less)
+001100E0                           167  .nextBit:
+001100E0  E209                     168      lsr.b   #1,d1               * shift working copy right 1 bit
+001100E2  E348                     169      lsl.w   #1,d0               * extend bit holds MOSI bit to send
+001100E4  E311                     170      roxl.b  #1,d1               * shift extend bit into working copy
+001100E6                           171  
+001100E6  13C1 00F800D3            172      move.b  d1,SC611            * write the new data bit out
+001100EC  0001 0010                173      ori.b   #SCK,d1
+001100F0  13C1 00F800D3            174      move.b  d1,SC611            * write the new clock bit out
+001100F6                           175  
+001100F6  4840                     176      swap    d0                  * get rx bits into LSW
+001100F8  1639 00F800D3            177      move.b  SC611,d3            * read the current state of the SC611
+001100FE  E30B                     178      lsl.b   #1,d3               * extend bit holds MISO bit received
+00110100  E350                     179      roxl.w  #1,d0               * shift extend bit into received word
+00110102                           180  
+00110102  0201 00EF                181      andi.b  #~SCK,d1
+00110106  13C1 00F800D3            182      move.b  d1,SC611            * write the new clock bit out
+0011010C                           183  
+0011010C  4840                     184      swap    d0                  * get tx bits into LSW
+0011010E  51CA FFD0                185      dbra    d2,.nextBit         * repeat for next bit
+00110112                           186  
+00110112                           187      * exchange done so switch the rx bits into the LSW
+00110112  4840                     188      swap    d0                  * get rx bits back into LSW
+00110114  4E75                     189      rts
+00110116                           190  
+00110116                           191  *------------------------------------------------------------------------------
+00110116                           192  * Output a word as 4 ASCII hexadecimal digits
+00110116                           193  * D0 holds the word in bits 0..15
+00110116                           194  * NOTE: the writeByte function must be directly after this function
+00110116                           195  *------------------------------------------------------------------------------
+00110116                           196  writeWord:
+00110116  3F00                     197      move.w  d0,-(sp)    ; save D0 first
+00110118  E058                     198      ror.w   #8,d0       ; get upper byte (0 => shift 8 times)
+0011011A  6102                     199      bsr.s   writeByte
+0011011C  301F                     200      move.w  (sp)+,d0    ; restore D0
+0011011E                           201  
+0011011E                           202  *------------------------------------------------------------------------------
+0011011E                           203  * Output a byte as 2 ASCII hexadecimal digits
+0011011E                           204  * D0 holds the byte in bits 0..7
+0011011E                           205  * NOTE: the writeNibble function must be directly after this function
+0011011E                           206  *------------------------------------------------------------------------------
+0011011E                           207  writeByte:
+0011011E  1F00                     208      move.b  d0,-(sp)    ; save D0 first
+00110120  E818                     209      ror.b   #4,d0       ; get upper nibble
+00110122  6102                     210      bsr.s   writeNibble
+00110124  101F                     211      move.b  (sp)+,d0    ; restore D0
+00110126                           212      
+00110126                           213  *------------------------------------------------------------------------------
+00110126                           214  * Output 4 bits as an ASCII hexadecimal digit
+00110126                           215  * D0 holds the nibble in bits 0..3
+00110126                           216  *------------------------------------------------------------------------------
+00110126                           217  writeNibble:
+00110126  1F00                     218      move.b  d0,-(sp)    ; save D0 first
+00110128  0200 000F                219      andi.b  #$0F,d0     ; make sure we only have the lower 4 bits
+0011012C  0C00 000A                220      cmpi.b  #10,d0      ; compare D0 to 10
+00110130  6502                     221      bcs.b   .wn1        ; less than 10 so don't add 7
+00110132  5E00                     222      addi.b  #07,d0      ; add 7
+00110134                           223  .wn1:
+00110134  0600 0030                224      addi.b  #'0',d0     ; add ASCII code for char zero
+00110138  6100 0012                225      bsr     putc        ; write the ASCII digit out
+0011013C  101F                     226      move.b  (sp)+,d0    ; restore D0
+0011013E  4E75                     227      rts
+00110140                           228  
+00110140                           229  *------------------------------------------------------------------------------
+00110140                           230  * Prints a newline (CR, LF)
+00110140                           231  * NOTE: the putString function must follow this function
+00110140                           232  *------------------------------------------------------------------------------
+00110140                           233  putCRLF:
+00110140  43FA 00A9                234      lea     strNewline(PC), a1
+00110144  103C 000E                235      move.b  #14,d0              * EASy68K task 14
+00110148  4E4F                     236      trap    #15
+0011014A  4E75                     237      rts
+0011014C                           238      
+0011014C                           239  *------------------------------------------------------------------------------
+0011014C                           240  * Write a character to UART Port A, blocking if UART is not ready
+0011014C                           241  * D0 = char to send
+0011014C                           242  *------------------------------------------------------------------------------
+0011014C                           243  putc:
+0011014C  48E7 C000                244      movem.l d0-d1,-(sp)     * save d0, d1
+00110150  1200                     245      move.b  d0,d1           * copy character
+00110152  7006                     246      moveq   #6,d0           * character out
+00110154  4E4F                     247      trap    #15             * call simulator I/O function
+00110156  4CDF 0003                248      movem.l (sp)+,d0-d1     * restore d0, d1
+0011015A  4E75                     249      rts
+0011015C                           250  
+0011015C                           251  strTitle:
+0011015C= 52 43 42 75 73 20 ...    252      dc.b    'RCBus 68000 Micro SD Demo - SC611 @ Address 0x69.',10,13
+0011018F= 52 65 61 64 20 73 ...    253      dc.b    'Read some data from a Microchip 25LC256 EEPROM.',10,13,10,13
+001101C2= 54 65 78 74 20 73 ...    254      dc.b    'Text string starts at address $',0
+001101E2                           255  strText:
+001101E2= 0A 0D 54 45 58 54 ...    256      dc.b    10,13,'TEXT: ',0
+001101EB                           257  strNewline:
+001101EB= 0A 0D 00                 258      dc.b 10,13,0
+001101EE                           259      
+001101EE                           260      END START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BIOS_PRIV           1000
+CCP_BSS_BASE        1FD800
+CCP_PRIV            1000
+CPM_BASE            400
+DONE                11008A
+EHBASIC_BASE        9000
+IO_BASE             F80000
+MEM_BASE            F00000
+MISO                80
+MON_BASE            7000
+MON_PRIV            800
+MOSI                1
+PUTC                11014C
+PUTCRLF             110140
+RAM_BASE            100000
+RAM_LEN             100000
+RDLOOP              110076
+READCMD             3
+SC611               F800D3
+SC611ADDR           69
+SCK                 10
+SDCS                8
+SPIXFER             11009A
+SPIXFER16           1100D8
+SPIXFER16:NEXTBIT   1100E0
+SPIXFER:NEXTBIT     1100A2
+STACK_START         1FF800
+START               110000
+START:LOOP1         11001C
+STRNEWLINE          1101EB
+STRTEXT             1101E2
+STRTITLE            11015C
+VEC_BASE            100000
+VEC_SIZE            400
+WRITEBYTE           11011E
+WRITENIBBLE         110126
+WRITENIBBLE:WN1     110134
+WRITEWORD           110116
