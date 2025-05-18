@@ -37,10 +37,10 @@ In order to find the GCC cross compiler executables, the shell path needs updati
 
 In the `home` folder, there is a file called `.bash_profile`. Open this file using Windows notepad and navigate to the end of the file and add a new entry to the shell path by typing in the following lines:
 
-># Set PATH so it includes the gcc68k bin directory if it exists
->if [ -d "${HOME}/gcc68k/bin" ] ; then
->  PATH="${HOME}/gcc68k/bin:${PATH}"
->fi
+```# Set PATH so it includes the gcc68k bin directory if it exists
+if [ -d "${HOME}/gcc68k/bin" ] ; then
+  PATH="${HOME}/gcc68k/bin:${PATH}"
+fi```
 
 
 Save and close the file.
