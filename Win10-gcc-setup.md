@@ -9,7 +9,7 @@ The steps outlined below are my notes on how I set up a Windows 10 development e
 In order to develop applications, I am currently using the following software:
 - MSYS2 available from: https://www.msys2.org/
 - GCC68K v13.1.0 available from: https://tranaptic.ca/gcc-downloads
-- Tom’s M68K bare metal suite available from: https://github.com/tomstorey/m68k_bare_metal
+- Tom Storey’s M68K bare metal suite available from: https://github.com/tomstorey/m68k_bare_metal
 
 # Setting up
 ## Step 1 - Install MSYS2
@@ -37,11 +37,11 @@ In order to find the GCC cross compiler executables, the shell path needs updati
 
 In the `home` folder, there is a file called `.bash_profile`. Open this file using Windows notepad and navigate to the end of the file and add a new entry to the shell path by typing in the following lines:
 
-`# Set PATH so it includes the gcc68k bin directory if it exists
-if [ -d "${HOME}/gcc68k/bin" ] ; then
-  PATH="${HOME}/gcc68k/bin:${PATH}"
-fi
-`
+># Set PATH so it includes the gcc68k bin directory if it exists
+>if [ -d "${HOME}/gcc68k/bin" ] ; then
+>  PATH="${HOME}/gcc68k/bin:${PATH}"
+>fi
+
 
 Save and close the file.
 
@@ -60,9 +60,9 @@ Next, check that the GCC binaries can be found by typing:
 If successful, you should see something similar to this displayed:
 
 >m68k-elf-gcc.exe (Tranaptic-2023/06/16-13:17:25) 13.1.0
-Copyright (C) 2023 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>Copyright (C) 2023 Free Software Foundation, Inc.
+>This is free software; see the source for copying conditions.  There is NO
+>warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 ## Step 4 - Installing the M68K bare metal suite
 
@@ -91,7 +91,7 @@ I got some warnings about #pragma mark being unsupported and ‘nonnull’ argum
 
 I also got warnings in malloc.c about array subscripts being partly outside array bounds which I need to understand in case it’s an issue.
 
-Once the build process completed, I had a file called libmetal-68000.a.
+Once the build process completed, I had a file called `libmetal-68000.a`.
 
 # Building the test application
 
@@ -108,11 +108,11 @@ The steps for me for a new project were carried out in the MSYS shell and my pro
 Then I edited the makefile to change the value of PREFIX as was done in building libmetal so that it read:
 > PREFIX=m68k-elf
 
-Then I continued with the build as follows:
+Then I continued with the build with the 2 commands as follows:
 > make crt
-make
+>make
 
-If successful, that should produce a file called bmbinary and give you the confidence that the process is working.
+If successful, that should produce a file called `bmbinary` and give you the confidence that the process is working.
 
 # Configuring for the RCBus-68000 Board
 
