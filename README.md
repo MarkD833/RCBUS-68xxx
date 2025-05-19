@@ -12,7 +12,7 @@ There are no programable logic devices (PALs, GALs, CPLDs etc) in my design. The
 ## RCBus Signals
 The RCBus specification doesn't specifically mention the 68000 in the backplane signal assignments table so there's a bit of wiggle room on the pins used.
 
-I've stuck to the same signals for pins 1-40 with the exception of the M1 signal which is currently unconnected but may need a pullup resistor and the USER1..USER4 which are used for the level 1, 3, 5 & 6 autovector interrupts.
+I've stuck to the same signals for pins 1-40. The M1 signal isn't used and should have a 4K7 pullup resistor (manually added as I forgot it in my release 2.0 board!) and the USER1..USER4 which are used for the level 1, 3, 5 & 6 autovector interrupts.
 
 Pins 41-80 carry D8..D15 as well as the higher address bits. Pins 41..44 have been used to carry some 68000 specific signals.
 
@@ -39,6 +39,8 @@ My 68000 design partially decodes 2 blocks of memory within the 68000 address ra
 
 This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
 
+For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
+
 ## What works so far
 Currently the following boards are assembled and are working as intended:
 * 68000 procesor board
@@ -60,7 +62,7 @@ I have a number of Steve Cousin's RC2014 / RCBus boards that I have been able to
 | :---- | :---- |
 | [SC129](https://smallcomputercentral.com/rcbus/sc100-series/sc129-digital-i-o-rc2014/) | digital I/O module |
 | [SC145](https://smallcomputercentral.com/rcbus/sc100-series/sc145-compact-flash-rc2014/) | CompactFlash module |
-| [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) | SC611 MicroSD module |
+| [SC611](https://smallcomputercentral.com/rcbus/sc600-series/sc611-rcbus-micro-sd/) | MicroSD module |
 | [SC704](https://smallcomputercentral.com/rcbus/sc700-series/sc704-rcbus-i2c-bus-master/) | I2C bus master module |
 | [SC406](https://smallcomputercentral.com/i2c-bus-modules/sc406-i2c-temperature-sensor-module/) | I2C temperature sensor module |
 | [SC705](https://smallcomputercentral.com/rcbus/sc700-series/sc705-rcbus-serial-acia/) | serial ACIA module |
