@@ -1,6 +1,7 @@
 # RCBUS MC68000 Software
 
-This folder contains the software that I've either developed myself or ported to my RCBus 68000 board(s).
+This folder contains the assembler software that I've either developed myself or ported to my RCBus 68000 board(s).
+It can be assembled using EASy68K.
 
 | Code | Description |
 | :---- | :---- |
