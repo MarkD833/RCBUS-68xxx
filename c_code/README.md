@@ -5,15 +5,27 @@ The source code was built using GCC68K v13.1.0 using Tom Storey's bare metal 68K
 
 The development environment I setup is documented in the Win10-gcc-setup.md file in the root of the repository. 
 
+I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
+
 | Code | Description |
 | :---- | :---- |
-| [SC611](#sc611) | SC611 MicroSD module. |
+| [SC611](#SC611) | SC611 MicroSD module. |
+| [SC704](#SC704) | SC704 I2C Bus Master module. |
 ---
 
 ## SC611
+### SPI Read
+The code in the SC611_SPI_Read folder provides a more user friendly version of the SC611 assembler code. This is the first RCBus module I attempted to write high level code for and it includes some assembly language in the sc611.S file that handles the bit bang 8-bit and 16-bit transfers.
 
-The code in this folder provides a more user friendly version of the SC611 assembler code. This is the first RCBus module I attempted to write high level code for and it includes some assembly language in the sc611.S file that handles the bit bang 8-bit and 16-bit transfers.
+This code also introduced the code to support the 4 serial ports on the MC68681 as well as some simple printing routines to avoid bringing in printf().
 
-It also introduced the code to support the 4 serial ports on the MC68681 as well as some simple printing routines to avoid bringing in printf().
+---
+
+## SC704
+## I2C Scan
+The code in the SC704_I2C_Scan folder implements a simple program to scan each I2C address from 0x08 to 0x7F to see if a device is present at that address and prints out the device addresses found to be active.
+
+## I2C Read
+The code in the SC704_I2C_Read folder demonstrates how to read some data from the preprogrammed 25LC256 EEPROM on the SC704 board.
 
 ---
