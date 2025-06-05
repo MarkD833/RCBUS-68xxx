@@ -21,15 +21,12 @@ The current signal list is in the RCBus-68000_Pinout PDF file.
 ## Zilog compatability
 There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the 68230 and 68681 chips. The KIO has a sort-of equivalent in the 68901. A  CTC type chip may not be needed as the 68230 and 68681 have their own timers and the 68901 has 4 simple timers.
 
-## 68000 memory space
-The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
+## DTACK & Bus Error
 
-The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
+The processor board includes a counter to generate a bus error if a DTACK is not received after 4 clocks of the E signal.
 
-The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
- 
-The multifunction peripheral board is populated with two 68901 (or equivalent). Each MFP can reside at one of 8 selectable 2K memory addresses from $D10000 to $D13FFF.
-
+The processor board also includes a counter to generate a DTACK for the RCBus MREQ and IORQ addresses. The DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
+  
 ## RCBus memory space
 My 68000 design partially decodes 2 blocks of memory within the 68000 address range as follows:
 | Address Range | Signal |
@@ -40,6 +37,15 @@ My 68000 design partially decodes 2 blocks of memory within the 68000 address ra
 This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
 
 For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
+
+## 68000 memory space
+The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
+
+The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
+
+The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
+ 
+The multifunction peripheral board is populated with two 68901 (or equivalent). Each MFP can reside at one of 8 selectable 2K memory addresses from $D10000 to $D13FFF.
 
 ## What works so far
 Currently the following boards are assembled and are working as intended:
@@ -78,6 +84,6 @@ The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 
 The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
 
 # Latest News
-I've recently purchased an [RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/) from Sheila Dixon to experiment with. Hopefully there will be good news to report in the near future on this board.
+I've ported part of J B Langston's TMS9918A code to work with Shiela Dixon's [TMSEMU RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/). The ASCII font demo code is now working and I'm slowly adding more functionality to the TMS library as I try and port some of the demonstrations across.
 
 I've also started making headway with generating some programs written in C using GCC and I hope to share progress on that shortly.
