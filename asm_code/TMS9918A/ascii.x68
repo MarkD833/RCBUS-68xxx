@@ -47,9 +47,7 @@ START:
 	move.w	#7,d4				* 8 rows
 nxtline:	
 	move.w	#31,d3				* 32 chars per line
-	movem.l	d0-d2,-(sp)
 	bsr.w	TmsTextPos			* set text position
-	movem.l	(sp)+,d0-d2
 	exg		d0,d2				* swap character (D2) & X coordinate (D0)
 nxtchar:
 	bsr.w	TmsRamOut			* output the character
@@ -61,54 +59,6 @@ nxtchar:
 	addi.b	#2,d1				* down 2 rows
 	dbra	d4,nxtline			* next line
 	
-	bra.s	Exit
-
-
-
-
-
-
-	move.l	#(31<<16)+0,d3		* 32 chars on 8 rows
-
-NextLine:
-	swap	d3					* get row count into upper word of D3
-	bsr.w	TmsTextPos			* set text position
-
-NextChar:	
-	exg		d0,d2				* swap character & X coordinate
-	bsr.w	TmsRamOut			* output the character
-	exg		d0,d2				* swap character & X coordinate
-	addq.b	#1,d2				* increment character number
-	dbra	d3,NextChar			* decrement lower word of D3
-	
-	* got to the end of a line
-	move.w	#31,d3				* reset the no of chars per line
-	addq.b	#1,d1				* increment row number
-	move.b	#4,d0				* reset column position
-
-	swap	d3					* get row count into lower word of D3
-	dbra	d3,NextLine
-	bra.s	Exit
-	
-	
-	
-	
-	move.w	d0,-(sp)			* save current character
-NextLine1:
-	addq.b	#1,d2				* increment line number
-	move.w	#4,d0				* set X position 
-	move.w	d2,d1
-	bsr.w	TmsTextPos			* set text position
-	move.w	(sp)+,d0			* restore current character
-NextChar1:
-	bsr.w	TmsRamOut			* output the character
-	addq.b	#1,d0				* increment character number
-	beq.s	Exit				* done all 256?
-	move.w	d0,-(sp)			* save current character
-	andi.b	#LineLen-1,d0		* time for a new line?
-	beq.s	NextLine
-	bra.s	NextChar
-
 Exit:
 	rts
 
