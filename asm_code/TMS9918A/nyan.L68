@@ -1,6 +1,6 @@
 00100400 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 07/06/2025 11:46:10
+Created On: 20/06/2025 18:37:57
 
 00000000                             1  *******************************************************************************
 00000000                             2  * RCBus-68000 Nyan Cat TMS9918A example program
@@ -110,8 +110,8 @@ Created On: 07/06/2025 11:46:10
 00000000                           106  
 00100400                           107      ORG     RAM_BASE+$400
 00100400                           108  START:
-00100400  41FA 0B1E                109      lea     titleMessage(pc),a0
-00100404  6100 0B00                110      bsr.w   putString
+00100400  41FA 0BAE                109      lea     titleMessage(pc),a0
+00100404  6100 0B90                110      bsr.w   putString
 00100408                           111      
 00100408  33FC 0003 0010047C       112      move.w  #VsyncDiv,VsyncCount
 00100410  33FC 0000 0010047E       113      move.w  #0,CurrFrame
@@ -119,12 +119,12 @@ Created On: 07/06/2025 11:46:10
 00100418  6100 0876                115      bsr.w   TmsProbe            * see if we can detect the TMS9918A chip
 0010041C  6700 0054                116      beq.w   NoTms
 00100420                           117  
-00100420  6100 092E                118      bsr.w   TmsMultiColor       * initialize screen and set background color
+00100420  6100 094E                118      bsr.w   TmsMultiColor       * initialize screen and set background color
 00100424  103C 0004                119      move.b  #TmsDarkBlue,d0
 00100428  6100 08C8                120      bsr.w   TmsBackground
 0010042C                           121  
 0010042C                           122  FirstFrame:
-0010042C  207C 00100F91            123      move.l  #Animation,a0       * get address of first frame
+0010042C  207C 0010103A            123      move.l  #Animation,a0       * get address of first frame
 00100432                           124  NextFrame:
 00100432  23C8 0010047E            125      move.l  a0,CurrFrame        * save address of next animation frame
 00100438                           126  SkipDraw:
@@ -140,9 +140,9 @@ Created On: 07/06/2025 11:46:10
 00100452  2079 0010047E            136      move.l  CurrFrame,a0        * copy current frame to pattern table
 00100458  3439 00100C88            137      move.w  TmsPatternAddr,d2
 0010045E  323C 0600                138      move.w  #TmsMulticolorPatternLen,d1
-00100462  6100 09FC                139      bsr.w   TmsWrite
+00100462  6100 0A80                139      bsr.w   TmsWrite
 00100466                           140      
-00100466  B1FC 00105791            141      cmpa.l  #EndAnimation,a0    * have we done all frames?
+00100466  B1FC 0010583A            141      cmpa.l  #EndAnimation,a0    * have we done all frames?
 0010046C  67BE                     142      beq.s   FirstFrame          * if yes then reset to first frame
 0010046E  60C2                     143      bra.s   NextFrame           * otherwise do next frame
 00100470                           144  
@@ -150,8 +150,8 @@ Created On: 07/06/2025 11:46:10
 00100470  4E75                     146      rts
 00100472                           147  
 00100472                           148  NoTms:
-00100472  41FA 0AFD                149      lea     NoTmsMessage(pc),a0
-00100476  6100 0A8E                150      bsr.w   putString
+00100472  41FA 0BA6                149      lea     NoTmsMessage(pc),a0
+00100476  6100 0B1E                150      bsr.w   putString
 0010047A  60F4                     151      bra.s   Exit    
 0010047C                           152      
 0010047C                           153  VsyncCount:
@@ -2768,7 +2768,7 @@ Created On: 07/06/2025 11:46:10
 00100C86= 2000                    2764  TmsColorAddr:           dc.w    $2000           * color table address (multiples of 40H)
 00100C88= 0000                    2765  TmsPatternAddr:         dc.w    0               * pattern table (multiples of 800H)
 00100C8A= 1800                    2766  TmsSpritePatternAddr:   dc.w    $1800           * sprite attribute table (multiples of 80H)
-00100C8C= 3BC0                    2767  TmsSpriteAttrAddr:      dc.w    $3bc0           * sprite pattern table (multiples of 800H)
+00100C8C= 3B00                    2767  TmsSpriteAttrAddr:      dc.w    $3b00           * sprite pattern table (multiples of 800H)
 00100C8E                          2768  
 00100C8E  =00000040               2769  TmsWriteBit:            equ $40                 ; bit to indicate memory write
 00100C8E                          2770  
@@ -2880,248 +2880,306 @@ Created On: 07/06/2025 11:46:10
 00100D0A                          2876      
 00100D0A  123C 0087               2877      move.b  #TmsColorReg,d1
 00100D0E  6000 FFA4               2878      bra.w   TmsSetReg                   * write new fore/back colours
-00100D12                          2879      
-00100D12                          2880  
-00100D12  =00000080               2881  TmsBlankFlags:          equ     Tms16k
-00100D12  =000000C0               2882  TmsTileFlags:           equ     Tms16k|TmsDisplayEnable
-00100D12  =000000D0               2883  TmsTextFlags:           equ     Tms16k|TmsDisplayEnable|TmsM1
-00100D12  =000000C8               2884  TmsMulticolorFlags:     equ     Tms16k|TmsDisplayEnable|TmsM2
-00100D12  =000002C0               2885  TmsBitmapFlags:         equ     Tms16k|TmsDisplayEnable|TmsM3
-00100D12                          2886  
-00100D12                          2887  TmsReset:
-00100D12  303C 0080               2888      move.w  #TmsBlankFlags,d0   * blank the screen with 16KB enabled
-00100D16  33C0 00100C82           2889      move.w  d0,TmsMode
-00100D1C  123C 0081               2890      move.b  #TmsCtrl1Reg,d1
-00100D20  6100 FF92               2891      bsr.w   TmsSetReg
-00100D24                          2892      
-00100D24  E048                    2893      lsr.w   #8,d0
-00100D26  123C 0080               2894      move.b  #TmsCtrl0Reg,d1
-00100D2A  6100 FF88               2895      bsr.w   TmsSetReg
-00100D2E                          2896  
-00100D2E  103C 0000               2897      move.b  #TmsTransparent,d0
-00100D32  6100 FFBE               2898      bsr.w   TmsBackground
-00100D36                          2899  
-00100D36  103C 0000               2900      move.b  #TmsTransparent,d0
-00100D3A  6100 014A               2901      bsr.w   TmsTextColor
-00100D3E                          2902  
-00100D3E                          2903      * clear the entire VRAM
-00100D3E  343C 0000               2904      move.w  #0,d2                       * VRAM destination address
-00100D42  323C 4000               2905      move.w  #$4000,d1                   * byte count
-00100D46  303C 0000               2906      move.w  #0,d0                       * value to fill 
-00100D4A  6100 0126               2907      bsr.w   TmsFill
-00100D4E  4E75                    2908      rts
-00100D50                          2909  
-00100D50                          2910  TmsMulticolor:
-00100D50  6100 FFC0               2911      bsr.w   TmsReset
-00100D54  3439 00100C84           2912      move.w  TmsNameAddr,d2
-00100D5A  6100 00EE               2913      bsr.w   TmsWriteAddr        * write VRAM start addr
-00100D5E  363C 0005               2914      move.w  #5,d3               * name table has 6 sections (D3=D)
-00100D62  4284                    2915      clr.l   d4                  * lines in first section start at 0 (D4=E)
-00100D64                          2916  TmsSectionLoop:
-00100D64  343C 0003               2917      move.w  #3,d2               * each section has 4 identical lines (D2=C)
-00100D68                          2918  TmsLineLoop:
-00100D68  323C 001F               2919      move.w  #31,d1              * each line is 32 bytes long (D1=B)
-00100D6C  3004                    2920      move.w  d4,d0               * same starting value for each line in section
-00100D6E                          2921  TmsByteLoop: 
-00100D6E  6100 FF62               2922      bsr.w   TmsRamOut
-00100D72  5240                    2923      addi.w  #1,d0               * byte value
-00100D74  51C9 FFF8               2924      dbra    d1,TmsByteLoop
-00100D78  51CA FFEE               2925      dbra    d2,TmsLineLoop
-00100D7C  3800                    2926      move.w  d0,d4               * next starting value = current + 32
-00100D7E  51CB FFE4               2927      dbra    d3,TmsSectionLoop
-00100D82  303C 00C8               2928      move.w  #TmsMulticolorFlags,d0
-00100D86  33C0 00100C82           2929      move.w  d0,TmsMode
-00100D8C  6000 0022               2930      bra.w   TmsInitNonBitmap
-00100D90                          2931      
-00100D90                          2932  TmsTextMode:
-00100D90  2F08                    2933      move.l  a0,-(sp)                    * save start addr of font
-00100D92  6100 FF7E               2934      bsr.w   TmsReset
-00100D96  205F                    2935      move.l  (sp)+,a0
-00100D98  3439 00100C88           2936      move.w  TmsPatternAddr,d2           * destination addr
-00100D9E  323C 0800               2937      move.w  #TmsTextPatternLen,d1       * byte count
-00100DA2  6100 00BC               2938      bsr.w   TmsWrite                    * write out the font
-00100DA6  303C 00D0               2939      move.w  #TmsTextFlags,d0
-00100DAA  33C0 00100C82           2940      move.w  d0,TmsMode
-00100DB0                          2941      * fallthrough to TmsInitNonBitmap
-00100DB0                          2942  
-00100DB0                          2943  TmsInitNonBitmap:
-00100DB0                          2944      * set up color table address (register = address / 400H)
-00100DB0  0279 3FC0 00100C86      2945      andi.w  #$3FC0,TmsColorAddr
-00100DB8  3039 00100C86           2946      move.w  TmsColorAddr,d0
-00100DBE  EC48                    2947      lsr.w   #6,d0                       * reduce colour table address to a byte
-00100DC0  123C 0083               2948      move.b  #TmsColorTableReg,d1
-00100DC4  6100 FEEE               2949      bsr.w   TmsSetReg
-00100DC8                          2950      
-00100DC8                          2951      * set up pattern table address (register = address / 800H)
-00100DC8  0279 3800 00100C88      2952      andi.w  #$3800,TmsPatternAddr
-00100DD0  3039 00100C88           2953      move.w  TmsPatternAddr,d0
-00100DD6  E048                    2954      lsr.w   #8,d0
-00100DD8  E608                    2955      lsr.b   #3,d0
-00100DDA  123C 0084               2956      move.b  #TmsPatternReg,d1
-00100DDE  6100 FED4               2957      bsr.w   TmsSetReg
-00100DE2  6000 0002               2958      bra.w   TmsInitCommon
-00100DE6                          2959  
-00100DE6                          2960  
-00100DE6                          2961  TmsInitCommon:
-00100DE6                          2962      * set up name table address (register = address / 400H)
-00100DE6  0279 3C00 00100C84      2963      andi.w  #$3C00,TmsNameAddr
-00100DEE  3039 00100C84           2964      move.w  TmsNameAddr,d0              * upper byte
-00100DF4  E048                    2965      lsr.w   #8,d0
-00100DF6  E408                    2966      lsr.b   #2,d0
-00100DF8  123C 0082               2967      move.b  #TmsNameReg,d1
-00100DFC  6100 FEB6               2968      bsr.w   TmsSetReg
-00100E00                          2969      
-00100E00                          2970      * set up sprite pattern table address (register = address / 80H)
-00100E00  0279 7F80 00100C8C      2971      andi.w  #$7F80,TmsSpriteAttrAddr
-00100E08  3039 00100C8C           2972      move.w  TmsSpriteAttrAddr,d0
-00100E0E  E348                    2973      lsl.w   #1,d0
-00100E10  123C 0085               2974      move.b  #TmsSpriteAttrReg,d1
-00100E14  6100 FE9E               2975      bsr.w   TmsSetReg
-00100E18                          2976  
-00100E18                          2977      * set up sprite attribute table address (register = address / 800H)
-00100E18  0279 3800 00100C8A      2978      andi.w  #$3800,TmsSpritePatternAddr
-00100E20  3039 00100C8A           2979      move.w  TmsSpritePatternAddr,d0     * upper byte
-00100E26  E048                    2980      lsr.w   #8,d0
-00100E28  E608                    2981      lsr.b   #3,d0
-00100E2A  123C 0086               2982      move.b  #TmsSpritePatternReg,d1
-00100E2E  6100 FE84               2983      bsr.w   TmsSetReg
-00100E32                          2984  
-00100E32                          2985      * set up control registers
-00100E32  3039 00100C82           2986      move.w  TmsMode,d0
-00100E38  123C 0081               2987      move.b  #TmsCtrl1Reg,d1
-00100E3C  6100 FE76               2988      bsr.w   TmsSetReg
-00100E40                          2989  
-00100E40  E048                    2990      lsr.w   #8,d0
-00100E42  123C 0080               2991      move.b  #TmsCtrl0Reg,d1
-00100E46  6000 FE6C               2992      bra.w   TmsSetReg
-00100E4A                          2993      
-00100E4A                          2994  
-00100E4A                          2995  
-00100E4A                          2996  
-00100E4A                          2997  TmsWriteAddr:
-00100E4A  3002                    2998      move.w  d2,d0
-00100E4C  0240 3FFF               2999      andi.w  #$3FFF,d0           * mask off msb to max of 16KB
-00100E50  6100 FE70               3000      bsr.w   TmsRegOut           * send lower byte
-00100E54  E048                    3001      lsr.w   #8,d0
-00100E56  0000 0040               3002      ori.b   #TmsWriteBit,d0     * indicate that this is a write
-00100E5A  6100 FE66               3003      bsr.w   TmsRegOut           * send upper byte
-00100E5E  4E75                    3004      rts
-00100E60                          3005  
-00100E60                          3006  TmsWrite:
-00100E60  6100 FFE8               3007      bsr.w   TmsWriteAddr
-00100E64  5341                    3008      subq    #1,d1               * DBRA needs 1 less
-00100E66                          3009  TmsWriteLoop:
-00100E66  1018                    3010      move.b  (a0)+,d0
-00100E68  6100 FE68               3011      bsr.w   TmsRamOut
-00100E6C  51C9 FFF8               3012      dbra    d1,TmsWriteLoop
-00100E70  4E75                    3013      rts
-00100E72                          3014      
-00100E72                          3015  TmsFill:
-00100E72  3F00                    3016      move.w  d0,-(sp)            * save fill value
-00100E74  6100 FFD4               3017      bsr.w   TmsWriteAddr        * write VRAM start addr
-00100E78  301F                    3018      move.w  (sp)+,d0            * restore fill value
-00100E7A  5341                    3019      subq.w  #1,d1               * DBRA needs 1 less
-00100E7C                          3020  TmsFillLoop:
-00100E7C  6100 FE54               3021      bsr.w   TmsRamOut
-00100E80  51C9 FFFA               3022      dbra    d1,TmsFillLoop
-00100E84  4E75                    3023      rts
-00100E86                          3024      
-00100E86                          3025  
-00100E86                          3026  TmsTextColor:
-00100E86  E908                    3027      lsl.b   #4,d0                       * text colour into high nibble
-00100E88  0239 000F 00100C81      3028      andi.b  #$0F,TmsScreenColors        * mask off old foreground colour
-00100E90  8039 00100C81           3029      or.b    TmsScreenColors,d0          * insert new foreground colour
-00100E96  13C0 00100C81           3030      move.b  d0,TmsScreenColors          * save it to our local copy
-00100E9C                          3031  
-00100E9C  123C 0087               3032      move.b  #TmsColorReg,d1
-00100EA0  6000 FE12               3033      bra.w   TmsSetReg                   * write new fore/back colours
-00100EA4                          3034  
-00100EA4                          3035  TmsTextPos:
-00100EA4  48E7 E000               3036      movem.l d0-d2,-(sp)         * save D0, D1 & D2
-00100EA8  0241 00FF               3037      andi.w  #$00FF,d1           * just the lower byte of Y coordinate
-00100EAC  3401                    3038      move.w  d1,d2               * copy Y coordinate to D2
-00100EAE  E74A                    3039      lsl.w   #3,d2               * D2 = Y * 8
-00100EB0  EB49                    3040      lsl.w   #5,d1               * D1 = Y * 32
-00100EB2  D441                    3041      add.w   d1,d2               * D2 = Y * 40
-00100EB4                          3042  
-00100EB4  0240 00FF               3043      andi.w  #$00FF,d0           * just the lower byte of X coordinate
-00100EB8  D440                    3044      add.w   d0,d2               * D2 = (y * 40) + x
-00100EBA  D479 00100C84           3045      add.w   TmsNameAddr,d2      * add name table base address
-00100EC0  6100 FF88               3046      bsr.w   TmsWriteAddr
-00100EC4  4CDF 0007               3047      movem.l (sp)+,d0-d2         * restore D0, D1 & D2
-00100EC8  4E75                    3048      rts
-00100ECA                          3049      
-00100ECA                          3050  TmsStrOut:
-00100ECA  1018                    3051      move.b  (a0)+,d0            * get char
-00100ECC  6706                    3052      beq.s   .end                * check for the null
-00100ECE  6100 FE02               3053      bsr.w   TmsRamOut           * write the char
-00100ED2  60F6                    3054      bra.s   TmsStrOut           * and repeat
-00100ED4                          3055  .end:
-00100ED4  4E75                    3056      rts
-00100ED6                          3057      
-00100ED6                          3058  TmsRepeat:
-00100ED6  6100 FDFA               3059      bsr.w   TmsRamOut
-00100EDA  51C9 FFFA               3060      dbra    d1,TmsRepeat
-00100EDE  4E75                    3061      rts
-00100EE0                          3062      
-00100EE0                          3063  TmsChrOut:
-00100EE0  6000 FDF0               3064      bra.w   TmsRamOut
-00100EE4                          3065      
-00100EE4                          3066      
-00100EE4                          3067  -------------------- end include --------------------
-00100EE4                          3068      INCLUDE "utility.inc"
-00100EE4                          3069  
-00100EE4                          3070  writeByte:
-00100EE4  3F00                    3071      move.w  d0,-(sp)    ; save D0 first
-00100EE6  E818                    3072      ror.b   #4,d0       ; get upper nibble
-00100EE8  6102                    3073      bsr.s   writeNibble
-00100EEA  301F                    3074      move.w  (sp)+,d0    ; restore D0
-00100EEC                          3075      
-00100EEC                          3076  writeNibble:
-00100EEC  3F00                    3077      move.w  d0,-(sp)    ; save D0 first - write 16 bits to keep stack aligned
-00100EEE  0200 000F               3078      andi.b  #$0F,d0     ; make sure we only have the lower 4 bits
-00100EF2  0C00 000A               3079      cmpi.b  #10,d0      ; compare D0 to 10
-00100EF6  6502                    3080      bcs.b   .wn1        ; less than 10 so don't add 7
-00100EF8  5E00                    3081      addi.b  #07,d0      ; add 7
-00100EFA                          3082  .wn1:
-00100EFA  0600 0030               3083      addi.b  #'0',d0     ; add ASCII code for char zero
-00100EFE  6100 0010               3084      bsr     putc        ; write the ASCII digit out
-00100F02  301F                    3085      move.w  (sp)+,d0    ; restore D0
-00100F04  4E75                    3086      rts
-00100F06                          3087  
-00100F06                          3088  putString:
-00100F06                          3089  .loop:
-00100F06  1018                    3090      move.b  (a0)+, d0    * Read in character
-00100F08  6704                    3091      beq.s   .end         * Check for the null
-00100F0A                          3092      
-00100F0A  6104                    3093      bsr.s   putc         * Otherwise write the character
-00100F0C  60F8                    3094      bra.s   .loop        * And continue
-00100F0E                          3095  .end:
-00100F0E  4E75                    3096      rts
-00100F10                          3097  
-00100F10                          3098  putc:
-00100F10  48E7 C000               3099      movem.l d0-d1,-(sp)     * save d0, d1
-00100F14  1200                    3100      move.b  d0,d1           * copy character
-00100F16  7006                    3101      moveq   #6,d0           * character out
-00100F18  4E4F                    3102      trap    #15             * call rcMON BIOS I/O function
-00100F1A  4CDF 0003               3103      movem.l (sp)+,d0-d1     * restore d0, d1
-00100F1E  4E75                    3104      rts
-00100F20                          3105      
-00100F20                          3106  -------------------- end include --------------------
-00100F20                          3107      
-00100F20                          3108  TitleMessage:    
-00100F20= 52 43 42 75 73 2D ...   3109      dc.b    'RCBus-68000 TMS9918A demo of Nyan Cat by by J.B. Langston',10,13
-00100F5B= 50 72 65 73 73 20 ...   3110      dc.b    'Press RESET to exit',10,13,0
-00100F71                          3111  
-00100F71                          3112  NoTmsMessage:
-00100F71= 54 4D 53 39 39 31 ...   3113      dc.b    'TMS9918A not found, aborting!',10,13,0
-00100F91                          3114  
-00100F91                          3115  Animation:
-00100F91                          3116      INCBIN  ".\nyan\nyan.bin"
-00105791                          3117  EndAnimation:
-00105791                          3118  
-00105791                          3119  
-00105791                          3120      END START
+00100D12                          2879  
+00100D12                          2880  TmsSpriteConfig:
+00100D12  0200 0003               2881      andi.b  #(TmsSprite32|TmsSpriteMag),d0
+00100D16  1200                    2882      move.b  d0,d1
+00100D18  3039 00100C82           2883      move.w  TmsMode,d0
+00100D1E  0200 00FC               2884      andi.b  #~(TmsSprite32|TmsSpriteMag),d0
+00100D22  8001                    2885      or.b    d1,d0
+00100D24  33C0 00100C82           2886      move.w  d0,TmsMode
+00100D2A  123C 0081               2887      move.b  #TmsCtrl1Reg,d1
+00100D2E  6000 FF84               2888      bra.w   TmsSetReg   
+00100D32                          2889      
+00100D32                          2890  
+00100D32  =00000080               2891  TmsBlankFlags:          equ     Tms16k
+00100D32  =000000C0               2892  TmsTileFlags:           equ     Tms16k|TmsDisplayEnable
+00100D32  =000000D0               2893  TmsTextFlags:           equ     Tms16k|TmsDisplayEnable|TmsM1
+00100D32  =000000C8               2894  TmsMulticolorFlags:     equ     Tms16k|TmsDisplayEnable|TmsM2
+00100D32  =000002C0               2895  TmsBitmapFlags:         equ     Tms16k|TmsDisplayEnable|TmsM3
+00100D32                          2896  
+00100D32                          2897  TmsReset:
+00100D32  303C 0080               2898      move.w  #TmsBlankFlags,d0   * blank the screen with 16KB enabled
+00100D36  33C0 00100C82           2899      move.w  d0,TmsMode
+00100D3C  123C 0081               2900      move.b  #TmsCtrl1Reg,d1
+00100D40  6100 FF72               2901      bsr.w   TmsSetReg
+00100D44                          2902      
+00100D44  E048                    2903      lsr.w   #8,d0
+00100D46  123C 0080               2904      move.b  #TmsCtrl0Reg,d1
+00100D4A  6100 FF68               2905      bsr.w   TmsSetReg
+00100D4E                          2906  
+00100D4E  103C 0000               2907      move.b  #TmsTransparent,d0
+00100D52  6100 FF9E               2908      bsr.w   TmsBackground
+00100D56                          2909  
+00100D56  103C 0000               2910      move.b  #TmsTransparent,d0
+00100D5A  6100 01BA               2911      bsr.w   TmsTextColor
+00100D5E                          2912  
+00100D5E                          2913      * clear the entire VRAM
+00100D5E  343C 0000               2914      move.w  #0,d2                       * VRAM destination address
+00100D62  323C 4000               2915      move.w  #$4000,d1                   * byte count
+00100D66  303C 0000               2916      move.w  #0,d0                       * value to fill 
+00100D6A  6100 018A               2917      bsr.w   TmsFill
+00100D6E  4E75                    2918      rts
+00100D70                          2919  
+00100D70                          2920  TmsMulticolor:
+00100D70  6100 FFC0               2921      bsr.w   TmsReset
+00100D74  3439 00100C84           2922      move.w  TmsNameAddr,d2
+00100D7A  6100 0152               2923      bsr.w   TmsWriteAddr        * write VRAM start addr
+00100D7E  363C 0005               2924      move.w  #5,d3               * name table has 6 sections (D3=D)
+00100D82  4284                    2925      clr.l   d4                  * lines in first section start at 0 (D4=E)
+00100D84                          2926  TmsSectionLoop:
+00100D84  343C 0003               2927      move.w  #3,d2               * each section has 4 identical lines (D2=C)
+00100D88                          2928  TmsLineLoop:
+00100D88  323C 001F               2929      move.w  #31,d1              * each line is 32 bytes long (D1=B)
+00100D8C  3004                    2930      move.w  d4,d0               * same starting value for each line in section
+00100D8E                          2931  TmsByteLoop: 
+00100D8E  6100 FF42               2932      bsr.w   TmsRamOut
+00100D92  5240                    2933      addi.w  #1,d0               * byte value
+00100D94  51C9 FFF8               2934      dbra    d1,TmsByteLoop
+00100D98  51CA FFEE               2935      dbra    d2,TmsLineLoop
+00100D9C  3800                    2936      move.w  d0,d4               * next starting value = current + 32
+00100D9E  51CB FFE4               2937      dbra    d3,TmsSectionLoop
+00100DA2  303C 00C8               2938      move.w  #TmsMulticolorFlags,d0
+00100DA6  33C0 00100C82           2939      move.w  d0,TmsMode
+00100DAC  6000 0022               2940      bra.w   TmsInitNonBitmap
+00100DB0                          2941      
+00100DB0                          2942  TmsTextMode:
+00100DB0  2F08                    2943      move.l  a0,-(sp)                    * save start addr of font
+00100DB2  6100 FF7E               2944      bsr.w   TmsReset
+00100DB6  205F                    2945      move.l  (sp)+,a0
+00100DB8  3439 00100C88           2946      move.w  TmsPatternAddr,d2           * destination addr
+00100DBE  323C 0800               2947      move.w  #TmsTextPatternLen,d1       * byte count
+00100DC2  6100 0120               2948      bsr.w   TmsWrite                    * write out the font
+00100DC6  303C 00D0               2949      move.w  #TmsTextFlags,d0
+00100DCA  33C0 00100C82           2950      move.w  d0,TmsMode
+00100DD0                          2951      * fallthrough to TmsInitNonBitmap
+00100DD0                          2952  
+00100DD0                          2953  TmsInitNonBitmap:
+00100DD0                          2954      * set up color table address (register = address / 400H)
+00100DD0  0279 3FC0 00100C86      2955      andi.w  #$3FC0,TmsColorAddr
+00100DD8  3039 00100C86           2956      move.w  TmsColorAddr,d0
+00100DDE  EC48                    2957      lsr.w   #6,d0                       * reduce colour table address to a byte
+00100DE0  123C 0083               2958      move.b  #TmsColorTableReg,d1
+00100DE4  6100 FECE               2959      bsr.w   TmsSetReg
+00100DE8                          2960      
+00100DE8                          2961      * set up pattern table address (register = address / 800H)
+00100DE8  0279 3800 00100C88      2962      andi.w  #$3800,TmsPatternAddr
+00100DF0  3039 00100C88           2963      move.w  TmsPatternAddr,d0
+00100DF6  E048                    2964      lsr.w   #8,d0
+00100DF8  E608                    2965      lsr.b   #3,d0
+00100DFA  123C 0084               2966      move.b  #TmsPatternReg,d1
+00100DFE  6100 FEB4               2967      bsr.w   TmsSetReg
+00100E02  6000 0066               2968      bra.w   TmsInitCommon
+00100E06                          2969  
+00100E06                          2970  TmsBitmap:
+00100E06  6100 FF2A               2971      bsr.w   TmsReset
+00100E0A  3439 00100C84           2972      move.w  TmsNameAddr,d2              * initialize name table with 3 sets
+00100E10  6100 00BC               2973      bsr.w   TmsWriteAddr                * of 256 bytes ranging from 00-FF
+00100E14                          2974  
+00100E14  323C 02FF               2975      move.w  #$02FF,d1
+00100E18  4280                    2976      clr.l   d0
+00100E1A                          2977  TmsBitmapLoop:
+00100E1A  6100 FEB6               2978      bsr.w   TmsRamOut
+00100E1E  5200                    2979      addi.b  #1,d0
+00100E20  4E71                    2980      nop
+00100E22  4E71                    2981      nop
+00100E24  51C9 FFF4               2982      dbra    d1,TmsBitmapLoop
+00100E28                          2983      
+00100E28  303C 02C0               2984      move.w  #TmsBitmapFlags,d0
+00100E2C  33C0 00100C82           2985      move.w  d0,TmsMode
+00100E32                          2986  
+00100E32                          2987      * set up color table at 0H (register = 7FH) or 2000H (register = 0FFH)
+00100E32  0279 2000 00100C86      2988      andi.w  #$2000,TmsColorAddr
+00100E3A  6606                    2989      bne.s   TmsColorTableHigh
+00100E3C  103C 007F               2990      move.b  #$7F,d0                     * color table at 0H
+00100E40  6004                    2991      bra.s   TmsColorTableLow
+00100E42                          2992  TmsColorTableHigh:
+00100E42  103C 00FF               2993      move.b  #$FF,d0                     * color table at 2000H
+00100E46                          2994  TmsColorTableLow:
+00100E46  123C 0083               2995      move.b  #TmsColorTableReg,d1
+00100E4A  6100 FE68               2996      bsr.w   TmsSetReg
+00100E4E                          2997  
+00100E4E                          2998      * set up pattern table at 0H (register = 3) or 2000H (register = 7)
+00100E4E  0279 2000 00100C88      2999      andi.w  #$2000,TmsPatternAddr
+00100E56  6606                    3000      bne.s   TmsPatternTableHigh
+00100E58  103C 0003               3001      move.b  #$03,d0                     * pattern table at 0H
+00100E5C  6004                    3002      bra.s   TmsPatternTableLow
+00100E5E                          3003  TmsPatternTableHigh:
+00100E5E  103C 0007               3004      move.b  #$07,d0                     * pattern table at 2000H
+00100E62                          3005  TmsPatternTableLow:
+00100E62  123C 0084               3006      move.b  #TmsPatternReg,d1
+00100E66  6100 FE4C               3007      bsr.w   TmsSetReg
+00100E6A                          3008      * fall through to TmsInitCommon
+00100E6A                          3009      
+00100E6A                          3010  TmsInitCommon:
+00100E6A                          3011      * set up name table address (register = address / 400H)
+00100E6A  0279 3C00 00100C84      3012      andi.w  #$3C00,TmsNameAddr
+00100E72  3039 00100C84           3013      move.w  TmsNameAddr,d0              * upper byte
+00100E78  E048                    3014      lsr.w   #8,d0
+00100E7A  E408                    3015      lsr.b   #2,d0
+00100E7C  123C 0082               3016      move.b  #TmsNameReg,d1
+00100E80  6100 FE32               3017      bsr.w   TmsSetReg
+00100E84                          3018      
+00100E84                          3019      * set up sprite pattern table address (register = address / 80H)
+00100E84  0279 7F80 00100C8C      3020      andi.w  #$7F80,TmsSpriteAttrAddr
+00100E8C  3039 00100C8C           3021      move.w  TmsSpriteAttrAddr,d0
+00100E92  EE48                    3022      lsr.w   #7,d0
+00100E94  123C 0085               3023      move.b  #TmsSpriteAttrReg,d1
+00100E98  6100 FE1A               3024      bsr.w   TmsSetReg
+00100E9C                          3025  
+00100E9C                          3026      * set up sprite attribute table address (register = address / 800H)
+00100E9C  0279 3800 00100C8A      3027      andi.w  #$3800,TmsSpritePatternAddr
+00100EA4  3039 00100C8A           3028      move.w  TmsSpritePatternAddr,d0     * upper byte
+00100EAA  E048                    3029      lsr.w   #8,d0
+00100EAC  E608                    3030      lsr.b   #3,d0
+00100EAE  123C 0086               3031      move.b  #TmsSpritePatternReg,d1
+00100EB2  6100 FE00               3032      bsr.w   TmsSetReg
+00100EB6                          3033  
+00100EB6                          3034      * set up control registers
+00100EB6  3039 00100C82           3035      move.w  TmsMode,d0
+00100EBC  123C 0081               3036      move.b  #TmsCtrl1Reg,d1
+00100EC0  6100 FDF2               3037      bsr.w   TmsSetReg
+00100EC4                          3038  
+00100EC4  E048                    3039      lsr.w   #8,d0
+00100EC6  123C 0080               3040      move.b  #TmsCtrl0Reg,d1
+00100ECA  6000 FDE8               3041      bra.w   TmsSetReg
+00100ECE                          3042      
+00100ECE                          3043  
+00100ECE                          3044  
+00100ECE                          3045  
+00100ECE                          3046  TmsWriteAddr:
+00100ECE  3002                    3047      move.w  d2,d0
+00100ED0  0240 3FFF               3048      andi.w  #$3FFF,d0           * mask off msb to max of 16KB
+00100ED4  6100 FDEC               3049      bsr.w   TmsRegOut           * send lower byte
+00100ED8  E048                    3050      lsr.w   #8,d0
+00100EDA  0000 0040               3051      ori.b   #TmsWriteBit,d0     * indicate that this is a write
+00100EDE  6100 FDE2               3052      bsr.w   TmsRegOut           * send upper byte
+00100EE2  4E75                    3053      rts
+00100EE4                          3054  
+00100EE4                          3055  TmsWrite:
+00100EE4  6100 FFE8               3056      bsr.w   TmsWriteAddr        * write the VRAM start address
+00100EE8  5341                    3057      subq.w  #1,d1               * DBRA needs 1 less
+00100EEA                          3058  TmsWriteLoop:
+00100EEA  1018                    3059      move.b  (a0)+,d0
+00100EEC  6100 FDE4               3060      bsr.w   TmsRamOut
+00100EF0  51C9 FFF8               3061      dbra    d1,TmsWriteLoop
+00100EF4  4E75                    3062      rts
+00100EF6                          3063      
+00100EF6                          3064  TmsFill:
+00100EF6  3F00                    3065      move.w  d0,-(sp)            * save fill value
+00100EF8  6100 FFD4               3066      bsr.w   TmsWriteAddr        * write VRAM start addr
+00100EFC  301F                    3067      move.w  (sp)+,d0            * restore fill value
+00100EFE  5341                    3068      subq.w  #1,d1               * DBRA needs 1 less
+00100F00                          3069  TmsFillLoop:
+00100F00  6100 FDD0               3070      bsr.w   TmsRamOut
+00100F04                          3071  
+00100F04                          3072      * crude delay loop - do we need this with the TMSEMU board?
+00100F04  3E3C 000A               3073      move.w  #10,d7
+00100F08                          3074  .loop:
+00100F08  4E71                    3075      nop
+00100F0A  4E71                    3076      nop
+00100F0C  51CF FFFA               3077      dbra    d7,.loop
+00100F10                          3078  
+00100F10  51C9 FFEE               3079      dbra    d1,TmsFillLoop
+00100F14  4E75                    3080      rts
+00100F16                          3081      
+00100F16                          3082  
+00100F16                          3083  TmsTextColor:
+00100F16  E908                    3084      lsl.b   #4,d0                       * text colour into high nibble
+00100F18  0239 000F 00100C81      3085      andi.b  #$0F,TmsScreenColors        * mask off old foreground colour
+00100F20  8039 00100C81           3086      or.b    TmsScreenColors,d0          * insert new foreground colour
+00100F26  13C0 00100C81           3087      move.b  d0,TmsScreenColors          * save it to our local copy
+00100F2C                          3088  
+00100F2C  123C 0087               3089      move.b  #TmsColorReg,d1
+00100F30  6000 FD82               3090      bra.w   TmsSetReg                   * write new fore/back colours
+00100F34                          3091  
+00100F34                          3092  TmsTextPos:
+00100F34  48E7 E000               3093      movem.l d0-d2,-(sp)         * save D0, D1 & D2
+00100F38  0241 00FF               3094      andi.w  #$00FF,d1           * just the lower byte of Y coordinate
+00100F3C  3401                    3095      move.w  d1,d2               * copy Y coordinate to D2
+00100F3E  E74A                    3096      lsl.w   #3,d2               * D2 = Y * 8
+00100F40  EB49                    3097      lsl.w   #5,d1               * D1 = Y * 32
+00100F42  D441                    3098      add.w   d1,d2               * D2 = Y * 40
+00100F44                          3099  
+00100F44  0240 00FF               3100      andi.w  #$00FF,d0           * just the lower byte of X coordinate
+00100F48  D440                    3101      add.w   d0,d2               * D2 = (y * 40) + x
+00100F4A  D479 00100C84           3102      add.w   TmsNameAddr,d2      * add name table base address
+00100F50  6100 FF7C               3103      bsr.w   TmsWriteAddr
+00100F54  4CDF 0007               3104      movem.l (sp)+,d0-d2         * restore D0, D1 & D2
+00100F58  4E75                    3105      rts
+00100F5A                          3106      
+00100F5A                          3107  TmsStrOut:
+00100F5A  1018                    3108      move.b  (a0)+,d0            * get char
+00100F5C  6706                    3109      beq.s   .end                * check for the null
+00100F5E  6100 FD72               3110      bsr.w   TmsRamOut           * write the char
+00100F62  60F6                    3111      bra.s   TmsStrOut           * and repeat
+00100F64                          3112  .end:
+00100F64  4E75                    3113      rts
+00100F66                          3114      
+00100F66                          3115  TmsRepeat:
+00100F66  6100 FD6A               3116      bsr.w   TmsRamOut
+00100F6A  51C9 FFFA               3117      dbra    d1,TmsRepeat
+00100F6E  4E75                    3118      rts
+00100F70                          3119      
+00100F70                          3120  TmsChrOut:
+00100F70  6000 FD60               3121      bra.w   TmsRamOut
+00100F74                          3122      
+00100F74                          3123      
+00100F74                          3124  -------------------- end include --------------------
+00100F74                          3125      INCLUDE "utility.inc"
+00100F74                          3126  
+00100F74                          3127  writeByte:
+00100F74  3F00                    3128      move.w  d0,-(sp)    ; save D0 first
+00100F76  E818                    3129      ror.b   #4,d0       ; get upper nibble
+00100F78  6102                    3130      bsr.s   writeNibble
+00100F7A  301F                    3131      move.w  (sp)+,d0    ; restore D0
+00100F7C                          3132      
+00100F7C                          3133  writeNibble:
+00100F7C  3F00                    3134      move.w  d0,-(sp)    ; save D0 first - write 16 bits to keep stack aligned
+00100F7E  0200 000F               3135      andi.b  #$0F,d0     ; make sure we only have the lower 4 bits
+00100F82  0C00 000A               3136      cmpi.b  #10,d0      ; compare D0 to 10
+00100F86  6502                    3137      bcs.b   .wn1        ; less than 10 so don't add 7
+00100F88  5E00                    3138      addi.b  #07,d0      ; add 7
+00100F8A                          3139  .wn1:
+00100F8A  0600 0030               3140      addi.b  #'0',d0     ; add ASCII code for char zero
+00100F8E  6100 0010               3141      bsr     putc        ; write the ASCII digit out
+00100F92  301F                    3142      move.w  (sp)+,d0    ; restore D0
+00100F94  4E75                    3143      rts
+00100F96                          3144  
+00100F96                          3145  putString:
+00100F96                          3146  .loop:
+00100F96  1018                    3147      move.b  (a0)+, d0    * Read in character
+00100F98  6704                    3148      beq.s   .end         * Check for the null
+00100F9A                          3149      
+00100F9A  6104                    3150      bsr.s   putc         * Otherwise write the character
+00100F9C  60F8                    3151      bra.s   .loop        * And continue
+00100F9E                          3152  .end:
+00100F9E  4E75                    3153      rts
+00100FA0                          3154  
+00100FA0                          3155  putc:
+00100FA0  48E7 C000               3156      movem.l d0-d1,-(sp)     * save d0, d1
+00100FA4  1200                    3157      move.b  d0,d1           * copy character
+00100FA6  7006                    3158      moveq   #6,d0           * character out
+00100FA8  4E4F                    3159      trap    #15             * call rcMON BIOS I/O function
+00100FAA  4CDF 0003               3160      movem.l (sp)+,d0-d1     * restore d0, d1
+00100FAE  4E75                    3161      rts
+00100FB0                          3162      
+00100FB0                          3163  -------------------- end include --------------------
+00100FB0                          3164      
+00100FB0                          3165  TitleMessage:    
+00100FB0= 52 43 42 75 73 2D ...   3166      dc.b    'RCBus-68000 TMS9918A demo of Nyan Cat',10,13
+00100FD7= 42 61 73 65 64 20 ...   3167      dc.b    'Based on original Z80 code by J.B. Langston',10,13
+00101004= 50 72 65 73 73 20 ...   3168      dc.b    'Press RESET to exit',10,13,0
+0010101A                          3169  
+0010101A                          3170  NoTmsMessage:
+0010101A= 54 4D 53 39 39 31 ...   3171      dc.b    'TMS9918A not found, aborting!',10,13,0
+0010103A                          3172  
+0010103A                          3173  Animation:
+0010103A                          3174      INCBIN  ".\nyan\nyan.bin"
+0010583A                          3175  EndAnimation:
+0010583A                          3176  
+0010583A                          3177  
+0010583A                          3178      END START
 
 No errors detected
 No warnings generated
@@ -3131,7 +3189,7 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 ACR                 D00009
-ANIMATION           100F91
+ANIMATION           10103A
 BAUD_1200           66
 BAUD_2400           88
 BAUD_38400          CC
@@ -3172,7 +3230,7 @@ DISPADDR            98
 DUART1              D00000
 ECNT                D0001F
 EHBASIC_BASE        9000
-ENDANIMATION        105791
+ENDANIMATION        10583A
 EXIT                100470
 FIRSTFRAME          10042C
 IMR                 D0000B
@@ -3187,12 +3245,12 @@ MRA                 D00001
 MRB                 D00011
 NEXTFRAME           100432
 NOTMS               100472
-NOTMSMESSAGE        100F71
+NOTMSMESSAGE        10101A
 OPCR                D0001B
-PUTC                100F10
-PUTSTRING           100F06
-PUTSTRING:END       100F0E
-PUTSTRING:LOOP      100F06
+PUTC                100FA0
+PUTSTRING           100F96
+PUTSTRING:END       100F9E
+PUTSTRING:LOOP      100F96
 RAM_BASE            100000
 RAM_LEN             100000
 RBA                 D00007
@@ -3208,18 +3266,22 @@ STACK_START         1FF800
 START               100400
 TBA                 D00007
 TBB                 D00017
-TITLEMESSAGE        100F20
+TITLEMESSAGE        100FB0
 TMS16K              80
 TMSBACKGROUND       100CF2
+TMSBITMAP           100E06
 TMSBITMAPCOLORLEN   800
 TMSBITMAPFLAGS      2C0
+TMSBITMAPLOOP       100E1A
 TMSBITMAPPATTERNLEN  1800
 TMSBLACK            1
 TMSBLANKFLAGS       80
-TMSBYTELOOP         100D6E
-TMSCHROUT           100EE0
+TMSBYTELOOP         100D8E
+TMSCHROUT           100F70
 TMSCOLORADDR        100C86
 TMSCOLORREG         87
+TMSCOLORTABLEHIGH   100E42
+TMSCOLORTABLELOW    100E46
 TMSCOLORTABLEREG    83
 TMSCTRL0REG         80
 TMSCTRL1REG         81
@@ -3230,17 +3292,18 @@ TMSDARKRED          6
 TMSDARKYELLOW       A
 TMSDISPLAYENABLE    40
 TMSEXTVIDEO         100
-TMSFILL             100E72
-TMSFILLLOOP         100E7C
+TMSFILL             100EF6
+TMSFILLLOOP         100F00
+TMSFILLLOOP:LOOP    100F08
 TMSGRAY             E
-TMSINITCOMMON       100DE6
-TMSINITNONBITMAP    100DB0
+TMSINITCOMMON       100E6A
+TMSINITNONBITMAP    100DD0
 TMSINTENABLEBIT     20
 TMSLIGHTBLUE        5
 TMSLIGHTGREEN       3
 TMSLIGHTRED         9
 TMSLIGHTYELLOW      B
-TMSLINELOOP         100D68
+TMSLINELOOP         100D88
 TMSM1               10
 TMSM2               8
 TMSM3               200
@@ -3248,13 +3311,15 @@ TMSMAGENTA          D
 TMSMEDIUMGREEN      2
 TMSMEDIUMRED        8
 TMSMODE             100C82
-TMSMULTICOLOR       100D50
+TMSMULTICOLOR       100D70
 TMSMULTICOLORFLAGS  C8
 TMSMULTICOLORPATTERNLEN  600
 TMSNAMEADDR         100C84
 TMSNAMEREG          82
 TMSPATTERNADDR      100C88
 TMSPATTERNREG       84
+TMSPATTERNTABLEHIGH  100E5E
+TMSPATTERNTABLELOW  100E62
 TMSPORT             F80131
 TMSPROBE            100C90
 TMSPROBEDONE        100CB2
@@ -3265,25 +3330,26 @@ TMSRAMOUT           100CD2
 TMSRAMOUTDELAY      100CE0
 TMSREGIN            100CCA
 TMSREGOUT           100CC2
-TMSREPEAT           100ED6
-TMSRESET            100D12
+TMSREPEAT           100F66
+TMSRESET            100D32
 TMSSCREENCOLORS     100C81
-TMSSECTIONLOOP      100D64
+TMSSECTIONLOOP      100D84
 TMSSETREG           100CB4
 TMSSPRITE32         2
 TMSSPRITEATTRADDR   100C8C
 TMSSPRITEATTRREG    85
+TMSSPRITECONFIG     100D12
 TMSSPRITEMAG        1
 TMSSPRITEPATTERNADDR  100C8A
 TMSSPRITEPATTERNREG  86
-TMSSTROUT           100ECA
-TMSSTROUT:END       100ED4
-TMSTEXTCOLOR        100E86
+TMSSTROUT           100F5A
+TMSSTROUT:END       100F64
+TMSTEXTCOLOR        100F16
 TMSTEXTFLAGS        D0
-TMSTEXTMODE         100D90
+TMSTEXTMODE         100DB0
 TMSTEXTNAMELEN      3C0
 TMSTEXTPATTERNLEN   800
-TMSTEXTPOS          100EA4
+TMSTEXTPOS          100F34
 TMSTILECOLORLEN     20
 TMSTILEFLAGS        C0
 TMSTILENAMELEN      300
@@ -3291,14 +3357,14 @@ TMSTILEPATTERNLEN   800
 TMSTRANSPARENT      0
 TMSWAIT             100C80
 TMSWHITE            F
-TMSWRITE            100E60
-TMSWRITEADDR        100E4A
+TMSWRITE            100EE4
+TMSWRITEADDR        100ECE
 TMSWRITEBIT         40
-TMSWRITELOOP        100E66
+TMSWRITELOOP        100EEA
 VEC_BASE            100000
 VEC_SIZE            400
 VSYNCCOUNT          10047C
 VSYNCDIV            3
-WRITEBYTE           100EE4
-WRITENIBBLE         100EEC
-WRITENIBBLE:WN1     100EFA
+WRITEBYTE           100F74
+WRITENIBBLE         100F7C
+WRITENIBBLE:WN1     100F8A

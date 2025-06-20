@@ -38,7 +38,7 @@ START:
 	move.b	#11,d0				* X coordinate
 	move.b	#2,d1				* Y coordinate
 	bsr.w	TmsTextPos
-	move.l	#TitleMessage,a0	* start addr of null terminated text string
+	move.l	#TitleMessage2,a0	* start addr of null terminated text string
 	bsr.w	TmsStrOut
 	
 	move.b	#0,d2				* start with character #0
@@ -105,8 +105,12 @@ TmsFont:
 	INCLUDE	"utility.inc"
 	
 TitleMessage:    
-	dc.b    'ASCII Character Set',0
+	dc.b    'RCBus-68000 TMS9918A demo of ASCII Character Set',10,13
+	dc.b	'Based on original Z80 code by J.B. Langston',10,13,0
 
+TitleMessage2:   
+	dc.b    'ASCII Character Set',0
+	
 NoTmsMessage:
 	dc.b    'TMS9918A not found, aborting!',10,13,0
 

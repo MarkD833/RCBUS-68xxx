@@ -73,7 +73,8 @@ CurrFrame:
 	INCLUDE	"utility.inc"
 	
 TitleMessage:    
-	dc.b    'RCBus-68000 TMS9918A demo of Nyan Cat by by J.B. Langston',10,13
+	dc.b    'RCBus-68000 TMS9918A demo of Nyan Cat',10,13
+	dc.b	'Based on original Z80 code by J.B. Langston',10,13
 	dc.b	'Press RESET to exit',10,13,0
 
 NoTmsMessage:

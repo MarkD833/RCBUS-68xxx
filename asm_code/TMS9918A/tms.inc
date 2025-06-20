@@ -52,7 +52,7 @@ TmsNameAddr:			dc.w    $3800           * name table address (multiples of 400H)
 TmsColorAddr:			dc.w    $2000           * color table address (multiples of 40H)
 TmsPatternAddr:			dc.w    0               * pattern table (multiples of 800H)
 TmsSpritePatternAddr:	dc.w    $1800           * sprite attribute table (multiples of 80H)
-TmsSpriteAttrAddr:		dc.w    $3bc0           * sprite pattern table (multiples of 800H)
+TmsSpriteAttrAddr:		dc.w    $3b00           * sprite pattern table (multiples of 800H)
 
 * ===========================================================================
 * register constants
@@ -210,6 +210,19 @@ TmsBackground:
 	
 	move.b	#TmsColorReg,d1
 	bra.w	TmsSetReg					* write new fore/back colours
+
+* ---------------------------------------------------------------------------
+* set the sprite configuration
+*       D0 = sprite options (A)
+TmsSpriteConfig:
+	andi.b	#(TmsSprite32|TmsSpriteMag),d0
+	move.b	d0,d1
+	move.w	TmsMode,d0
+	andi.b	#~(TmsSprite32|TmsSpriteMag),d0
+	or.b	d1,d0
+	move.w	d0,TmsMode
+	move.b	#TmsCtrl1Reg,d1
+	bra.w	TmsSetReg	
 	
 * ===========================================================================
 * initialization routines
@@ -245,6 +258,32 @@ TmsReset:
 	move.w	#0,d0						* value to fill 
 	bsr.w	TmsFill
 	rts
+
+* ---------------------------------------------------------------------------
+* initialize for multicolor mode
+* Simple register mapping from Z80 to 68000:
+* A->D0, B->D1, C->D2, D->D3 & E->D4
+TmsMulticolor:
+	bsr.w	TmsReset
+	move.w	TmsNameAddr,d2
+	bsr.w	TmsWriteAddr		* write VRAM start addr
+	move.w	#5,d3				* name table has 6 sections (D3=D)
+	clr.l	d4					* lines in first section start at 0 (D4=E)
+TmsSectionLoop:
+    move.w	#3,d2				* each section has 4 identical lines (D2=C)
+TmsLineLoop:
+    move.w	#31,d1				* each line is 32 bytes long (D1=B)
+	move.w	d4,d0				* same starting value for each line in section
+TmsByteLoop: 
+	bsr.w	TmsRamOut
+	addi.w	#1,d0				* byte value
+	dbra	d1,TmsByteLoop
+	dbra	d2,TmsLineLoop
+	move.w	d0,d4				* next starting value = current + 32
+	dbra	d3,TmsSectionLoop
+	move.w	#TmsMulticolorFlags,d0
+	move.w	d0,TmsMode
+	bra.w	TmsInitNonBitmap
 	
 * ---------------------------------------------------------------------------
 * TmsTextMode - initialize for text mode
@@ -279,7 +318,48 @@ TmsInitNonBitmap:
 	bsr.w	TmsSetReg
 	bra.w	TmsInitCommon
 
+* ---------------------------------------------------------------------------
+* TmsBitmap - initialise for bitmapped graphics
+TmsBitmap:
+	bsr.w	TmsReset
+	move.w	TmsNameAddr,d2				* initialize name table with 3 sets
+	bsr.w	TmsWriteAddr				* of 256 bytes ranging from 00-FF
 
+	move.w	#$02FF,d1
+	clr.l	d0
+TmsBitmapLoop:
+	bsr.w	TmsRamOut
+	addi.b	#1,d0
+	nop
+	nop
+	dbra	d1,TmsBitmapLoop
+	
+	move.w	#TmsBitmapFlags,d0
+	move.w	d0,TmsMode
+
+	* set up color table at 0H (register = 7FH) or 2000H (register = 0FFH)
+	andi.w	#$2000,TmsColorAddr
+	bne.s	TmsColorTableHigh
+	move.b	#$7F,d0						* color table at 0H
+	bra.s	TmsColorTableLow
+TmsColorTableHigh:
+	move.b	#$FF,d0						* color table at 2000H
+TmsColorTableLow:
+	move.b	#TmsColorTableReg,d1
+	bsr.w	TmsSetReg
+
+	* set up pattern table at 0H (register = 3) or 2000H (register = 7)
+	andi.w	#$2000,TmsPatternAddr
+	bne.s	TmsPatternTableHigh
+	move.b	#$03,d0						* pattern table at 0H
+	bra.s	TmsPatternTableLow
+TmsPatternTableHigh:
+	move.b	#$07,d0						* pattern table at 2000H
+TmsPatternTableLow:
+	move.b	#TmsPatternReg,d1
+	bsr.w	TmsSetReg
+	* fall through to TmsInitCommon
+	
 * ---------------------------------------------------------------------------
 * TmsInitCommon - common initialization for all modes
 TmsInitCommon:
@@ -294,7 +374,7 @@ TmsInitCommon:
 	* set up sprite pattern table address (register = address / 80H)
 	andi.w	#$7F80,TmsSpriteAttrAddr
 	move.w	TmsSpriteAttrAddr,d0
-	lsl.w	#1,d0
+	lsr.w	#7,d0
 	move.b	#TmsSpriteAttrReg,d1
 	bsr.w	TmsSetReg
 
@@ -339,8 +419,8 @@ TmsWriteAddr:
 *      D2 = vram destination address
 *      D1 = byte count
 TmsWrite:
-	bsr.w	TmsWriteAddr
-	subq	#1,d1				* DBRA needs 1 less
+	bsr.w	TmsWriteAddr		* write the VRAM start address
+	subq.w	#1,d1				* DBRA needs 1 less
 TmsWriteLoop:
 	move.b	(a0)+,d0
 	bsr.w	TmsRamOut
@@ -359,6 +439,14 @@ TmsFill:
 	subq.w	#1,d1				* DBRA needs 1 less
 TmsFillLoop:
 	bsr.w	TmsRamOut
+
+	* crude delay loop - do we need this with the TMSEMU board?
+	move.w	#10,d7
+.loop:
+	nop
+	nop
+	dbra	d7,.loop
+
 	dbra	d1,TmsFillLoop
 	rts
 	
@@ -383,6 +471,7 @@ TmsTextColor:
 *		D0 = X
 *		D1 = Y
 TmsTextPos:
+	movem.l	d0-d2,-(sp)			* save D0, D1 & D2
 	andi.w	#$00FF,d1			* just the lower byte of Y coordinate
 	move.w	d1,d2				* copy Y coordinate to D2
 	lsl.w	#3,d2				* D2 = Y * 8
@@ -392,8 +481,10 @@ TmsTextPos:
 	andi.w	#$00FF,d0			* just the lower byte of X coordinate
 	add.w	d0,d2				* D2 = (y * 40) + x
 	add.w	TmsNameAddr,d2		* add name table base address
-	bra.w	TmsWriteAddr
-
+	bsr.w	TmsWriteAddr
+	movem.l	(sp)+,d0-d2			* restore D0, D1 & D2
+	rts
+	
 * ---------------------------------------------------------------------------
 * TmsStrOut - copy a null-terminated string to VRAM
 *		A0 = start addr of null terminated string
