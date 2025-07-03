@@ -11,9 +11,10 @@ I'm still learning about the GCC compiler & assembler so there's likely to be so
 | :---- | :---- |
 | [SC611](#SC611) | SC611 MicroSD module. |
 | [SC704](#SC704) | SC704 I2C Bus Master module. |
+| [TMS9918A](#TMS9918A) | Shiela Dixon's TMSEMU TMS9918A module. |
 ---
 
-## SC611 MicroSD module
+## SC611
 ### SPI Read
 The code in the SC611_SPI_Read folder provides a more user friendly version of the SC611 assembler code. This is the first RCBus module I attempted to write high level code for and it includes some assembly language in the sc611.S file that handles the bit bang 8-bit and 16-bit transfers.
 
@@ -21,11 +22,15 @@ This code also introduced the code to support the 4 serial ports on the MC68681 
 
 ---
 
-## SC704 I2C Bus Master module
-## I2C Scan
+## SC704
+### I2C Scan
 The code in the SC704_I2C_Scan folder implements a simple program to scan each I2C address from 0x08 to 0x7F to see if a device is present at that address and prints out the device addresses found to be active.
 
-## I2C Read
+### I2C Read
 The code in the SC704_I2C_Read folder demonstrates how to read some data from the preprogrammed 25LC256 EEPROM on the SC704 board.
 
 ---
+
+## TMS9918A
+### ASCII Character Set demonstrates
+The code in the TMS9918A-ASCII-Chars folder is a C implementation of the same assembler demo. The TMS9918A assembler library has been modified so that the functions can be called directly from C.
