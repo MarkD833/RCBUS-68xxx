@@ -1,5 +1,3 @@
-# DRAFT - This guide is currently incomplete and there may be errors
-
 # Setting up the GNU C Compiler environment
 
 The steps outlined below are my notes on how I set up a Windows 10 development environment so I could write C code and compile and run it on my RCBus 68000 hardware.
@@ -131,4 +129,5 @@ If successful, that should produce a file called `bmbinary` and give you the con
 
 # Configuring for the RCBus-68000 Board
 
-To be continued shortly.
+The linker scripts I am using are in the folders for the example C code along with the crt0.s file I am using and the relevant makefiles.
+
