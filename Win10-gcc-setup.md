@@ -127,7 +127,21 @@ make
 ```
 If successful, that should produce a file called `bmbinary` and give you the confidence that the process is working.
 
+The final step is then to create the S-record file with the command:
+```
+make rom
+```
+
 # Configuring for the RCBus-68000 Board
 
 The linker scripts I am using are in the folders for the example C code along with the crt0.s file I am using and the relevant makefiles.
 
+I'm just starting out with cross compiling using GCC so there will likely be some methods that I'm using that are inefficient or just plain wrong!
+
+# Thoughts
+
+One thing I have discovered is that, for me at least, inline assembly is rather hit and miss and ultimately just a pain in the backside as I chase down obscure error messages. I've found it much easier to have a separate assembler source file and call the routines from the C code.
+
+I'd like to figure out a way of not duplicating the storage space for variables. Initialised variables, such as uint8_t x = 1 are normally stored in non volatile memory, usually FLASH or EPROM, (I think a section of memory the linker calls RODATA) and then copied into RAM (to the section of memory the linker calls BSS) as part of the initialisaion code in crt0.  
+
+As the code is loaded into RAM from the serial port, I wonder if there is a way to put the initialised variables directly into the BSS section from the get-go or maybe leave them in the RODATA section and use them directly from there.
