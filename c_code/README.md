@@ -32,8 +32,11 @@ The code in the SC704_I2C_Read folder demonstrates how to read some data from th
 ---
 
 ## TMS9918A
-### ASCII Character Set demonstration
+### ASCII Character Set Demonstration
 The code in the TMS9918A-ASCII-Chars folder is a C implementation of the same assembler demo. The TMS9918A assembler library has been modified so that the functions can be called directly from C.
 
 ### Sprite Demonstration
 The code in the TMS9918A-Sprites folder is a C implementation of the same assembler demo - spinning globe - and the TMS9918A assembler library has been further modified to support the additional functions needed by the sprites demo.
+
+### Nyan Cat Animation
+The code in the TMS9918A-Nyan folder is a C implementation of the same assembler demo and demonstrates cycling through a sequence of frames of an animation.
