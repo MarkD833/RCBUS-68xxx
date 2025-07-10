@@ -32,6 +32,8 @@ The code in the SC704_I2C_Read folder demonstrates how to read some data from th
 ---
 
 ## TMS9918A
+The demonstrations below are based on the demonstration code of the same name by JB Langston for his Z80 system but ported over to my 68000 nased system.
+
 ### ASCII Character Set Demonstration
 The code in the TMS9918A-ASCII-Chars folder is a C implementation of the same assembler demo. The TMS9918A assembler library has been modified so that the functions can be called directly from C.
 
@@ -40,3 +42,6 @@ The code in the TMS9918A-Sprites folder is a C implementation of the same assemb
 
 ### Nyan Cat Animation
 The code in the TMS9918A-Nyan folder is a C implementation of the same assembler demo and demonstrates cycling through a sequence of frames of an animation.
+
+### Fern (Pixel Plotting) Demonstration
+The code in the TMS9918A-Fern folder is a 68K version of the fern demonstration and does 2048 plots before exiting.
