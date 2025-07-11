@@ -18,7 +18,7 @@ Make sure to look at the readme.txt files in each board folder as they will deta
 
 The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source.
 
-![](./images/Processor_Front.JPG)
+![](../images/Processor_Front.JPG)
 
 ### Clocks
 The processor/system clock source is an oscillator in an 8-pin DIL/DIP can. I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies.
@@ -56,7 +56,7 @@ There were a few gates left over and I've used them to drive activity LEDs for a
 
 ## ROM & RAM Board
 
-![](./images/ROM_RAM_Front.JPG)
+![](../images/ROM_RAM_Front.JPG)
 
 The ROM/RAM board uses 2x Winbond W27C512 EEPROMs to provide 128K of non-volatile memory organised as 64K of 16-bit wide memory. It also uses 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory.
  
@@ -64,7 +64,7 @@ The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such tha
 
 ## Serial I/O Board
 
-![](./images/Serial_Front.JPG)
+![](../images/Serial_Front.JPG)
 
 The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
 
