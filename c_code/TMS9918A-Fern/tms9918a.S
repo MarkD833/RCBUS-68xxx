@@ -657,13 +657,16 @@ tmsPlotPixel:
 	move.l	4(%sp),%d0					// get the X coordinate
 	bsr.w	iTmsXYAddr					// convert to an address in A0
 
-	// compute the bit instead of using a lookup table
-	move.l	#0x80,%d1
+	// compute the bit to set in the vram byte using the lower
+	// 3 bits of the X coordinate
+	move.l	#0x80,%d1					// preset the bit to be shifted
 	andi.b	#0x07,%d0					// get lower 3 bits of X coordinate
-	beq.s	tmsPlotPixelNoShift			// skip shift if zero
+	beq.s	tmsPlotPixelNoShift			// skip shift if X MOD 8 is zero
 	lsr.b	%d0,%d1						// shift D1 right by D0 times
 
 tmsPlotPixelNoShift:
+	// D1 holds the bit to set in the vram byte so read the current vram
+	// value, OR in the new bit and write back to vram
 	adda.w	TmsPatternAddr,%a0			// add pattern table base address
 	move.l	%d2,-(%sp)					// save D2
 	move.w	%a0,%d2
@@ -680,10 +683,18 @@ tmsPlotPixelExit:
 	rts
 	
 * ---------------------------------------------------------------------------
-* tmsXYAddr - convert X & Y coordinates into an address
+* tmsXYAddr - convert X & Y coordinates into a vram address
 *		D0 = X
 *		D1 = Y
 *		returns address in A0
+*
+* The coordinates are encoded into a 16 bit word as follows:
+* | 15 (MSB)                    8 | 7                     (LSB) 0 |
+* | 0 | 0 | 0 | Y7| Y6| Y5| Y4| Y3| X7| X6| X5| X4| X3| Y2| Y1| Y0|
+*
+* The X coordinate bits 2..0 are not used when computing the address. They are
+* used by the calling routine to determine the bit position in the byte
+* written to VRAM.
 *
 iTmsXYAddr:
 	movem.l	%d0-%d1,-(%sp)				// save registers

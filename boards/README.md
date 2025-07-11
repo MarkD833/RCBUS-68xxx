@@ -12,6 +12,80 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
+# Boards
+
+## 68000 Processor Board
+
+The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source.
+
+![](./images/Processor_Front.JPG)
+
+### Clocks
+The processor/system clock source is an oscillator in an 8-pin DIL/DIP can. I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies.
+
+There's also a jumper to allow the processor E clock to be routed onto the RCBus CLOCK2 pin (61) if required.
+
+Note that the CLOCK2 pin may also be used by the serial, parallel and multifunction boards (via jumpers on their boards) to share a clock source between them - usually to feed the baud rate generators and timers. If this feature is used, then the E clock jumper must not be fitted.
+
+### DTACK & Bus Error
+The processor board includes a counter to generate a bus error if a DTACK is not received after 4 clocks of the E signal.
+
+The processor board also includes a counter to generate a DTACK for the RCBus MREQ and IORQ addresses. The DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
+
+### RCBus Signals
+The RCBus specification (v1.0) doesn't specifically mention the 68000 in the backplane signal assignments table so there's a bit of wiggle room on the pins used.
+
+I've stuck to the same signals for pins 1-40. The M1 signal isn't used and should have a 4K7 pullup resistor (manually added as I forgot it in my release 2.0 board!) and the USER1..USER4 which are used for the level 1, 3, 5 & 6 autovector interrupts.
+
+Pins 41-80 carry D8..D15 as well as the higher address bits. Pins 41..44 have been used to carry some 68000 specific signals.
+
+The current signal list is in the RCBus-68000_Pinout PDF file.
+
+### RCBus memory space
+My 68000 design partially decodes 2 blocks of memory within the 68000 address range as follows:
+| Address Range | Signal |
+| :---- | :---- |
+| 0xF00000..0xF7FFFF | /MREQ goes low |
+| 0xF80000..0xFFFFFF | /IORQ goes low |
+
+This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
+
+For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
+
+There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces.
+
+## ROM & RAM Board
+
+![](./images/ROM_RAM_Front.JPG)
+
+The ROM/RAM board uses 2x Winbond W27C512 EEPROMs to provide 128K of non-volatile memory organised as 64K of 16-bit wide memory. It also uses 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory.
+ 
+The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
+
+## Serial I/O Board
+
+![](./images/Serial_Front.JPG)
+
+The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
+
+The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator. This clock can be shared with other boards by configuring the jumpers appropriately.
+
+The current design combines the interrupts from both DUARTs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
+ 
+## Parallel I/O Board
+The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
+
+Each PI/T can generate a timer interrupt and a port interrupt. These can be individually configured route to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
+
+The clock source for each PI/T can be selected from either CLOCK or CLOCK2 on the RCBus via jumper selection.
+ 
+## Multifunction Board
+The multifunction peripheral board is populated with two 68901 (or equivalent). Each MFP can reside at one of 8 selectable 2K memory addresses from $D10000 to $D13FFF.
+
+The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator and timers. This clock can be shared with other boards by configuring the jumpers appropriately.
+
+The current design combines the interrupts from both MFPs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
+
 # Chips
 
 My processor board has a turned pin socket fitted so I can easily try different CPU clock frequencies. Initial testing was done with a 7.3728MHz oscillator but I've just tried an 18.432MHz oscillator.
