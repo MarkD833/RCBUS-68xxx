@@ -32,6 +32,8 @@ The processor board includes a counter to generate a bus error if a DTACK is not
 
 The processor board also includes a counter to generate a DTACK for the RCBus MREQ and IORQ addresses. The DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
 
+Only RCBus MREQ and IORQ accesses generate a DTACK. All other boards must supply their own DTACK signal otherwise a bus error will be raised.
+
 ### RCBus Signals
 The RCBus specification (v1.0) doesn't specifically mention the 68000 in the backplane signal assignments table so there's a bit of wiggle room on the pins used.
 
@@ -52,7 +54,9 @@ This partial decoding results in the RCBus I/O and memory spaces appearing multi
 
 For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
 
-There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces.
+### Onboard LEDs
+
+There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
 
 ## ROM & RAM Board
 
@@ -61,6 +65,8 @@ There were a few gates left over and I've used them to drive activity LEDs for a
 The ROM/RAM board uses 2x Winbond W27C512 EEPROMs to provide 128K of non-volatile memory organised as 64K of 16-bit wide memory. It also uses 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory.
  
 The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
+
+A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted.
 
 ## Serial I/O Board
 

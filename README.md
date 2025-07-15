@@ -15,21 +15,21 @@ There is no intention to support any Zilog specific chips such as the PIO, SIO, 
 ## 68000 memory space
 The current address map is as follows:
 
-| Address Range | Signal | Notes |
+| Address Range | Device | Notes |
 | :---- | :---- | :---- |
-| 0x000000..0x01FFFF | EEPROM | Fixed address |
-| 0x100000..0x1FFFFF | SRAM | Fixed address |
+| 0x000000..0x01FFFF | EEPROM | Fixed address range |
+| 0x100000..0x1FFFFF | SRAM | Fixed address range |
 | 0xD00000..0xD03FFF | DUARTs | Jumper selectable options |
 | 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable options |
 | 0xD10000..0xD13FFF | MFPs | Jumper selectable options |
-| 0xF00000..0xF7FFFF | /MREQ | Fixed address |
-| 0xF80000..0xFFFFFF | /IORQ | Fixed address |
+| 0xF00000..0xF7FFFF | RCBus /MREQ | Fixed address range - partially decoded |
+| 0xF80000..0xFFFFFF | RCBus /IORQ | Fixed address range - partially decoded |
 
 ## What works so far
-Currently the following boards are assembled and are working as intended:
+The following boards are assembled and are working as intended:
 * 68000 procesor board
 * ROM / RAM board - 128K ROM & 1M RAM
-* Quad serial I/O board - with 2 68681 DUARTs
+* Quad serial I/O board - with a pair of 68681 DUARTs
 
 ## To do
 These boards are waiting to be tested:
@@ -37,7 +37,7 @@ These boards are waiting to be tested:
 * Mutifunction board - with 2 68901 MFPs
  
 ## Progress
-Currently the 68000 board, the ROM/RAM board and the serial I/O board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 & S3 record types are handled.
+The 68000 board, the ROM/RAM board and the serial I/O board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
 
 The monitor currently supports a few of the EASy68K TRAP #15 text I/O functions - currently just tasks 0, 1, 5, 6, 13 & 14 - which are all related to text input/output. Further tasks may be added as I need them.
 
@@ -54,7 +54,7 @@ I have a number of Steve Cousin's RC2014 / RCBus boards that I have been able to
 
 The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 and appear to operate correctly.
 
-I've ported part of J B Langston's TMS9918A code to work with Shiela Dixon's [TMSEMU RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/). There are now several demos working as I've slowly added more functionality to the TMS library. Some demos have also been ported from assembler to C.
+I've ported part of J B Langston's [TMS9918A code](https://github.com/jblang/TMS9918A/tree/master) to work with Shiela Dixon's [TMSEMU RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/). There are now several demos working as I've slowly added more functionality to the TMS library. Some demos have also been ported from assembler to C along with modifications to the library to support C function calls.
 
 # Still to do
 * Test the 68230 digital I/O board
