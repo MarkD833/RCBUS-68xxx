@@ -65,7 +65,7 @@ I have just received boards back from JLCPCB for:
 * A prototype MC68302 RCBus processor board
 * A prototype MC68030 RCBus processor board
 
-I've also managed to bag myself one of []Dean's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
+I've also managed to bag myself one of [Dean's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
 
 # Conclusion
 The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
