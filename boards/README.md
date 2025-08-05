@@ -86,6 +86,9 @@ Each PI/T can generate a timer interrupt and a port interrupt. These can be indi
 The clock source for each PI/T can be selected from either CLOCK or CLOCK2 on the RCBus via jumper selection.
  
 ## Multifunction Board
+
+![](../images/MFP_Front.JPG)
+
 The multifunction peripheral board is populated with two 68901 (or equivalent). Each MFP can reside at one of 8 selectable 2K memory addresses from $D10000 to $D13FFF.
 
 The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator and timers. This clock can be shared with other boards by configuring the jumpers appropriately.

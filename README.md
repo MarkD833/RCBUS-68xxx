@@ -30,14 +30,14 @@ The following boards are assembled and are working as intended:
 * 68000 procesor board
 * ROM / RAM board - 128K ROM & 1M RAM
 * Quad serial I/O board - with a pair of 68681 DUARTs
+* Dual MFP board - with a pair of 68901 MFPs
 
 ## To do
 These boards are waiting to be tested:
 * Digital I/O board - with 2 68230 PI/Ts
-* Mutifunction board - with 2 68901 MFPs
  
 ## Progress
-The 68000 board, the ROM/RAM board and the serial I/O board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
+The 68000 board, the ROM/RAM board, the serial I/O board and the MFP board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
 
 The monitor currently supports a few of the EASy68K TRAP #15 text I/O functions - currently just tasks 0, 1, 5, 6, 13 & 14 - which are all related to text input/output. Further tasks may be added as I need them.
 
@@ -58,7 +58,14 @@ I've ported part of J B Langston's [TMS9918A code](https://github.com/jblang/TMS
 
 # Still to do
 * Test the 68230 digital I/O board
-* Test the 68901 MFP board
+
+# Latest news
+I have just received boards back from JLCPCB for:
+* A 1Mb Flash / 1Mb RAM board that can also function as a 2Mb RAM board.
+* A prototype MC68302 RCBus processor board
+* A prototype MC68030 RCBus processor board
+
+I've also managed to bag myself one of []Dean's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
 
 # Conclusion
 The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
