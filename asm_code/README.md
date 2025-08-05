@@ -14,6 +14,7 @@ It can be assembled using EASy68K.
 | [EhBASIC v3.54](#EhBASIC) | Lee Davison’s EhBASIC for MC68000 |
 | [TMS9918A](#TMS9918A) | Shiela Dixon's TMSEMU video module |
 | [MC68901](#MC68901) | MC68901 multi-function peripheral board |
+
 ---
 
 # 68000 monitor
@@ -151,9 +152,12 @@ The Nyan Cat demo was quite straightforward to port as almost all the TMS librar
 
 The sprites demo adds more functionality to the TMS library and should show a spinning globe bouncing off the screen edges.
 
+---
+
 # MC68901
 
 The code in this folder has some basic examples of using the MC6901 multi-function peripheral chip.
 Toggle simple toggles an i/o pin using a crude software delay loop.
+Ser_echo simply waits for a char on the MPF serial port (9600 baud) and echoes it back.
 Timer uses the MFP timer C to generate interrupts that are counted and used to toggle an LED on an SC129 digital I/O board at around 1Hz.
 

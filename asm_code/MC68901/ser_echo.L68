@@ -1,0 +1,160 @@
+00100400 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 05/08/2025 17:32:33
+
+00000000                             1  *------------------------------------------------------------------------------
+00000000                             2  * Dual MFP board - SER_ECHO
+00000000                             3  *------------------------------------------------------------------------------
+00000000                             4  * RCBus 68901 test program - simpley echo back the received character.
+00000000                             5  *
+00000000                             6  * SIO board - set J14 1-2 & 3-4 to share the UART 3.6864MHz clock.
+00000000                             7  * MFP board - set J6 1-2 to use external clock.
+00000000                             8  *------------------------------------------------------------------------------
+00000000                             9  
+00000000                            10  *******************************************************************************
+00000000                            11  * Defines
+00000000                            12  *
+00000000  =00D10000                 13  MFP_BASE        EQU     $D10000     * MC68901 base addr
+00000000                            14  
+00000000                            15  *------------------------------------------------------------------------------
+00000000                            16  * MC68901 Multi-Function Peripheral Register Addresses
+00000000                            17  * MFP 8-bit data is on D0..D7 => odd addresses
+00000000                            18  * All registers are read/write?
+00000000                            19  *
+00000000  =00D10001                 20  GPDR    equ MFP_BASE+$01    * General Purpose I/O Data Register
+00000000  =00D10003                 21  AER     equ MFP_BASE+$03    * Active Edge Register
+00000000  =00D10005                 22  DDR     equ MFP_BASE+$05    * Data Direction Register
+00000000  =00D10007                 23  IERA    equ MFP_BASE+$07    * Interrupt Enable Register A
+00000000  =00D10009                 24  IERB    equ MFP_BASE+$09    * Interrupt Enable Register B
+00000000  =00D1000B                 25  IPRA    equ MFP_BASE+$0B    * Interrupt Pending Register A
+00000000  =00D1000D                 26  IPRB    equ MFP_BASE+$0D    * Interrupt Pending Register B
+00000000  =00D1000F                 27  ISRA    equ MFP_BASE+$0F    * Interrupt In-service Register A
+00000000  =00D10011                 28  ISRB    equ MFP_BASE+$11    * Interrupt In-service Register B
+00000000  =00D10013                 29  IMRA    equ MFP_BASE+$13    * Interrupt Mask Register A
+00000000  =00D10015                 30  IMRB    equ MFP_BASE+$15    * Interrupt Mask Register B
+00000000  =00D10017                 31  VR      equ MFP_BASE+$17    * Vector Register
+00000000  =00D10019                 32  TACR    equ MFP_BASE+$19    * Timer A Control Register
+00000000  =00D1001B                 33  TBCR    equ MFP_BASE+$1B    * Timer B Control Register
+00000000  =00D1001D                 34  TCDCR   equ MFP_BASE+$1D    * Timer C and D Control Register
+00000000  =00D1001F                 35  TADR    equ MFP_BASE+$1F    * Timer A Data Register
+00000000  =00D10021                 36  TBDR    equ MFP_BASE+$21    * Timer B Data Register
+00000000  =00D10023                 37  TCDR    equ MFP_BASE+$23    * Timer C Data Register
+00000000  =00D10025                 38  TDDR    equ MFP_BASE+$25    * Timer D Data Register
+00000000  =00D10027                 39  SCR     equ MFP_BASE+$27    * Synchronous Character Register
+00000000  =00D10029                 40  UCR     equ MFP_BASE+$29    * USART Control Register
+00000000  =00D1002B                 41  RSR     equ MFP_BASE+$2B    * Receiver Status Register
+00000000  =00D1002D                 42  TSR     equ MFP_BASE+$2D    * Transmitter Status Register
+00000000  =00D1002F                 43  UDR     equ MFP_BASE+$2F    * USART Data Register
+00000000                            44  
+00000000                            45  
+00000000                            46  *------------------------------------------------------------------------------
+00000000                            47  * Initialise the MC68901 USART - Timer D hard wired to provide the USART clock
+00000000                            48  * Base clock for all timers is 3.6864MHz from the SIO board (set the jumpers!)
+00000000                            49  *
+00000000                            50  * For 9600 baud : divider = clock / prescaler / 16 / baud rate = 6
+00000000                            51  * Clock is fixed at 3.6864MHz (from SIO board) and prescaler is 4
+00000000                            52  *
+00000000                            53  * Timer D counts down from 3 - we need the output to toggle twice (i.e. high then low)
+00000000                            54  *------------------------------------------------------------------------------
+00000000                            55  
+00100400                            56      ORG     $100400
+00100400                            57  START:
+00100400  13FC 0001 00D1001D        58      move.b  #$01,TCDCR      * Timer D div 4 prescaler (Timer C stopped)
+00100408  13FC 0003 00D10025        59      move.b  #$03,TDDR       * Count down from 3
+00100410                            60      
+00100410  13FC 0088 00D10029        61      move.b  #$88,UCR        * 1/16th clock, 8 bits, 1 start, 1 stop, no parity
+00100418  13FC 0005 00D1002D        62      move.b  #$05,TSR        * Tx pin HIGH, Tx enabled
+00100420  13FC 0001 00D1002B        63      move.b  #$01,RSR        * Rx enabled
+00100428                            64      
+00100428  41FA 003E                 65      lea     strTitle(PC), a0    * Show the program details
+0010042C  6100 0026                 66      bsr.w   putString
+00100430                            67  
+00100430  13FC 0041 00D1002F        68      move.b  #'A',UDR        * Send an 'A' to the USART
+00100438                            69  
+00100438                            70  .endless:
+00100438  0839 0007 00D1002B        71      btst.b  #7,RSR          * check for a character
+00100440  67F6                      72      beq.s   .endless
+00100442                            73  
+00100442  1039 00D1002F             74      move.b  UDR,d0          * get the character
+00100448  13C0 00D1002F             75      move.b  d0,UDR          * and echo it back
+0010044E  60E8                      76      bra.s   .endless
+00100450                            77  
+00100450                            78  *------------------------------------------------------------------------------
+00100450                            79  * Prints a newline (CR, LF)
+00100450                            80  * NOTE: the putString function must follow this function
+00100450                            81  *------------------------------------------------------------------------------
+00100450                            82  putCRLF:
+00100450  41FA 0036                 83      lea     strNewline(PC), a0
+00100454                            84  
+00100454                            85  *------------------------------------------------------------------------------
+00100454                            86  * Print a null terminated string
+00100454                            87  * A0 holds the address of the first character of the null terminated string
+00100454                            88  *------------------------------------------------------------------------------
+00100454                            89  putString:
+00100454                            90  .loop:
+00100454  1018                      91      move.b  (a0)+, d0    * Read in character
+00100456  6704                      92      beq.s   .end         * Check for the null
+00100458                            93      
+00100458  6104                      94      bsr.s   putc         * Otherwise write the character
+0010045A  60F8                      95      bra.s   .loop        * And continue
+0010045C                            96  .end:
+0010045C  4E75                      97      rts
+0010045E                            98  
+0010045E                            99  *------------------------------------------------------------------------------
+0010045E                           100  * Write a character to UART Port A, blocking if UART is not ready
+0010045E                           101  * D0 = char to send
+0010045E                           102  *------------------------------------------------------------------------------
+0010045E                           103  putc:
+0010045E  1200                     104      move.b  d0,d1       * move char to D1
+00100460  103C 0006                105      move.b  #6,D0       * task 6
+00100464  4E4F                     106      trap    #15
+00100466  4E75                     107      rts
+00100468                           108  
+00100468                           109  strTitle:
+00100468= 0A 0D 53 69 6D 70 ...    110      dc.b 10,13,'Simple 68901 Character Echo',10,13,0
+00100488                           111  strNewline:
+00100488= 0A 0D 00                 112      dc.b 10,13,0
+0010048B                           113  
+0010048B                           114      END    START            * last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+AER                 D10003
+DDR                 D10005
+GPDR                D10001
+IERA                D10007
+IERB                D10009
+IMRA                D10013
+IMRB                D10015
+IPRA                D1000B
+IPRB                D1000D
+ISRA                D1000F
+ISRB                D10011
+MFP_BASE            D10000
+PUTC                10045E
+PUTCRLF             100450
+PUTSTRING           100454
+PUTSTRING:END       10045C
+PUTSTRING:LOOP      100454
+RSR                 D1002B
+SCR                 D10027
+START               100400
+START:ENDLESS       100438
+STRNEWLINE          100488
+STRTITLE            100468
+TACR                D10019
+TADR                D1001F
+TBCR                D1001B
+TBDR                D10021
+TCDCR               D1001D
+TCDR                D10023
+TDDR                D10025
+TSR                 D1002D
+UCR                 D10029
+UDR                 D1002F
+VR                  D10017
