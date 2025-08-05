@@ -1,0 +1,137 @@
+00100400 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 05/08/2025 14:28:26
+
+00000000                             1  *------------------------------------------------------------------------------
+00000000                             2  * Dual MFP board - TIMER
+00000000                             3  *------------------------------------------------------------------------------
+00000000                             4  * RCBus 68901 test program - configure timer C to generate interrupts and an
+00000000                             5  * interrupt handler that sets a flag every half second so that GPIO pin 0 on
+00000000                             6  * MFPA can be toggled.
+00000000                             7  *
+00000000                             8  * MFP board - set J2 so MFP interrupt goes via INT2.
+00000000                             9  *
+00000000                            10  * SIO board - set J14 1-2 & 3-4 to share the UART 3.6864MHz clock.
+00000000                            11  * MFP board - set J6 1-2 to use external clock.
+00000000                            12  *
+00000000                            13  * With a divide by 200 prescaler, Timer C is clocked at 18.432KHz.
+00000000                            14  * Set Timer C counter to 0 (i.e. 256) so Timer C will time out every 13.888mS.
+00000000                            15  * Therefore half a second will be 36 interrupts.
+00000000                            16  *
+00000000                            17  * Add a wire jumper between MFP board J4-1 (MFP_A GPIO_0) and an SC129 digital
+00000000                            18  * i/o board P2-0 (IN) to get visual feedback on an LED. 
+00000000                            19  *------------------------------------------------------------------------------
+00000000                            20  
+00000000                            21  *******************************************************************************
+00000000                            22  * Defines
+00000000                            23  *
+00000000  =00D10000                 24  MFP_BASE        EQU     $D10000     * MC68901 base addr
+00000000  =00100068                 25  AV2_ADDR        EQU     $100068     * AV2 vector table address
+00000000                            26  
+00000000                            27  *------------------------------------------------------------------------------
+00000000                            28  * MC68901 Multi-Function Peripheral Register Addresses
+00000000                            29  * MFP 8-bit data is on D0..D7 => odd addresses
+00000000                            30  * All registers are read/write?
+00000000                            31  *
+00000000  =00D10001                 32  GPDR    equ MFP_BASE+$01    * General Purpose I/O Data Register
+00000000  =00D10003                 33  AER     equ MFP_BASE+$03    * Active Edge Register
+00000000  =00D10005                 34  DDR     equ MFP_BASE+$05    * Data Direction Register
+00000000  =00D10007                 35  IERA    equ MFP_BASE+$07    * Interrupt Enable Register A
+00000000  =00D10009                 36  IERB    equ MFP_BASE+$09    * Interrupt Enable Register B
+00000000  =00D1000B                 37  IPRA    equ MFP_BASE+$0B    * Interrupt Pending Register A
+00000000  =00D1000D                 38  IPRB    equ MFP_BASE+$0D    * Interrupt Pending Register B
+00000000  =00D1000F                 39  ISRA    equ MFP_BASE+$0F    * Interrupt In-service Register A
+00000000  =00D10011                 40  ISRB    equ MFP_BASE+$11    * Interrupt In-service Register B
+00000000  =00D10013                 41  IMRA    equ MFP_BASE+$13    * Interrupt Mask Register A
+00000000  =00D10015                 42  IMRB    equ MFP_BASE+$15    * Interrupt Mask Register B
+00000000  =00D10017                 43  VR      equ MFP_BASE+$17    * Vector Register
+00000000  =00D10019                 44  TACR    equ MFP_BASE+$19    * Timer A Control Register
+00000000  =00D1001B                 45  TBCR    equ MFP_BASE+$1B    * Timer B Control Register
+00000000  =00D1001D                 46  TCDCR   equ MFP_BASE+$1D    * Timer C and D Control Register
+00000000  =00D1001F                 47  TADR    equ MFP_BASE+$1F    * Timer A Data Register
+00000000  =00D10021                 48  TBDR    equ MFP_BASE+$21    * Timer B Data Register
+00000000  =00D10023                 49  TCDR    equ MFP_BASE+$23    * Timer C Data Register
+00000000  =00D10025                 50  TDDR    equ MFP_BASE+$25    * Timer D Data Register
+00000000  =00D10027                 51  SCR     equ MFP_BASE+$27    * Synchronous Character Register
+00000000  =00D10029                 52  UCR     equ MFP_BASE+$29    * USART Control Register
+00000000  =00D1002B                 53  RSR     equ MFP_BASE+$2B    * Receiver Status Register
+00000000  =00D1002D                 54  TSR     equ MFP_BASE+$2D    * Transmitter Status Register
+00000000  =00D1002F                 55  UDR     equ MFP_BASE+$2F    * USART Data Register
+00000000                            56  
+00000000                            57  *------------------------------------------------------------------------------
+00000000                            58  * D7 holds a count of the interrupts.
+00000000                            59  * D6 holds a flag to tell the main code that a 0.5sec timeout has occured.
+00000000                            60  *------------------------------------------------------------------------------
+00100400                            61      ORG     $100400
+00100400                            62  START:
+00100400                            63      * configure the 68901
+00100400  13FC 0008 00D10017        64      move.b  #$08,VR         * set software end of interrupt mode
+00100408  13FC 0001 00D10005        65      move.b  #$01,DDR        * set IO port bit 0 as an output
+00100410  13FC 0020 00D10015        66      move.b  #$20,IMRB       * allow Timer C interrupt
+00100418  13FC 0020 00D10009        67      move.b  #$20,IERB       * enable Timer C interrupt
+00100420  13FC 0000 00D10023        68      move.b  #0,TCDR         * put 256 into Timer C register
+00100428  7E24                      69      move.l  #36,D7          * 36 timer interrupts = 0.5 seconds
+0010042A                            70  
+0010042A                            71      * insert the timer interrupt handler into the RAM vector table
+0010042A  23FC 00100454 00100068    72      move.l  #timer_isr,AV2_ADDR
+00100434                            73  
+00100434  46FC 2000                 74      move.w  #$2000,SR       * enable external interrupts
+00100438  13FC 0070 00D1001D        75      move.b  #$70,TCDCR      * start Timer C with a div 200 prescaler
+00100440                            76      
+00100440                            77  forever:
+00100440                            78      * check if timeout flag has been set
+00100440  0806 0000                 79      btst    #0,D6           * test bit 0 of D6
+00100444  67FA                      80      beq.s   forever
+00100446                            81  
+00100446  0A39 0001 00D10001        82      eori.b  #1,GPDR         * toggle the GPIO Pin
+0010044E  1C3C 0000                 83      move.b  #0,D6           * clear the flag
+00100452  60EC                      84      bra.s   forever 
+00100454                            85  
+00100454                            86  timer_isr:
+00100454  13FC 0000 00D1000D        87      move.b  #0,IPRB         * clear the interrupt pending register
+0010045C  13FC 00DF 00D10011        88      move.b  #$DF,ISRB       * clear the In-Service flag
+00100464  51CF 0008                 89      dbra    D7,timer_isr_exit
+00100468  1C3C 0001                 90      move.b  #1,D6           * set the flag
+0010046C  7E24                      91      move.l  #36,D7          * reload our software down counter
+0010046E                            92  timer_isr_exit:
+0010046E  4E73                      93      rte
+00100470                            94      
+00100470                            95      END    START            * last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+AER                 D10003
+AV2_ADDR            100068
+DDR                 D10005
+FOREVER             100440
+GPDR                D10001
+IERA                D10007
+IERB                D10009
+IMRA                D10013
+IMRB                D10015
+IPRA                D1000B
+IPRB                D1000D
+ISRA                D1000F
+ISRB                D10011
+MFP_BASE            D10000
+RSR                 D1002B
+SCR                 D10027
+START               100400
+TACR                D10019
+TADR                D1001F
+TBCR                D1001B
+TBDR                D10021
+TCDCR               D1001D
+TCDR                D10023
+TDDR                D10025
+TIMER_ISR           100454
+TIMER_ISR_EXIT      10046E
+TSR                 D1002D
+UCR                 D10029
+UDR                 D1002F
+VR                  D10017

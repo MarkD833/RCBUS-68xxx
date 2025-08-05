@@ -13,6 +13,7 @@ It can be assembled using EASy68K.
 | [CP/M-68K v1.3](#cpm-68k) | Digital Research CP/M-68K v1.3 |
 | [EhBASIC v3.54](#EhBASIC) | Lee Davison’s EhBASIC for MC68000 |
 | [TMS9918A](#TMS9918A) | Shiela Dixon's TMSEMU video module |
+| [MC68901](#MC68901) | MC68901 multi-function peripheral board |
 ---
 
 # 68000 monitor
@@ -149,3 +150,10 @@ The ASCII font demo is the simplest. It needed quite a few of the TMS library ro
 The Nyan Cat demo was quite straightforward to port as almost all the TMS library routines had already been ported as part of the ASCII font demo. This demonstrates repeated cycling through a set of bitmaps on order to produce an animation of sorts.
 
 The sprites demo adds more functionality to the TMS library and should show a spinning globe bouncing off the screen edges.
+
+# MC68901
+
+The code in this folder has some basic examples of using the MC6901 multi-function peripheral chip.
+Toggle simple toggles an i/o pin using a crude software delay loop.
+Timer uses the MFP timer C to generate interrupts that are counted and used to toggle an LED on an SC129 digital I/O board at around 1Hz.
+
