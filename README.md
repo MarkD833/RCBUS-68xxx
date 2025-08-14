@@ -1,3 +1,6 @@
+# Update
+I now have a working prototype [68302](#RCBus-68302-board) design for RCBus.
+
 # RCBUS 68000 Board
 This is my 68000 design for the RCBus. My design uses a 68000 microprocessor - not a 68008 - and is currently being tested on Steve Cousins [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) 6-slot RCBus backplane.
 
@@ -59,13 +62,23 @@ I've ported part of J B Langston's [TMS9918A code](https://github.com/jblang/TMS
 # Still to do
 * Test the 68230 digital I/O board
 
+---
+
+# RCBUS 68302 Board
+
+As well as progressing my 68000 design, I now have a 68302 RCBus board to add the the collection. The board operates in 16-bit mode and is working with my existing ROM/RAM board. The board features 2 serial ports and an SPI port as well as autovector interrupts. It also includes address decoding to support RCBus /MREQ and /IORQ accesses.
+
+So far serial port #1 is working and I've ported my simple monitor program over to it.
+
+Hopefully more details to follow but for now there's a photo of the front of the board in the images folder. 
+
+---
+
 # Latest news
 I have just received boards back from JLCPCB for:
 * A 1Mb Flash / 1Mb RAM board that can also function as a 2Mb RAM board.
-* A prototype MC68302 RCBus processor board
 * A prototype MC68030 RCBus processor board
 
-I've also managed to bag myself one of [Dean's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
+I've also managed to bag myself one of [Dean Netherton's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
 
-# Conclusion
-The previous version 1 suite of boards have proven that it is possible to run a 68000 based processor system on a standard RCBus backplane that is also compatible with a selection of RCBus / RC2014 boards. The new version 2 suite of boards should present a bit more of a polished solution to my RCBus 68000 design.
+
