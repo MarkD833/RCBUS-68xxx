@@ -5,11 +5,11 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | Board Folder | Description |
 | :---- | :---- |
 | [68000_CPU_Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
-| [68000_ROM_RAM_Board](#ROM-&-RAM-Board) | 128K ROM & 1M RAM board |
-| [68000_SIO_Board](#Serial-I/O-Board) | Dual MC68681 serial board - 4 serial ports |
+| [68000_ROM_RAM_Board](#ROM-RAM-Board) | 128K ROM & 1M RAM board |
+| [68000_SIO_Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
 | [68000_MFP_Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
-| [68000_PIO_Board](#Parallel-I/O-Board) | Dual MC68230 parallel interface / timer board |
-| [68302_CPU_Board](#) | 68302 processor card using the PGA package |
+| [68000_PIO_Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
+| [68302_CPU_Board](#68302-Processor-Board) | 68302 processor card using the PGA package |
 
 Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
@@ -59,7 +59,7 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
 
-## ROM & RAM Board
+## ROM RAM Board
 
 ![](../images/ROM_RAM_Front.JPG)
 
@@ -69,7 +69,7 @@ The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such tha
 
 A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted.
 
-## Serial I/O Board
+## Serial IO Board
 
 ![](../images/Serial_Front.JPG)
 
@@ -79,7 +79,7 @@ The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud r
 
 The current design combines the interrupts from both DUARTs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
  
-## Parallel I/O Board
+## Parallel IO Board
 The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
 
 Each PI/T can generate a timer interrupt and a port interrupt. These can be individually configured route to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
