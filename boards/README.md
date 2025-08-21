@@ -6,6 +6,7 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | :---- | :---- |
 | [68000_CPU_Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
 | [68000_ROM_RAM_Board](#ROM-RAM-Board) | 128K ROM & 1M RAM board |
+| [68000_ROM_RAM_Board_2](#ROM-RAM-Board2) | 128K ROM & 1M RAM board |
 | [68000_SIO_Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
 | [68000_MFP_Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
 | [68000_PIO_Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
@@ -67,7 +68,7 @@ The ROM/RAM board uses 2x Winbond W27C512 EEPROMs to provide 128K of non-volatil
  
 The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
 
-A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted.
+A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted. **SEE ROM/RAM board V2 below.**
 
 ## Serial IO Board
 
@@ -143,6 +144,16 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED and a user LED connected to port pin PB9.
 
+## ROM RAM Board 2
+
+![](../images/ROM_RAM_#2_Front.JPG)
+
+This ROM/RAM board is a bit of an upgrade from the earlier ROM & RAM board. It has 4x 32-pin sockets so that it can take 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory and 2x SST39SF040 FLASH memory chips to provide 1M of non-volatile memory organised as 512K of 16-bit wide memory.
+
+The board will also take 4x Alliance Memory AS6C4008 RAM chips for 2M of volatile memory or 4x SST39SF040 FLASH memory chips to provide 2M of non-volatile memory.
+ 
+The ROM/RAM board decodes memory into 1Mb blocks and via chip selects, the 2 banks of memory can be placed on any 1Mb boundary from $000000 to $500000.
+
 # Chips
 
 My processor board has a turned pin socket fitted so I can easily try different CPU clock frequencies. Initial testing was done with a 7.3728MHz oscillator but I've just tried an 18.432MHz oscillator.
@@ -168,7 +179,13 @@ Note there isn't a U7.
 
 ## 68302 Processor Board
 
-To follow.
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U1 | Phillips | 74HCT10N | Triple 3-input NAND gate |
+| U2 | TI | SN74HCT139N | Dual 2-line to 4-line decoder |
+| U3 | Phillips | PC74HCT125P | Quad tri-state buffer |
+| U4 | Motorola | MC68302CRC16C0 | 68302 Processor |
+| U5 | ST | T74LS148B1 | 8 line to 3 line priority encoder |
 
 ## ROM / RAM Board
 
