@@ -6,7 +6,7 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | :---- | :---- |
 | [68000_CPU_Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
 | [68000_ROM_RAM_Board](#ROM-RAM-Board) | 128K ROM & 1M RAM board |
-| [68000_ROM_RAM_Board_2](#ROM-RAM-Board2) | 128K ROM & 1M RAM board |
+| [68000_ROM_RAM_Board_2](#ROM-RAM-Board-2) | 128K ROM & 1M RAM board |
 | [68000_SIO_Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
 | [68000_MFP_Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
 | [68000_PIO_Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
