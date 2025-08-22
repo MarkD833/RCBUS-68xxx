@@ -4,13 +4,13 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 | Board Folder | Description |
 | :---- | :---- |
-| [68000_CPU_Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
-| [68000_ROM_RAM_Board](#ROM-RAM-Board) | 128K ROM & 1M RAM board |
-| [68000_ROM_RAM_Board_2](#ROM-RAM-Board-2) | 128K ROM & 1M RAM board |
-| [68000_SIO_Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
-| [68000_MFP_Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
-| [68000_PIO_Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
-| [68302_CPU_Board](#68302-Processor-Board) | 68302 processor card using the PGA package |
+| [68000 CPU Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
+| [68000 ROM RAM_Board](#ROM-RAM-Board) | 128K ROM & 1M RAM board |
+| [68000 ROM/RAM Board v2](#ROM-RAM-Board-v2) | 128K ROM & 1M RAM board |
+| [68000 SIO Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
+| [68000 MFP Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
+| [68000 PIO Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
+| [68302 CPU Board](#68302-Processor-Board) | 68302 processor card using the PGA package |
 
 Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
@@ -144,9 +144,9 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED and a user LED connected to port pin PB9.
 
-## ROM RAM Board 2
+## ROM RAM Board v2
 
-![](../images/ROM_RAM_#2_Front.JPG)
+![](../images/ROM_RAM_v2_Front.JPG)
 
 This ROM/RAM board is a bit of an upgrade from the earlier ROM & RAM board. It has 4x 32-pin sockets so that it can take 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory and 2x SST39SF040 FLASH memory chips to provide 1M of non-volatile memory organised as 512K of 16-bit wide memory.
 
