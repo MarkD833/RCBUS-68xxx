@@ -151,7 +151,9 @@ There were a few gates left over and I've used them to drive activity LEDs for a
 This ROM/RAM board is a bit of an upgrade from the earlier ROM & RAM board. It has 4x 32-pin sockets so that it can take 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory and 2x SST39SF040 FLASH memory chips to provide 1M of non-volatile memory organised as 512K of 16-bit wide memory.
 
 The board will also take 4x Alliance Memory AS6C4008 RAM chips for 2M of volatile memory or 4x SST39SF040 FLASH memory chips to provide 2M of non-volatile memory.
- 
+
+Selection of either ROM or RAM is done via standard jumpers and chips must be installed pairs as the memory is 16-bit wide.
+
 The ROM/RAM board decodes memory into 1Mb blocks and via chip selects, the 2 banks of memory can be placed on any 1Mb boundary from $000000 to $500000.
 
 # Chips
@@ -200,6 +202,18 @@ Note there isn't a U7.
 | U9 | TI | SN74LS139AN | Dual 2-line to 4-line decoder |
 
 Note there isn't a U2 or U7.
+
+## ROM / RAM Board v2
+
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U1 | Phillips | PC74HCT125P | Quad tri-state buffer |
+| U2 | TI | SN74LS139AN | Dual 2-line to 4-line decoder |
+| U3 & U4 | See Note | Either a pair of ROMs or a pair of RAM chips |
+| U5 | Nat Semi | DM74LS138N | 3 to 8 line decoder |
+| U6 & U7 | See Note | Either a pair of ROMs or a pair of RAM chips |
+
+The board was designed around Alliance Memory AS6C4008-55PCN 512K RAM chips and SST 
 
 ## Serial I/O Board
 
