@@ -86,6 +86,8 @@ The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Paralle
 Each PI/T can generate a timer interrupt and a port interrupt. These can be individually configured route to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
 
 The clock source for each PI/T can be selected from either CLOCK or CLOCK2 on the RCBus via jumper selection.
+
+**NOTE:** The 68230 chip must have a clock signal present on pin 40 (CLK) even if the timer is not being used. Without a clock signal, the 68230 will not generate a /DTACK and the processor will throw a bus error. 
  
 ## Multifunction Board
 
