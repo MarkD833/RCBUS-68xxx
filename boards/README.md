@@ -209,9 +209,9 @@ Note there isn't a U2 or U7.
 | :---- | :---- |  :---- | :---- |
 | U1 | Phillips | PC74HCT125P | Quad tri-state buffer |
 | U2 | TI | SN74LS139AN | Dual 2-line to 4-line decoder |
-| U3 & U4 | See Note | Either a pair of ROMs or a pair of RAM chips |
+| U3 & U4 | | See Note | Either a pair of ROMs or a pair of RAM chips |
 | U5 | Nat Semi | DM74LS138N | 3 to 8 line decoder |
-| U6 & U7 | See Note | Either a pair of ROMs or a pair of RAM chips |
+| U6 & U7 | | See Note | Either a pair of ROMs or a pair of RAM chips |
 
 The board was designed around Alliance Memory AS6C4008-55PCN 512K RAM chips and SST 
 
