@@ -34,11 +34,8 @@ The following boards are assembled and are working as intended:
 * ROM / RAM board - 128K ROM & 1M RAM
 * Quad serial I/O board - with a pair of 68681 DUARTs
 * Dual MFP board - with a pair of 68901 MFPs
-
-## To do
-These boards are waiting to be tested:
 * Digital I/O board - with 2 68230 PI/Ts
- 
+
 ## Progress
 The 68000 board, the ROM/RAM board, the serial I/O board and the MFP board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
 
@@ -58,9 +55,6 @@ I have a number of Steve Cousin's RC2014 / RCBus boards that I have been able to
 The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 and appear to operate correctly.
 
 I've ported part of J B Langston's [TMS9918A code](https://github.com/jblang/TMS9918A/tree/master) to work with Shiela Dixon's [TMSEMU RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/). There are now several demos working as I've slowly added more functionality to the TMS library. Some demos have also been ported from assembler to C along with modifications to the library to support C function calls.
-
-# Still to do
-* Test the 68230 digital I/O board
 
 ---
 

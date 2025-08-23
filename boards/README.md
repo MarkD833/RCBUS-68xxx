@@ -14,6 +14,8 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
+---
+
 # Boards
 
 ## 68000 Processor Board
@@ -60,6 +62,8 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
 
+---
+
 ## ROM RAM Board v1
 
 ![](../images/ROM_RAM_Front.JPG)
@@ -70,6 +74,8 @@ The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such tha
 
 A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted. **SEE ROM/RAM board V2 below.**
 
+---
+
 ## Serial IO Board
 
 ![](../images/Serial_Front.JPG)
@@ -79,8 +85,13 @@ The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UAR
 The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator. This clock can be shared with other boards by configuring the jumpers appropriately.
 
 The current design combines the interrupts from both DUARTs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
+
+---
  
 ## Parallel IO Board
+
+![](../images/PIO_Front.JPG)
+
 The parallel I/O board is populated with two 68230 (or equivalent) PI/T (Parallel Interface/Timers). Each PI/T can reside at one of 8 selectable 2K memory addresses from $D08000 to $D0BFFF.
 
 Each PI/T can generate a timer interrupt and a port interrupt. These can be individually configured route to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
@@ -89,6 +100,8 @@ The clock source for each PI/T can be selected from either CLOCK or CLOCK2 on th
 
 **NOTE:** The 68230 chip must have a clock signal present on pin 40 (CLK) even if the timer is not being used. Without a clock signal, the 68230 will not generate a /DTACK and the processor will throw a bus error. 
  
+---
+
 ## Multifunction Board
 
 ![](../images/MFP_Front.JPG)
@@ -98,6 +111,8 @@ The multifunction peripheral board is populated with two 68901 (or equivalent). 
 The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator and timers. This clock can be shared with other boards by configuring the jumpers appropriately.
 
 The current design combines the interrupts from both MFPs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
+
+---
 
 ## 68302 Processor Board
 
@@ -146,6 +161,8 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED and a user LED connected to port pin PB9.
 
+---
+
 ## ROM RAM Board v2
 
 ![](../images/ROM_RAM_v2_Front.JPG)
@@ -159,6 +176,8 @@ Selection of either ROM or RAM is done via standard jumpers and chips must be in
 The ROM/RAM board decodes memory into 1Mb blocks and via chip selects, the 2 banks of memory can be placed on any 1Mb boundary from $000000 to $500000.
 
 Both v1 and v2 boards can be used in the same system - just make sure that the v2 board is using /CS2, /CS3, /CS4 or /CS5 to select the devices to avoid conflicting with the fixed address decoding of the v1 board.
+
+---
 
 # Chips
 
@@ -205,7 +224,7 @@ Note there isn't a U7.
 | U8 | Nat Semi | DM74LS138N | 3 to 8 line decoder |
 | U9 | TI | SN74LS139AN | Dual 2-line to 4-line decoder |
 
-Note there isn't a U2 or U7.
+Note there isn't a U2 or U7 as I forgot to re-annotate the schematic.
 
 ## ROM / RAM Board v2
 
@@ -230,8 +249,21 @@ The board was designed around Alliance Memory AS6C4008 512K RAM chips and SST 39
 
 ## Parallel I/O Board
 
-To follow.
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U1 | ST | TS68230CP10 | Parallel Interface / Timer |
+| U2 | ST | TS68230CP10 | Parallel Interface / Timer |
+| U3 | Nat Semi | DM74LS138N | 3 to 8 line decoder |
+| U4 | Philips | PC74HCT688P | 8 bit magnitude comparator |
 
 ## Multi-Function Peripheral Board
 
-To follow.
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U2 | ?? | SN4LS138N | 3 to 8 line decoder |
+| U4 | ST | MK68901N-04 | Multi-Function Peripheral |
+| U5 | ST | MK68901N-04 | Multi-Function Peripheral |
+| U6 | Philips | PC74HCT688P | 8 bit magnitude comparator |
+
+Note there isn't a U1 or U3 as I forgot to re-annotate the schematic.
+

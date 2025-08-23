@@ -1,4 +1,4 @@
-Physical Board
-==============
-Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
+* The 68230 chip select has to include one of the /nDS signals not just /AS.
+  Fix by cutting the /AS track between RCBus pin 41 and the 74LS688 pin 1.
+  Add a wire link between RCBus pin 43 (/LDS) and the 74LS688 pin 1.
+
