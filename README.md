@@ -64,13 +64,13 @@ As well as progressing my 68000 design, I now have a 68302 RCBus board to add th
 
 So far serial port #1 is working and I've ported my simple monitor program over to it.
 
-Hopefully more details to follow but for now there's a photo of the front of the board in the images folder. 
+Look in the boards folder for more details.
 
 ---
 
 # Latest news
 I have just received boards back from JLCPCB for:
-* A 1Mb Flash / 1Mb RAM board that can also function as a 2Mb RAM board.
+* A 1Mb Flash / 1Mb RAM board that can also function as a 2Mb RAM board or a 2Mb Flash board.
 * A prototype MC68030 RCBus processor board
 
 I've also managed to bag myself one of [Dean Netherton's HDMI video boards](https://www.dinoboards.com.au/hdmi-for-rc) that emulates a Yamaha V9958 VDP. Hopefully news on that soon.
