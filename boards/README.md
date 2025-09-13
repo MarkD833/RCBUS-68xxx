@@ -100,7 +100,7 @@ The clock source for each PI/T can be selected from either CLOCK or CLOCK2 on th
 
 **NOTE #1:** The 68230 chip must have a clock signal present on pin 40 (CLK) even if the timer is not being used. Without a clock signal, the 68230 will not generate a /DTACK and the processor will throw a bus error.
 
-**NOTE #2:** I had issues writing to the PI/T due to an assumption I made regarding the /CS signal. After properly reading the MC68230 reference manual, I read the following regardin /CS: 
+**NOTE #2:** I had issues writing to the PI/T due to an assumption I made regarding the /CS signal. After properly reading the MC68230 reference manual, I read the following regarding /CS: 
 *The data strobe (upper or lower) of the bus master, along with the appropriate address bits, must be included in the chip-select equation.*
  
 ---
@@ -163,6 +163,16 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 ### Onboard LEDs
 
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED and a user LED (connected to port pin PB9).
+
+### Note on the MC68302 socket
+
+I could not get hold of the official PGA socket for the 68302 so I had to make my own from some SIL turned pin socket strips. From an earlier experiment I learnt that the plastic housing is slightly too wide so you can't simply butt together 13 SIL strips to make a socket. Instead I had to alternate between rows of pins in the plastic housing and rows of individual pins like this:
+
+![](../images/MC68302_Pins_2.JPG)
+
+This makes it a bit of a pain trying to get all the individual pins to play ball and line up with the PCB holes but it does work.
+
+**Note:** Be careful with this method as I later discovered that the SIL turned pin sockets were not the low insertion force type. Once soldered into the board, the combined resistance of 132 turned pin sockets is such that the processor can't be removed without breaking it. The only way to get the processor out is by destroying the board with a handy rotary tool by cutting out the piece of board holding the processor and then carefully cutting off the pins very close to the board. The processor should then come away and the remains of the turned pin sockets can be easily removed individually. 
 
 ---
 
