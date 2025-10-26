@@ -1,0 +1,12 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+"C1, C2, C3, C4",C_Disc_D5.0mm_W2.5mm_P2.50mm,4,100n,
+"J1, J4, J5",PinHeader_2x08_P2.54mm_Vertical,3,Conn_02x08_Odd_Even,
+"J10, J11, J8, J9",PinHeader_2x04_P2.54mm_Vertical,4,Conn_02x04_Odd_Even,
+"J12, J13, J7",PinHeader_1x08_P2.54mm_Vertical,3,Conn_01x08,
+J14,PinSocket_2x03_P2.54mm_Vertical,1,Conn_02x03_Odd_Even,
+J15,PinSocket_1x06_P2.54mm_Vertical,1,Conn_01x06,
+"J2, J6",PinHeader_1x03_P2.54mm_Vertical,2,Conn_01x03,
+J3,RCBus_80p_Medium,1,RCBus_80PIN_68000,
+"U1, U2",DIP-48_W15.24mm_Socket,2,68230,
+U3,DIP-16_W7.62mm_Socket,1,74LS138,
+U4,DIP-20_W7.62mm_Socket,1,74LS688,
