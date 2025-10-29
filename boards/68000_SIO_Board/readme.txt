@@ -1,3 +1,9 @@
+Notes:
+======
+SIO CLOCK: The clock - X1 in the schematic - should be 3.6864MHz
+ 
+Thoughts:
+=========
 + Should the SIOs each have their own choice of interrupt level?
 + Move the 6-pin serial port connectors further in from the board edge.
 + Jumpers to allow TXD1 & RXD1 to route to the RCBus TX & RX signals.
@@ -5,5 +11,7 @@
 
 Physical Board
 ==============
-Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
++ Experiment to find the maximum width of board that JLCPCB will accept to keep the
+  low price.
++ Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't
+  throw DRC warnings/errors.

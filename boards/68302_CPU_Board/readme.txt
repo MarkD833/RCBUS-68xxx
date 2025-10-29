@@ -1,3 +1,5 @@
+THOUGHTS:
+=========
 + Should I have used SCC1?
   CTS1 is in input to SCC1 that can be used to tell SCC1 to stop transmitting.
   RTS1 is an output from SCC1 and is asserted when SCC1 Tx buffer has data to send.
