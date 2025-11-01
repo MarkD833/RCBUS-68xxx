@@ -25,7 +25,7 @@ The processor board consists of a PLCC packaged MC68000 processor, bits of glue 
 ![](../images/Processor_Front.JPG)
 
 ### Clocks
-The processor/system clock source is an oscillator in an 8-pin DIL/DIP can. I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies.
+The processor/system clock source is an oscillator in an 8-pin DIL/DIP can. I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies. Basic testing was done with a 7.3728MHz oscillator. An 18.432MHz oscillator was also tried and CP/M-68K appeared to work correctly with no issues accessing the CompactFlash drive. 
 
 There's also a jumper to allow the processor E clock to be routed onto the RCBus CLOCK2 pin (61) if required.
 
