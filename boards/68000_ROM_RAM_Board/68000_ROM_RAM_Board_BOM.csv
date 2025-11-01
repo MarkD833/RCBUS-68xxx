@@ -1,0 +1,8 @@
+"Reference","Value","Datasheet","Footprint","Qty","Description"
+"C1,C3,C4,C5,C6,C8,C9","100n","~","Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm","7","Unpolarized ceramic capacitor"
+"J2","RCBus_80PIN_68000","~","MyLibrary2023:RCBus_80p_Medium","1","Generic 02x40 pin connector, right angle"
+"U1","74LS125","http://www.ti.com/lit/gpn/sn74LS125","Package_DIP:DIP-14_W7.62mm","1","Quad buffer 3-State outputs"
+"U3,U6","W27C512","","Package_DIP:DIP-28_W15.24mm","2","EEPROM 64K x 8 DIP28"
+"U4,U5","AS6C4008-55PCN","https://www.alliancememory.com/wp-content/uploads/pdf/AS6C4008.pdf","Package_DIP:DIP-32_W15.24mm","2","512K x 8 Low Power CMOS RAM, DIP-32"
+"U8","74LS138","http://www.ti.com/lit/gpn/sn74LS138","Package_DIP:DIP-16_W7.62mm","1","Decoder 3 to 8 active low outputs"
+"U9","74LS139","http://www.ti.com/lit/ds/symlink/sn74ls139a.pdf","Package_DIP:DIP-16_W7.62mm","1","Dual Decoder 1 of 4, Active low outputs"
