@@ -18,6 +18,7 @@ Since moving from Win10 to Linux Mint, I've started using GCC v15.2.0 and have m
 | [V9958A](#V9958A) | Dean Netherton's HDMI for RC module. |
   
 I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
+
 ---
 
 ## SC611
@@ -55,7 +56,7 @@ The code in the TMS9918A-Fern folder is a 68K version of the fern demonstration 
 ---
 
 ## V9958A
-The demonstrations below are based on the demonstration code of the same name by Dean Netherton for his HDMI for RC board based around a Tang Nano 20K FPGA module.
+The demonstrations below are based on the demonstration code of the same name by Dean Netherton for his [HDMI for RC](https://www.dinoboards.com.au/hdmi-for-rc) board based around a Tang Nano 20K FPGA module.
 
 ### Dots
 The code in the V9958-Dots folder demonstrates plotting pixels. It's not quite the same as Deans original demo code as I have yet to implement a function to return pseudo-random numbers but it serves to demonstrate the plotting functionality.
