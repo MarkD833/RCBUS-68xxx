@@ -74,9 +74,9 @@ The current address map is as follows:
 | 0x100000..0x1FFFFF | SRAM | Fixed address range<sup>1</sup> |
 | 0x000000..0x5FFFFF | FLASH | Jumper selectable address range<sup>2</sup> |
 | 0x000000..0x5FFFFF | SRAM | Jumper selectable address range<sup>2</sup> |
-| 0xD00000..0xD03FFF | DUARTs | Jumper selectable options |
-| 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable options |
-| 0xD10000..0xD13FFF | MFPs | Jumper selectable options |
+| 0xD00000..0xD03FFF | DUARTs | Jumper selectable address range |
+| 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable address range |
+| 0xD10000..0xD13FFF | MFPs | Jumper selectable address range |
 | 0xF00000..0xF7FFFF | RCBus /MREQ | Fixed address range<sup>3</sup> - partially decoded |
 | 0xF80000..0xFFFFFF | RCBus /IORQ | Fixed address range<sup>3</sup> - partially decoded |
 | 0xFC0000..0xFCFFFF | RCBus /MREQ | Fixed address range<sup>4</sup> |
@@ -115,12 +115,16 @@ The SC145 & SC729 CompactFlash modules have both been tested with CP/M-68K v1.3 
 
 I've ported part of J B Langston's [TMS9918A code](https://github.com/jblang/TMS9918A/tree/master) to work with Shiela Dixon's [TMSEMU RCBus video card](https://peacockmedia.software/RC2014/TMSEMU/). There are now several demos working as I've slowly added more functionality to the TMS library. Some demos have also been ported from assembler to C along with modifications to the library to support C function calls.
 
+I've also had success in porting some of Dean Netherton's [HDMI for RC](https://www.dinoboards.com.au/hdmi-for-rc) (V9958A) demonstration code. There are now several demos working as I've slowly explored his Tang Nano 20K FPGA emulation of a V9958A chip.
+
 # Software Development
 All of the early software - i.e. the monitor program - was developed and initially tested using EASy68K & SIM68K under Windows 10.
 
 I've now moved my development across to a Linux Mint system and discovered that EASy68K doesn't particularly like running under WINE. Luckily I still have a Windows 10 PC available.
 
-I've now switched to using GCC to compile C and C++ programs.
+I've now switched to using GCC v15.2.0 to compile my C and C++ programs.
+
+Unfortunately I've had little success in building Newlib or similar libraries to create a libc for my system. This is purely down to my lack of experience / understanding of the configuration and build process. I've therefore resorted to rolling my own libc using the code detailed in [The Standard C Library by P.J.Plauger](https://www.amazon.co.uk/Standard-C-Library-P-J-Plauger/dp/0131315099) as a starting point. 
 
 I've managed to correctly configure the objdump tool to generate an assembler listing file that can then be modified by the Linux SED command such that SIM68K will accept the file and I can debug C++ code running on SIM68K.
 

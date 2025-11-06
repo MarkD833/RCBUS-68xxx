@@ -5,13 +5,19 @@ The source code was built using GCC68K v13.1.0 using Tom Storey's bare metal 68K
 
 The development environment I setup is documented in the Win10-gcc-setup.md file in the root of the repository. 
 
-I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
-
 | Code | Description |
 | :---- | :---- |
 | [SC611](#SC611) | SC611 MicroSD module. |
 | [SC704](#SC704) | SC704 I2C Bus Master module. |
 | [TMS9918A](#TMS9918A) | Shiela Dixon's TMSEMU TMS9918A module. |
+
+Since moving from Win10 to Linux Mint, I've started using GCC v15.2.0 and have made progress developing my own crt0 file to support my C & C++ code and developed / ported the following:
+
+| Code | Description |
+| :---- | :---- |
+| [V9958A](#V9958A) | Dean Netherton's HDMI for RC module. |
+  
+I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
 ---
 
 ## SC611
@@ -45,3 +51,18 @@ The code in the TMS9918A-Nyan folder is a C implementation of the same assembler
 
 ### Fern (Pixel Plotting) Demonstration
 The code in the TMS9918A-Fern folder is a 68K version of the fern demonstration and does 2048 plots before exiting.
+
+---
+
+## V9958A
+The demonstrations below are based on the demonstration code of the same name by Dean Netherton for his HDMI for RC board based around a Tang Nano 20K FPGA module.
+
+### Dots
+The code in the V9958-Dots folder demonstrates plotting pixels. It's not quite the same as Deans original demo code as I have yet to implement a function to return pseudo-random numbers but it serves to demonstrate the plotting functionality.
+
+### Lines
+The code in the V9958-Lines folder demonstrates drawing lines. It's not quite the same as Deans original demo code as I have yet to implement a function to return pseudo-random numbers so it simply draws a rectangular box on the screen instead.
+
+### Mbrot
+The code in the V9958-Mbrot folder demonstrates the plotting of a mandelbrot set. I had to implement my own fabs() function as I don't have a libm (maths) library.
+
