@@ -5,7 +5,8 @@ It can be assembled using EASy68K.
 
 | Code | Description |
 | :---- | :---- |
-| [MON68K](#68000-monitor) | My simple monitor program for the RCBus 68000. |
+| [MON68K](#68000-68302-monitor) | My simple monitor program for the RCBus 68000. |
+| [MON302](#68000-68302-monitor) | My simple monitor program for the RCBus 68302. |
 | [SC129](#sc129) | SC129 digital i/o module. |
 | [SC611](#sc611) | SC611 MicroSD module. |
 | [SC704](#sc704) | SC704 I2C bus master module + SC406 temperature sensor module. |
@@ -17,9 +18,11 @@ It can be assembled using EASy68K.
 
 ---
 
-# 68000 monitor
+# 68000 68302 monitor
 
-I wanted a simple monitor that supported a few basic commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 board.
+I wanted a simple monitor that supported a few basic commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68000 and 68302 boards.
+
+Please note that the monitor programs for my 68000 and 68302 are different although the keyboard commands are the same.
 
 None of the commands support any use of cursor keys or the backspace/delete keys.
 
@@ -29,11 +32,11 @@ There a few basic commands that the monitor understands as follows:
 
 ## B
 
-Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first.
+Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first. I need to provide a write-up on how to include EhBASIC and/or a ROM image that already includes it.
 
 ## C
 
-Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first.
+Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first. I need to provide a write-up on how to include CP/M-68K and/or a ROM image that already includes it.
 
 The CP/M68K v1.3 BIOS uses Steve Cousin's SC145 (or SC729) CompactFlash module to provide disk drives for CP/M. Please see the readme in the CP/M-68K code folder for more details.
  
