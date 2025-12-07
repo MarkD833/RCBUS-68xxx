@@ -7,3 +7,7 @@
 - Physical Board
   + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
   + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
+- CPU Insertion
+  + Make sure you orientate the CPU the correct way. It can be easy to miss the notches on CPU and sockets
+    ![](../../images/Bad_CPU_Insertion.JPG)
+    ![](../../images/Good_CPU_Insertion.JPG):
