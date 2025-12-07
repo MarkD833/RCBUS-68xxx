@@ -5,4 +5,6 @@ ERRORS:
   Fix by connecting LS125 pin 1 to either pin 22 of bank 1 ICs & adding a 10K pullup resistor.
   Fix by connecting LS125 pin 4 to either pin 22 of bank 2 ICs & adding a 10K pullup resistor.
 
+* J4 & J5 at the top of U7 are not on a 0.1in pitch.
+
 
