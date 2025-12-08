@@ -1,3 +1,4 @@
+![](../../images/PIO_Front.JPG)
 # Reliability
 For some reason that I can't yet figure out, the 68230 board is very unreliable. The issue seems to be with the write timing as the chips always report the correct port pin levels during a read of the alternate data registers.
 
