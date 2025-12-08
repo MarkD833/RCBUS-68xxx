@@ -13,8 +13,8 @@
 + J10: TODO
 + J14: Specify the clock source
   + 1&3 Use the onboard clock source
-  + 1&2 Use the RCBus clock source
-  + 1&2 *and* 3&4: Use the onboard clock source and supply the RCBus Clock2 signal with the clock.
+  + 1&2 Use the RCBus clock source from CLOCK2
+  + 1&2 *and* 3&4: Use the onboard clock source and supply the RCBus CLOCK2 signal with the clock.
 + J1: IO Address selection
   + D00000
   + D00800
@@ -31,6 +31,6 @@
 + Move the 6-pin serial port connectors further in from the board edge.
 + Jumpers to allow TXD1 & RXD1 to route to the RCBus TX & RX signals.
 + Jumpers to allow TXD2 & RXD2 to route to the RCBus TX2 & RX2 signals.
-# Physical Board
+# To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
 + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
