@@ -1,3 +1,7 @@
+# Jumpers
++ J1: Fit jumper to route Timer #1 output onto RCBus CLOCK2
++ J3: Connect the 5v from Serial #1 or Serial #2 to the RCBus 5v line
+
 # Thoughts
 + Should I have used SCC1?
   CTS1 is in input to SCC1 that can be used to tell SCC1 to stop transmitting.
