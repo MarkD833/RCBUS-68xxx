@@ -4930,16 +4930,91 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "LS138 DECODES 1M BLOCKS\nCS0: 0x000000..0x0FFFFF\nCS1: 0x100000..0x1FFFFF\nCS2: 0x200000..0x2FFFFF\nCS3: 0x300000..0x3FFFFF\nCS4: 0x400000..0x4FFFFF\nCS5: 0x500000..0x5FFFFF"
+	(text "\n\nCS3: 0x300000..0x3FFFFF\nCS4: 0x400000..0x4FFFFF\nCS5: 0x500000..0x5FFFFF"
 		(exclude_from_sim no)
-		(at 167.894 23.622 0)
+		(at 171.196 16.002 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "1299854e-cabd-47bb-92b5-220896b55bcb")
+	)
+	(text "FLASH"
+		(exclude_from_sim no)
+		(at 120.904 17.526 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+			)
+		)
+		(uuid "1cd85b74-85c7-4285-993b-d8b6e6ad8905")
+	)
+	(text "NOTE:\n\nTHE ~{CS_BANK0} AND ~{CS_BANK1} SIGNALS CAN BE SUPPLIED FROM THE MC68302\nPROCESSOR ~{CS0} AND ~{CS1} PINS - CALLED ~{CS_ROM} AND ~{CS_RAM} ON\nTHE MC68302 SCHEMATIC.\n\nIF USING THE MC68302 BOARD, THEN U1 AND U5 CAN BE OMITTED. INSTEAD,\nCONNECT A WIRE LINK FROM J1-45 TO J11 AND A WIRE LINK FROM\nJ1-46 TO J12 AND FIT THE BOOT ROMS INTO BANK 0."
+		(exclude_from_sim no)
+		(at 16.764 131.064 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "1d9043f6-e517-4cb4-a532-28d11dcace82")
+	)
+	(text "74LS138 DECODES 1M BLOCKS AS FOLLOWS\n\nCS0: 0x000000..0x0FFFFF\nCS1: 0x100000..0x1FFFFF\nCS2: 0x200000..0x2FFFFF\n"
+		(exclude_from_sim no)
+		(at 143.51 16.256 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "74cd9c44-3800-48d8-9122-b25446cabe63")
+	)
+	(text "NOTE:\nSOME OF THE ADDRESS PINS ON THE SRAM SOCKETS\nGO TO DIFFERENT ADDRESSES THAN NORMAL SO THAT\nA FLASH CHIP CAN BE INSERTED INTO THE SAME SOCKET.\n\nSET THE JUMPERS ACCORDINGLY."
+		(exclude_from_sim no)
+		(at 181.356 92.71 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "74cd9c44-3800-48d8-9122-b25446cabe63")
+		(uuid "94d3fc7c-9481-46e0-bdcc-f486c1dab380")
+	)
+	(text "*~{CS_BANK1}"
+		(exclude_from_sim no)
+		(at 25.146 42.926 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b30b2de7-b0c8-4708-9542-5c099b848b42")
+	)
+	(text "*~{CS_BANK0}"
+		(exclude_from_sim no)
+		(at 25.146 40.386 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d22da6f7-d23a-4413-bd01-b29f91064f84")
+	)
+	(text "SRAM"
+		(exclude_from_sim no)
+		(at 251.714 17.272 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+			)
+		)
+		(uuid "ec3ea6a9-6bca-46ae-8bc2-5e8829d5e774")
 	)
 	(junction
 		(at 35.56 185.42)
@@ -4948,37 +5023,37 @@
 		(uuid "108e2612-4192-4c44-ba36-73636f165b01")
 	)
 	(junction
-		(at 203.2 55.88)
+		(at 203.2 53.34)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "18845d85-dce0-47a1-898e-97dbdee95ab5")
 	)
 	(junction
-		(at 152.4 179.07)
+		(at 148.59 179.07)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2025fb82-4a3e-4e3c-86d8-673de7b44ed3")
 	)
 	(junction
-		(at 203.2 45.72)
+		(at 203.2 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2c5c5ad4-7ad0-429e-9f29-4fd8a92cd9a7")
 	)
 	(junction
-		(at 152.4 161.29)
+		(at 148.59 161.29)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "33a78f43-68cd-43f0-8eee-deb2e8cf1f94")
 	)
 	(junction
-		(at 203.2 53.34)
+		(at 203.2 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3b9e7e6d-bd8d-415c-bb43-4ff4cf060826")
 	)
 	(junction
-		(at 215.9 48.26)
+		(at 215.9 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "41cd6575-e01b-4043-a1f3-28962524776f")
@@ -4990,7 +5065,7 @@
 		(uuid "46dfca04-1d10-400d-ad4c-360c19006a06")
 	)
 	(junction
-		(at 215.9 45.72)
+		(at 215.9 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "58cc8420-5fce-4394-a8c9-e5a53bf5add0")
@@ -5002,7 +5077,7 @@
 		(uuid "5d118f8c-55e2-4ff1-bded-de573bb663be")
 	)
 	(junction
-		(at 152.4 168.91)
+		(at 148.59 168.91)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6cc5983f-6480-4c9c-89c4-dc609110c361")
@@ -5014,31 +5089,31 @@
 		(uuid "7cb9b659-4418-438e-adb8-87459ce36c2b")
 	)
 	(junction
-		(at 167.64 38.1)
+		(at 167.64 35.56)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8a616986-4fce-4a5d-8407-81804d604d3b")
 	)
 	(junction
-		(at 215.9 55.88)
+		(at 215.9 53.34)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9220b88a-be5c-4964-b5cc-1970c1a7713b")
 	)
 	(junction
-		(at 203.2 48.26)
+		(at 203.2 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9c10a388-a4ac-4a0f-8d73-e51205b483c1")
 	)
 	(junction
-		(at 152.4 143.51)
+		(at 148.59 143.51)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a2c19409-84ba-461f-803b-6b6ec912373e")
 	)
 	(junction
-		(at 203.2 50.8)
+		(at 203.2 48.26)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a46a273d-10b9-4141-9af5-893625fcce86")
@@ -5056,7 +5131,7 @@
 		(uuid "b96694ed-d2ef-42fe-9799-935d0b12e00f")
 	)
 	(junction
-		(at 215.9 53.34)
+		(at 215.9 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bbbb9de4-5e0b-498c-b66e-6c75c3107f89")
@@ -5068,7 +5143,7 @@
 		(uuid "e4c86bf1-20f5-4474-9f71-b8719b914f14")
 	)
 	(junction
-		(at 215.9 50.8)
+		(at 215.9 48.26)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "fdf61e07-2421-4daa-bf11-f8a00450ba88")
@@ -5090,7 +5165,7 @@
 		(uuid "129cadd2-8756-4e90-ae0c-29d02894ba2f")
 	)
 	(no_connect
-		(at 167.64 161.29)
+		(at 163.83 161.29)
 		(uuid "1cac77c3-8de8-43ef-8e66-5b77dfebffde")
 	)
 	(no_connect
@@ -5118,11 +5193,11 @@
 		(uuid "2b572d47-4a59-48b1-a63a-027ee222494a")
 	)
 	(no_connect
-		(at 180.34 63.5)
+		(at 180.34 60.96)
 		(uuid "3bbcaabb-9186-4f87-93c6-9a9c4b506e36")
 	)
 	(no_connect
-		(at 212.09 107.95)
+		(at 207.01 128.27)
 		(uuid "3e74f93d-9ca6-4464-b55b-4e9aeec4e1a6")
 	)
 	(no_connect
@@ -5130,7 +5205,7 @@
 		(uuid "3e8f56b6-4d26-4d05-830e-2009161766d4")
 	)
 	(no_connect
-		(at 180.34 60.96)
+		(at 180.34 58.42)
 		(uuid "40410dd2-6ff3-4825-b2ee-cd21cb4cb6cf")
 	)
 	(no_connect
@@ -5146,7 +5221,7 @@
 		(uuid "69b38933-74f3-44df-86a3-b1141cd39436")
 	)
 	(no_connect
-		(at 212.09 110.49)
+		(at 207.01 130.81)
 		(uuid "78ee95a0-29d3-437d-ab55-1c965f45a0f5")
 	)
 	(no_connect
@@ -5154,7 +5229,7 @@
 		(uuid "7f14881a-e743-439c-a02f-079040e7514e")
 	)
 	(no_connect
-		(at 167.64 179.07)
+		(at 163.83 179.07)
 		(uuid "804129c0-18a8-477c-81a2-0832bc188aeb")
 	)
 	(no_connect
@@ -5194,7 +5269,7 @@
 		(uuid "cb3d39f4-588c-4316-9a79-7da4edf7aaf9")
 	)
 	(no_connect
-		(at 212.09 128.27)
+		(at 207.01 148.59)
 		(uuid "ccb37c80-3471-4bd5-8045-2c0554a06a44")
 	)
 	(no_connect
@@ -5218,7 +5293,7 @@
 		(uuid "e1fd2120-3d3a-4a33-b9a7-3b6d3b7297a2")
 	)
 	(no_connect
-		(at 212.09 130.81)
+		(at 207.01 151.13)
 		(uuid "e9dd227b-cc16-4e2f-ba1a-3789657f5930")
 	)
 	(no_connect
@@ -5282,6 +5357,16 @@
 			(type default)
 		)
 		(uuid "03ae661a-1444-4c9e-9b43-d085e41eaf32")
+	)
+	(polyline
+		(pts
+			(xy 17.145 46.99) (xy 19.05 45.085)
+		)
+		(stroke
+			(width 0.254)
+			(type default)
+		)
+		(uuid "03be3b96-48f3-47d9-bd8a-506f87ec1f06")
 	)
 	(wire
 		(pts
@@ -5405,7 +5490,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 57.15) (xy 154.94 58.42)
+			(xy 154.94 54.61) (xy 154.94 55.88)
 		)
 		(stroke
 			(width 0)
@@ -5445,7 +5530,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 149.86) (xy 167.64 149.86)
+			(xy 156.21 149.86) (xy 163.83 149.86)
 		)
 		(stroke
 			(width 0)
@@ -5575,7 +5660,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 168.91) (xy 152.4 168.91)
+			(xy 156.21 168.91) (xy 148.59 168.91)
 		)
 		(stroke
 			(width 0)
@@ -5625,7 +5710,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 132.08) (xy 167.64 132.08)
+			(xy 156.21 132.08) (xy 163.83 132.08)
 		)
 		(stroke
 			(width 0)
@@ -5645,7 +5730,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 45.72) (xy 203.2 48.26)
+			(xy 203.2 43.18) (xy 203.2 45.72)
 		)
 		(stroke
 			(width 0)
@@ -5885,7 +5970,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 53.34) (xy 215.9 55.88)
+			(xy 215.9 50.8) (xy 215.9 53.34)
 		)
 		(stroke
 			(width 0)
@@ -5915,7 +6000,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 50.8) (xy 215.9 53.34)
+			(xy 215.9 48.26) (xy 215.9 50.8)
 		)
 		(stroke
 			(width 0)
@@ -5925,13 +6010,23 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 53.34) (xy 203.2 55.88)
+			(xy 203.2 50.8) (xy 203.2 53.34)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "50d82364-838d-4362-a743-5d32124edda0")
+	)
+	(polyline
+		(pts
+			(xy 19.05 45.085) (xy 20.955 46.99)
+		)
+		(stroke
+			(width 0.254)
+			(type default)
+		)
+		(uuid "5135cb94-f4ed-4f29-a506-6ba186fa92e9")
 	)
 	(wire
 		(pts
@@ -5965,7 +6060,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 40.64) (xy 215.9 45.72)
+			(xy 215.9 38.1) (xy 215.9 43.18)
 		)
 		(stroke
 			(width 0)
@@ -6005,7 +6100,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 48.26) (xy 203.2 50.8)
+			(xy 203.2 45.72) (xy 203.2 48.26)
 		)
 		(stroke
 			(width 0)
@@ -6243,6 +6338,16 @@
 		)
 		(uuid "78ef9604-5f94-4175-a7ae-15b617b7bcac")
 	)
+	(polyline
+		(pts
+			(xy 26.67 43.18) (xy 30.48 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7a3b5aae-e86f-46b4-85d7-b63925908c53")
+	)
 	(wire
 		(pts
 			(xy 224.79 73.66) (xy 238.76 73.66)
@@ -6275,7 +6380,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 50.8) (xy 203.2 53.34)
+			(xy 203.2 48.26) (xy 203.2 50.8)
 		)
 		(stroke
 			(width 0)
@@ -6335,7 +6440,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 45.72) (xy 215.9 48.26)
+			(xy 215.9 43.18) (xy 215.9 45.72)
 		)
 		(stroke
 			(width 0)
@@ -6343,9 +6448,19 @@
 		)
 		(uuid "85614fe7-9999-49bf-94c0-b98d6dc3ac32")
 	)
+	(polyline
+		(pts
+			(xy 19.05 129.54) (xy 19.05 45.085)
+		)
+		(stroke
+			(width 0.254)
+			(type default)
+		)
+		(uuid "85922b0e-9db0-4b2e-81f0-de3152388ff9")
+	)
 	(wire
 		(pts
-			(xy 152.4 179.07) (xy 152.4 168.91)
+			(xy 148.59 179.07) (xy 148.59 168.91)
 		)
 		(stroke
 			(width 0)
@@ -6475,7 +6590,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 48.26) (xy 215.9 50.8)
+			(xy 215.9 45.72) (xy 215.9 48.26)
 		)
 		(stroke
 			(width 0)
@@ -6535,7 +6650,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 55.88) (xy 215.9 58.42)
+			(xy 215.9 53.34) (xy 215.9 55.88)
 		)
 		(stroke
 			(width 0)
@@ -6565,7 +6680,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 185.42) (xy 152.4 179.07)
+			(xy 148.59 185.42) (xy 148.59 179.07)
 		)
 		(stroke
 			(width 0)
@@ -6605,7 +6720,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 167.64) (xy 160.02 168.91)
+			(xy 156.21 167.64) (xy 156.21 168.91)
 		)
 		(stroke
 			(width 0)
@@ -6765,7 +6880,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 143.51) (xy 152.4 161.29)
+			(xy 148.59 143.51) (xy 148.59 161.29)
 		)
 		(stroke
 			(width 0)
@@ -6875,7 +6990,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 38.1) (xy 167.64 38.1)
+			(xy 165.1 35.56) (xy 167.64 35.56)
 		)
 		(stroke
 			(width 0)
@@ -6885,7 +7000,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 40.64) (xy 203.2 45.72)
+			(xy 203.2 38.1) (xy 203.2 43.18)
 		)
 		(stroke
 			(width 0)
@@ -6925,7 +7040,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 125.73) (xy 152.4 143.51)
+			(xy 148.59 125.73) (xy 148.59 143.51)
 		)
 		(stroke
 			(width 0)
@@ -7155,7 +7270,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 168.91) (xy 152.4 161.29)
+			(xy 148.59 168.91) (xy 148.59 161.29)
 		)
 		(stroke
 			(width 0)
@@ -7165,7 +7280,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 55.88) (xy 203.2 58.42)
+			(xy 203.2 53.34) (xy 203.2 55.88)
 		)
 		(stroke
 			(width 0)
@@ -7243,6 +7358,16 @@
 		)
 		(uuid "fda7f494-a798-4dde-bd07-88e1508709dd")
 	)
+	(polyline
+		(pts
+			(xy 26.67 40.64) (xy 30.48 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe190894-7a3f-4c3f-954e-857dffc75a2b")
+	)
 	(wire
 		(pts
 			(xy 251.46 27.94) (xy 251.46 30.48)
@@ -7294,7 +7419,7 @@
 		(uuid "002ce60e-a8c9-4dc6-9969-89b4b2afe84c")
 	)
 	(label "~{AS}"
-		(at 186.69 123.19 180)
+		(at 181.61 143.51 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7364,7 +7489,7 @@
 		(uuid "08643772-f3da-4e2d-9ab3-76efe92b431e")
 	)
 	(label "A21"
-		(at 154.94 48.26 180)
+		(at 154.94 45.72 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7404,7 +7529,7 @@
 		(uuid "1289b8fd-3e30-4ac5-9b58-189013cc8ad9")
 	)
 	(label "A20"
-		(at 154.94 45.72 180)
+		(at 154.94 43.18 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7434,7 +7559,7 @@
 		(uuid "1a6b894f-e3eb-4ad6-9237-386badb81adf")
 	)
 	(label "~{RAM_CS}"
-		(at 167.64 132.08 0)
+		(at 163.83 132.08 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7494,7 +7619,7 @@
 		(uuid "2104c1d6-054d-43dd-b3af-8bfe19a087f8")
 	)
 	(label "~{CS_BANK0}"
-		(at 203.2 40.64 180)
+		(at 203.2 38.1 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7554,7 +7679,7 @@
 		(uuid "2902645d-f908-49cd-9468-16248fb6645e")
 	)
 	(label "~{RD_LO}"
-		(at 212.09 125.73 0)
+		(at 207.01 146.05 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7624,7 +7749,7 @@
 		(uuid "2f68d0e3-b9d7-4aa5-8a08-f36e1b49dbc4")
 	)
 	(label "~{DTACK}"
-		(at 167.64 125.73 0)
+		(at 163.83 125.73 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7734,7 +7859,7 @@
 		(uuid "39169ae8-fbb1-428d-b1d3-eb9ca5d13453")
 	)
 	(label "A22"
-		(at 154.94 50.8 180)
+		(at 154.94 48.26 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7794,7 +7919,7 @@
 		(uuid "3e867e8c-edea-4bd4-babc-767f66f0d795")
 	)
 	(label "~{CS_BANK1}"
-		(at 215.9 40.64 180)
+		(at 215.9 38.1 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7814,7 +7939,7 @@
 		(uuid "41acba06-a958-4719-874a-28d810d67a96")
 	)
 	(label "~{AS}"
-		(at 154.94 63.5 180)
+		(at 154.94 60.96 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7914,7 +8039,7 @@
 		(uuid "4e5903fb-615e-4b7f-932d-09ab949ff6be")
 	)
 	(label "R{slash}~{W}"
-		(at 186.69 125.73 180)
+		(at 181.61 146.05 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8114,7 +8239,7 @@
 		(uuid "690cf034-c5a2-4369-8a44-fdab8325d897")
 	)
 	(label "~{DTACK}"
-		(at 167.64 143.51 0)
+		(at 163.83 143.51 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8204,7 +8329,7 @@
 		(uuid "7cdd29b1-aba3-43a1-a647-0861fc9f334c")
 	)
 	(label "~{AS}"
-		(at 186.69 102.87 180)
+		(at 181.61 123.19 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8234,7 +8359,7 @@
 		(uuid "80431d5a-ba48-4663-b071-fac06f0b3adb")
 	)
 	(label "~{RD_HI}"
-		(at 212.09 105.41 0)
+		(at 207.01 125.73 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8334,7 +8459,7 @@
 		(uuid "8e08a438-3417-4e06-b677-2fbc2a5d771b")
 	)
 	(label "~{UDS}"
-		(at 186.69 110.49 180)
+		(at 181.61 130.81 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8434,7 +8559,7 @@
 		(uuid "a0d3ecbd-92b9-403d-9b38-ccb9a1c751de")
 	)
 	(label "A23"
-		(at 154.94 60.96 180)
+		(at 154.94 58.42 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8584,7 +8709,7 @@
 		(uuid "b5d0ff54-668e-492a-96d0-5ad603bef1f4")
 	)
 	(label "~{ROM_CS}"
-		(at 167.64 149.86 0)
+		(at 163.83 149.86 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8734,7 +8859,7 @@
 		(uuid "c31ddf29-2a89-4cf7-8a92-1e0c0dbdf57e")
 	)
 	(label "R{slash}~{W}"
-		(at 186.69 105.41 180)
+		(at 181.61 125.73 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8804,7 +8929,7 @@
 		(uuid "cab7a778-8833-4999-9876-3268d03973a2")
 	)
 	(label "~{WR_HI}"
-		(at 212.09 102.87 0)
+		(at 207.01 123.19 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8944,7 +9069,7 @@
 		(uuid "d55a548e-c6c1-49aa-9307-1426e542ca00")
 	)
 	(label "~{WR_LO}"
-		(at 212.09 123.19 0)
+		(at 207.01 143.51 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8984,7 +9109,7 @@
 		(uuid "daed38e9-0b61-417e-ac29-3a87e5926403")
 	)
 	(label "~{LDS}"
-		(at 186.69 130.81 180)
+		(at 181.61 151.13 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9215,7 +9340,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS125")
-		(at 160.02 125.73 0)
+		(at 156.21 125.73 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9224,7 +9349,7 @@
 		(fields_autoplaced yes)
 		(uuid "07b7973b-f631-4483-ab41-170d662801f1")
 		(property "Reference" "U1"
-			(at 160.02 116.84 0)
+			(at 156.21 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9232,7 +9357,7 @@
 			)
 		)
 		(property "Value" "74LS125"
-			(at 160.02 119.38 0)
+			(at 156.21 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9240,7 +9365,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
-			(at 160.02 125.73 0)
+			(at 156.21 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9249,7 +9374,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS125"
-			(at 160.02 125.73 0)
+			(at 156.21 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9258,7 +9383,7 @@
 			)
 		)
 		(property "Description" "Quad buffer 3-State outputs"
-			(at 160.02 125.73 0)
+			(at 156.21 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9451,7 +9576,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 157.48 38.1 0)
+		(at 157.48 35.56 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9460,7 +9585,7 @@
 		(dnp no)
 		(uuid "0c436d0c-e4cc-49d9-8a47-223aa110b272")
 		(property "Reference" "#PWR020"
-			(at 157.48 44.45 0)
+			(at 157.48 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9469,7 +9594,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 153.67 40.132 0)
+			(at 153.67 37.592 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9477,7 +9602,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 157.48 38.1 0)
+			(at 157.48 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9486,7 +9611,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 157.48 38.1 0)
+			(at 157.48 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9495,7 +9620,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 157.48 38.1 0)
+			(at 157.48 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9561,7 +9686,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 83.82 171.45 0)
 			(effects
 				(font
@@ -9655,7 +9780,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 154.94 57.15 0)
+		(at 154.94 54.61 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9663,7 +9788,7 @@
 		(dnp no)
 		(uuid "1d8943a7-1eee-465b-9caf-9cf73bf071e4")
 		(property "Reference" "#PWR019"
-			(at 154.94 60.96 0)
+			(at 154.94 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9672,7 +9797,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 149.86 55.372 0)
+			(at 149.86 52.832 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9681,7 +9806,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 154.94 57.15 0)
+			(at 154.94 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9690,7 +9815,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 154.94 57.15 0)
+			(at 154.94 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9699,7 +9824,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 154.94 57.15 0)
+			(at 154.94 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9763,7 +9888,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 64.77 160.02 0)
 			(effects
 				(font
@@ -10027,7 +10152,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x06")
-		(at 198.12 50.8 0)
+		(at 198.12 48.26 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10036,7 +10161,7 @@
 		(dnp no)
 		(uuid "3933671f-d564-467f-a973-f7eb4d339ec0")
 		(property "Reference" "J11"
-			(at 199.898 43.18 0)
+			(at 199.898 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10045,7 +10170,7 @@
 			)
 		)
 		(property "Value" "Conn_01x06"
-			(at 204.978 61.214 0)
+			(at 204.978 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10054,7 +10179,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
-			(at 198.12 50.8 0)
+			(at 198.12 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10063,7 +10188,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 198.12 50.8 0)
+			(at 198.12 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10071,8 +10196,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 198.12 50.8 0)
+		(property "Description" "Generic connector, single row, 01x06"
+			(at 198.12 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10313,7 +10438,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 219.71 147.32 0)
 			(effects
 				(font
@@ -10342,7 +10467,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x06")
-		(at 185.42 50.8 0)
+		(at 185.42 48.26 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10350,7 +10475,7 @@
 		(dnp no)
 		(uuid "51f35625-6b86-4998-89db-5954122a1bdc")
 		(property "Reference" "J10"
-			(at 183.642 43.18 0)
+			(at 183.642 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10359,7 +10484,7 @@
 			)
 		)
 		(property "Value" "Conn_01x06"
-			(at 181.356 61.214 0)
+			(at 181.356 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10368,7 +10493,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
-			(at 185.42 50.8 0)
+			(at 185.42 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10377,7 +10502,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 185.42 50.8 0)
+			(at 185.42 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10385,8 +10510,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 185.42 50.8 0)
+		(property "Description" "Generic connector, single row, 01x06"
+			(at 185.42 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10423,7 +10548,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 167.64 71.12 0)
+		(at 167.64 68.58 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10432,7 +10557,7 @@
 		(dnp no)
 		(uuid "56797414-9c07-4e55-90c6-81bafb843f37")
 		(property "Reference" "#PWR022"
-			(at 167.64 77.47 0)
+			(at 167.64 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10441,7 +10566,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 163.83 73.152 0)
+			(at 163.83 70.612 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10449,7 +10574,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 167.64 71.12 0)
+			(at 167.64 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10458,7 +10583,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 167.64 71.12 0)
+			(at 167.64 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10467,7 +10592,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 167.64 71.12 0)
+			(at 167.64 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10532,7 +10657,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 113.03 29.21 0)
 			(effects
 				(font
@@ -10668,7 +10793,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 83.82 86.36 0)
 			(effects
 				(font
@@ -10965,7 +11090,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 245.11 27.94 0)
 			(effects
 				(font
@@ -11393,7 +11518,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 279.4 78.74 0)
 			(effects
 				(font
@@ -11488,7 +11613,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 152.4 185.42 0)
+		(at 148.59 185.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11497,7 +11622,7 @@
 		(fields_autoplaced yes)
 		(uuid "7e1a8b32-f9fe-4863-96ae-bad556d4d2f9")
 		(property "Reference" "#PWR011"
-			(at 152.4 191.77 0)
+			(at 148.59 191.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11506,7 +11631,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 152.4 190.5 0)
+			(at 148.59 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11514,7 +11639,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 152.4 185.42 0)
+			(at 148.59 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11523,7 +11648,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 185.42 0)
+			(at 148.59 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11532,7 +11657,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 152.4 185.42 0)
+			(at 148.59 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11554,7 +11679,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 161.29 38.1 90)
+		(at 161.29 35.56 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11563,7 +11688,7 @@
 		(fields_autoplaced yes)
 		(uuid "7e2a673f-4eaf-431b-a2ee-c72c164a6e66")
 		(property "Reference" "C5"
-			(at 161.29 30.48 90)
+			(at 161.29 27.94 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11571,7 +11696,7 @@
 			)
 		)
 		(property "Value" "100n"
-			(at 161.29 33.02 90)
+			(at 161.29 30.48 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11579,7 +11704,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
-			(at 165.1 37.1348 0)
+			(at 165.1 34.5948 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11588,7 +11713,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 161.29 38.1 0)
+			(at 161.29 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11596,8 +11721,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 161.29 38.1 0)
+		(property "Description" "Unpolarized ceramic capacitor"
+			(at 161.29 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11622,7 +11747,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 160.02 185.42 0)
+		(at 156.21 185.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11631,7 +11756,7 @@
 		(fields_autoplaced yes)
 		(uuid "82df9c1e-6a25-4ade-b525-3bcf9b759f44")
 		(property "Reference" "#PWR012"
-			(at 160.02 191.77 0)
+			(at 156.21 191.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11640,7 +11765,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 160.02 190.5 0)
+			(at 156.21 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11648,7 +11773,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 160.02 185.42 0)
+			(at 156.21 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11657,7 +11782,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 185.42 0)
+			(at 156.21 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11666,7 +11791,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 160.02 185.42 0)
+			(at 156.21 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11864,7 +11989,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 83.82 71.12 0)
 			(effects
 				(font
@@ -11936,7 +12061,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Generic connector, double row, 02x40, right angle"
 			(at 39.37 78.74 0)
 			(effects
 				(font
@@ -12238,7 +12363,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 41.91 160.02 0)
 			(effects
 				(font
@@ -12331,7 +12456,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS125")
-		(at 160.02 143.51 0)
+		(at 156.21 143.51 0)
 		(unit 2)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -12340,7 +12465,7 @@
 		(fields_autoplaced yes)
 		(uuid "9884989f-0341-4d4e-b110-16826f6d6019")
 		(property "Reference" "U1"
-			(at 160.02 134.62 0)
+			(at 156.21 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12348,7 +12473,7 @@
 			)
 		)
 		(property "Value" "74LS125"
-			(at 160.02 137.16 0)
+			(at 156.21 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12356,7 +12481,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
-			(at 160.02 143.51 0)
+			(at 156.21 143.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12365,7 +12490,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS125"
-			(at 160.02 143.51 0)
+			(at 156.21 143.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12374,7 +12499,7 @@
 			)
 		)
 		(property "Description" "Quad buffer 3-State outputs"
-			(at 160.02 143.51 0)
+			(at 156.21 143.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12435,7 +12560,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS125")
-		(at 160.02 179.07 0)
+		(at 156.21 179.07 0)
 		(unit 4)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -12444,7 +12569,7 @@
 		(fields_autoplaced yes)
 		(uuid "98ce2501-f4ab-4f58-b5a5-817befe9ddc7")
 		(property "Reference" "U1"
-			(at 160.02 170.18 0)
+			(at 156.21 170.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12452,7 +12577,7 @@
 			)
 		)
 		(property "Value" "74LS125"
-			(at 160.02 172.72 0)
+			(at 156.21 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12460,7 +12585,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
-			(at 160.02 179.07 0)
+			(at 156.21 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12469,7 +12594,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS125"
-			(at 160.02 179.07 0)
+			(at 156.21 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12478,7 +12603,7 @@
 			)
 		)
 		(property "Description" "Quad buffer 3-State outputs"
-			(at 160.02 179.07 0)
+			(at 156.21 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12581,7 +12706,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 245.11 101.6 0)
 			(effects
 				(font
@@ -12673,7 +12798,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS125")
-		(at 160.02 161.29 0)
+		(at 156.21 161.29 0)
 		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -12682,7 +12807,7 @@
 		(fields_autoplaced yes)
 		(uuid "a7842baa-427c-4a82-8fed-2060fe8d89b5")
 		(property "Reference" "U1"
-			(at 160.02 152.4 0)
+			(at 156.21 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12690,7 +12815,7 @@
 			)
 		)
 		(property "Value" "74LS125"
-			(at 160.02 154.94 0)
+			(at 156.21 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12698,7 +12823,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
-			(at 160.02 161.29 0)
+			(at 156.21 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12707,7 +12832,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS125"
-			(at 160.02 161.29 0)
+			(at 156.21 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12716,7 +12841,7 @@
 			)
 		)
 		(property "Description" "Quad buffer 3-State outputs"
-			(at 160.02 161.29 0)
+			(at 156.21 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12821,7 +12946,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 219.71 73.66 0)
 			(effects
 				(font
@@ -13049,7 +13174,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS138")
-		(at 167.64 53.34 0)
+		(at 167.64 50.8 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13058,7 +13183,7 @@
 		(fields_autoplaced yes)
 		(uuid "b3e10eaa-639e-46b0-9c48-5d008c897921")
 		(property "Reference" "U5"
-			(at 169.8341 38.1 0)
+			(at 169.8341 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13067,7 +13192,7 @@
 			)
 		)
 		(property "Value" "74LS138"
-			(at 169.8341 40.64 0)
+			(at 169.8341 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13076,7 +13201,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-16_W7.62mm"
-			(at 167.64 53.34 0)
+			(at 167.64 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13085,7 +13210,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS138"
-			(at 167.64 53.34 0)
+			(at 167.64 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13094,7 +13219,7 @@
 			)
 		)
 		(property "Description" "Decoder 3 to 8 active low outputs"
-			(at 167.64 53.34 0)
+			(at 167.64 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13403,7 +13528,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 279.4 148.59 0)
 			(effects
 				(font
@@ -13432,7 +13557,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS139")
-		(at 199.39 125.73 0)
+		(at 194.31 146.05 0)
 		(unit 2)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13441,7 +13566,7 @@
 		(fields_autoplaced yes)
 		(uuid "d514cd39-8e31-4569-8cdb-c22d0d217fe3")
 		(property "Reference" "U2"
-			(at 199.39 115.57 0)
+			(at 194.31 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13449,7 +13574,7 @@
 			)
 		)
 		(property "Value" "74LS139"
-			(at 199.39 118.11 0)
+			(at 194.31 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13457,7 +13582,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-16_W7.62mm"
-			(at 199.39 125.73 0)
+			(at 194.31 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13466,7 +13591,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/sn74ls139a.pdf"
-			(at 199.39 125.73 0)
+			(at 194.31 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13475,7 +13600,7 @@
 			)
 		)
 		(property "Description" "Dual Decoder 1 of 4, Active low outputs"
-			(at 199.39 125.73 0)
+			(at 194.31 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13542,7 +13667,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 167.64 38.1 0)
+		(at 167.64 35.56 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13551,7 +13676,7 @@
 		(fields_autoplaced yes)
 		(uuid "db77ddac-cb5c-4e64-829b-bec040cb4d96")
 		(property "Reference" "#PWR021"
-			(at 167.64 41.91 0)
+			(at 167.64 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13560,7 +13685,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 167.64 33.02 0)
+			(at 167.64 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13568,7 +13693,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 167.64 38.1 0)
+			(at 167.64 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13577,7 +13702,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 167.64 38.1 0)
+			(at 167.64 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13586,7 +13711,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 167.64 38.1 0)
+			(at 167.64 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14012,7 +14137,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x06")
-		(at 210.82 50.8 0)
+		(at 210.82 48.26 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14021,7 +14146,7 @@
 		(dnp no)
 		(uuid "eebdb9bf-260f-4f43-b497-5f43363aee30")
 		(property "Reference" "J12"
-			(at 212.598 43.18 0)
+			(at 212.598 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14030,7 +14155,7 @@
 			)
 		)
 		(property "Value" "Conn_01x06"
-			(at 218.948 61.214 0)
+			(at 218.948 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14039,7 +14164,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
-			(at 210.82 50.8 0)
+			(at 210.82 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14048,7 +14173,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 210.82 50.8 0)
+			(at 210.82 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14056,8 +14181,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 210.82 50.8 0)
+		(property "Description" "Generic connector, single row, 01x06"
+			(at 210.82 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14204,7 +14329,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" "Generic connector, single row, 01x03"
 			(at 83.82 156.21 0)
 			(effects
 				(font
@@ -14276,7 +14401,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized ceramic capacitor"
 			(at 113.03 114.3 0)
 			(effects
 				(font
@@ -14302,7 +14427,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS139")
-		(at 199.39 105.41 0)
+		(at 194.31 125.73 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14311,7 +14436,7 @@
 		(fields_autoplaced yes)
 		(uuid "fced3e9d-da6f-4b48-ba86-a4fe1f9db48c")
 		(property "Reference" "U2"
-			(at 199.39 95.25 0)
+			(at 194.31 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14319,7 +14444,7 @@
 			)
 		)
 		(property "Value" "74LS139"
-			(at 199.39 97.79 0)
+			(at 194.31 118.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14327,7 +14452,7 @@
 			)
 		)
 		(property "Footprint" "Package_DIP:DIP-16_W7.62mm"
-			(at 199.39 105.41 0)
+			(at 194.31 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14336,7 +14461,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/sn74ls139a.pdf"
-			(at 199.39 105.41 0)
+			(at 194.31 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14345,7 +14470,7 @@
 			)
 		)
 		(property "Description" "Dual Decoder 1 of 4, Active low outputs"
-			(at 199.39 105.41 0)
+			(at 194.31 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
