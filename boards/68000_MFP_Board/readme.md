@@ -1,4 +1,7 @@
 ![](../../images/MFP_Front.JPG)
+# Caution
+Pay attention to the orientation of the chips on this board.
+
 # Notes
 - MFP Clock
   + The clock - X1 in the schematic - should be 3.6864MHz

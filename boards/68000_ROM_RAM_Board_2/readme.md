@@ -1,6 +1,3 @@
-# STOP!
-I think I may have messed up the address lines to the IC sockets when a FLASH chip is being used. *DO NOT* use this board until I can check it out.
-
 ![](../../images/ROM_RAM_v2_Front.JPG)
 # Notes
 Do not mix ROM & RAM chips in the same bank.
