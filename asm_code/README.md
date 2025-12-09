@@ -3,6 +3,8 @@
 This folder contains the assembler software that I've either developed myself or ported to my RCBus 68000 board(s).
 It can be assembled using EASy68K.
 
+The file MON68K+CCP+BIOS+BASIC.s68 is an S-record file for the 68000 board only. This file is not compatible with the 68302 board. It contains rcMON68K v1.3, CP/M-68K v1.3, CP/M-68K BIOS and EhBASIC v3.54. In order to use this file, you can either load it into your prom programmer and program the odd and even bytes into separate ROMs or you can load it into EASyBIN and generate a pair of binary files that your prom programmer can then program into separate ROMs.
+
 | Code | Description |
 | :---- | :---- |
 | [MON68K](#68000-68302-monitor) | My simple monitor program for the RCBus 68000. |
