@@ -16,7 +16,7 @@ There's also a jumper (J4) to allow the processor E clock to be routed onto the 
 ## DTACK & Bus Error
 The processor board includes a counter to generate a bus error if a /DTACK is not received after 4 clocks of the E signal.
 
-The processor board also includes a counter to generate a DTACK for the RCBus MREQ and IORQ addresses. The /DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
+The processor board also includes a counter to generate a /DTACK for the RCBus MREQ and IORQ addresses. The /DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
 
 Only RCBus /MREQ and /IORQ accesses generate a /DTACK. All other boards must supply their own /DTACK signal otherwise a bus error will be raised.
 
@@ -43,9 +43,11 @@ For both I/O and memory spaces, consecutive memory locations are accessed on the
 ## Onboard LEDs
 There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
 
-# Assembly
+# Board Assembly
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
+
 ICs are orientated in different directions - make sure you insert the chips into their sockets in the correct orientation. Also pay attention to the orientation of the 68000 processor - see note below. 
+
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
 # Software
@@ -53,7 +55,9 @@ I've written a very simple monitor program for the 68000 board whick can be foun
 
 ## Interrupts
 As the ROM is fixed at address $00000000, the exception vector table addresses are also fixed. Exception vectors up to and including TRAP #15 each call their own handler stub within the monitor ROM. The remaining exception vectors are all directed to a single handler as they are not used within my design - i.e. vectored interrupts are not supported, only autovectored interrupts.
+
 Each exception handler stub in the ROM (apart from bus error, address error and TRAP #15) looks up the start address of the actual exception handler code in a table of addresses held in RAM (which is initialised by the montor program). The table is located at the start of RAM occupying addresses $00100000..$001003FF and is laid out just like a normal exception vector table.
+
 In order to use your own exception handler, you simply over write the RAM exception vector table entry with the address of your own handler.
 
 # Jumpers
