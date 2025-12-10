@@ -4,64 +4,21 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 | Board Folder | Description |
 | :---- | :---- |
-| [68000 CPU Board](#68000-Processor-Board) | 68000 processor card using the PLCC package variant of the 68000 |
-| [68000 ROM RAM_Board](#ROM-RAM-Board-v1) | 128K ROM & 1M RAM board |
-| [68000 ROM/RAM Board v2](#ROM-RAM-Board-v2) | 1M ROM & 1M RAM board |
-| [68000 SIO Board](#Serial-IO-Board) | Dual MC68681 serial board - 4 serial ports |
-| [68000 MFP Board](#Multifunction-Board) | Dual MC68901 multifunction peripheral board |
-| [68000 PIO Board](#Parallel-IO-Board) | Dual MC68230 parallel interface / timer board |
-| [68302 CPU Board](#68302-Processor-Board) | 68302 processor card using the PGA package |
+| 68000 CPU Board | 68000 processor card using the PLCC package variant of the 68000 |
+| 68000 ROM RAM_Board | 128K ROM & 1M RAM board |
+| 68000 ROM/RAM Board v2 | 1M ROM & 1M RAM board |
+| 68000 SIO Board | Dual MC68681 serial board - 4 serial ports |
+| 68000 MFP Board | Dual MC68901 multifunction peripheral board |
+| 68000 PIO Board | Dual MC68230 parallel interface / timer board |
+| 68302 CPU Board | 68302 processor card using the PGA package |
 
-Make sure to look at the readme.txt files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
+Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
 ---
 
+Please excuse the mess below - I'm updating this page and moving a lot of detail to the board specific pages.
+
 # Boards
-
-## 68000 Processor Board
-
-The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source.
-
-![](../images/Processor_Front.JPG)
-
-### Clocks
-The processor/system clock source is an oscillator in an 8-pin DIL/DIP can. I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies. Basic testing was done with a 7.3728MHz oscillator. An 18.432MHz oscillator was also tried and CP/M-68K appeared to work correctly with no issues accessing the CompactFlash drive. 
-
-There's also a jumper to allow the processor E clock to be routed onto the RCBus CLOCK2 pin (61) if required.
-
-Note that the CLOCK2 pin may also be used by the serial, parallel and multifunction boards (via jumpers on their boards) to share a clock source between them - usually to feed the baud rate generators and timers. If this feature is used, then the E clock jumper must not be fitted.
-
-### DTACK & Bus Error
-The processor board includes a counter to generate a bus error if a DTACK is not received after 4 clocks of the E signal.
-
-The processor board also includes a counter to generate a DTACK for the RCBus MREQ and IORQ addresses. The DTACK delay can currently be set to 1, 2, 3 or 4 system clocks.
-
-Only RCBus MREQ and IORQ accesses generate a DTACK. All other boards must supply their own DTACK signal otherwise a bus error will be raised.
-
-### RCBus Signals
-The RCBus specification (v1.0) doesn't specifically mention the 68000 in the backplane signal assignments table so there's a bit of wiggle room on the pins used.
-
-I've stuck to the same signals for pins 1-40. The M1 signal isn't used and should have a 4K7 pullup resistor (manually added as I forgot it in my release 2.0 board!) and the USER1..USER4 which are used for the level 1, 3, 5 & 6 autovector interrupts.
-
-Pins 41-80 carry D8..D15 as well as the higher address bits. Pins 41..44 have been used to carry some 68000 specific signals.
-
-The current signal list is in the [RCBus 68000 Pinout](../RCBus-68000-Pinout.pdf) PDF file.
-
-### RCBus memory space
-My 68000 design partially decodes 2 blocks of memory within the 68000 address range as follows:
-| Address Range | Signal |
-| :---- | :---- |
-| 0xF00000..0xF7FFFF | /MREQ goes low |
-| 0xF80000..0xFFFFFF | /IORQ goes low |
-
-This partial decoding results in the RCBus I/O and memory spaces appearing multiple times within the 68000 address range. A /DTACK signal is generated on the processor card for any access to the RCBus whether there is a device present at that address or not.
-
-For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
-
-### Onboard LEDs
-
-There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
-
 ---
 
 ## ROM RAM Board v1
