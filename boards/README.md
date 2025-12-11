@@ -26,18 +26,6 @@ Please excuse the mess below - I'm updating this page and moving a lot of detail
 
 ---
 
-## Serial IO Board
-
-![](../images/Serial_Front.JPG)
-
-The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. Each DUART can reside at one of 8 selectable 2K memory addresses from $D00000 to $D03FFF.
-
-The board also includes an oscillator in an 8-pin DIL/DIP can to feed the baud rate generator. This clock can be shared with other boards by configuring the jumpers appropriately.
-
-The current design combines the interrupts from both DUARTs and can route the interrupt to one of the autovector interrupts INT1, INT2, INT5 or INT6 via jumper selection.
-
----
- 
 ## Parallel IO Board
 
 ![](../images/PIO_Front.JPG)

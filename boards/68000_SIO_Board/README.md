@@ -28,10 +28,10 @@ The clock signal for the baud rate generators can be sourced from the on board 3
 The jumper J14 can also be configured to route the baud rate generator clock to the CLOCK2 pin on the RCBus-80 connector.
 
 ## Discrete Outputs
-The 8 outputs from each DUART are routed to J4 on the edge of the board. J4 also provides GND and +5V signals. Note that the board does not have any protection built in to prevent damage to the DUART if one of these pins is mis-used.
+The 8 outputs from each DUART are routed to J4 on the edge of the board. J4 also provides GND and +5V signals. Note that the board **does not have** any protection built in to prevent damage to the DUART if one of these pins is mis-used.
 
 ## Discrete Inputs
-The 6 inputs to each DUART are routed to J10 on the edge of the board. J10 also provides GND and +5V signals. Note that the board does not have any protection built in to prevent damage to the DUART if one of these pins is mis-used.
+The 6 inputs to each DUART are routed to J10 on the edge of the board. J10 also provides GND and +5V signals. Note that the board **does not have** any protection built in to prevent damage to the DUART if one of these pins is mis-used.
 
 ## Flow Control
 Serial hardware flow control can be achieved on each of the 4 serial ports by shorting the appropriate solder jumpers on the rear of the board. This routes the 2 flow control signals for each serial port to an input pin and an output pin on the DUART.
