@@ -14,22 +14,15 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
+A minimal 68000 (or 68010) system would comprise of a 68000/68010 CPU board, ROM/RAM board and SIO board.
+
+A minimal 68302 system would comprise of a 68302 CPU board and SIO board.
+
 ---
 
 Please excuse the mess below - I'm updating this page and moving a lot of detail to the board specific pages.
 
 # Boards
----
-
-## ROM RAM Board v1
-
-![](../images/ROM_RAM_Front.JPG)
-
-The ROM/RAM board uses 2x Winbond W27C512 EEPROMs to provide 128K of non-volatile memory organised as 64K of 16-bit wide memory. It also uses 2x Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory.
- 
-The ROM/RAM board decodes memory into 1Mb blocks and is hard configured such that the ROM starts at address $000000 and the RAM starts at address $100000.
-
-A possible future modification is to redesign the board to support 512K FLASH chips instead of the 64K EEPROMs and if possible, the option of being able to configure the board for 4 RAM chips allowing an additional 2M of RAM to be fitted. **SEE ROM/RAM board V2 below.**
 
 ---
 

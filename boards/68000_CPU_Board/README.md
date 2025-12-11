@@ -1,9 +1,10 @@
 # 68000 Processor Board
-The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source.
+The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source. A 68010 processor can also be used but the current monitor program doesn't make use of the vector base register at the moment.
+
 ![](../../images/Processor_Front.JPG)
 
 # Details
-The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location $00000000 onwards. There is no fancy ROM & RAM switching hardware so ROM is always located at address $00000000.
+The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards. There is no fancy ROM & RAM switching hardware so ROM is always located at address 0x000000.
 
 ## Reset
 The reset signal for the processor board must be supplied externally, entering the board via pin 20 of the RCBus connector. This should not be an issue if you are using one of Steve Cousins's backplanes.
@@ -41,11 +42,15 @@ This partial decoding results in the RCBus I/O and memory spaces appearing multi
 For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xF80001, address 0x01 is accessed at address 0xF80003 etc.
 
 ## Onboard LEDs
-There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED.
+There were a few gates left over and I've used them to drive activity LEDs for accesses to the RCBus I/O and memory spaces as well as a HALT LED. Note that the I/O and MEM LEDs will only glow faintly.
 
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
+Depending on your choice of LED colour, the associated current limiting resistor may need to be altered.
+
+If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+ 
 ICs are orientated in different directions - make sure you insert the chips into their sockets in the correct orientation. Also pay attention to the orientation of the 68000 processor - see note below. 
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
@@ -53,12 +58,16 @@ When fitting the 80-pin right angle connector, initially only solder a couple of
 # Software
 I've written a very simple monitor program for the 68000 board whick can be found in the ASM_CODE folder - called MON68K. The monitor was initially developed using EASy68K.
 
-## Interrupts
-As the ROM is fixed at address $00000000, the exception vector table addresses are also fixed. Exception vectors up to and including TRAP #15 each call their own handler stub within the monitor ROM. The remaining exception vectors are all directed to a single handler as they are not used within my design - i.e. vectored interrupts are not supported, only autovectored interrupts.
+MON68K assumes that an SIO board is present and that one of the DUART chips is at address 0xD00000 (CS0 on the SIO board). If this is not the case, then the processor board will generate a bus error and stop in an endless loop.
 
-Each exception handler stub in the ROM (apart from bus error, address error and TRAP #15) looks up the start address of the actual exception handler code in a table of addresses held in RAM (which is initialised by the montor program). The table is located at the start of RAM occupying addresses $00100000..$001003FF and is laid out just like a normal exception vector table.
+## Interrupts
+As the ROM is fixed at address 0x000000, the exception vector table addresses are also fixed. Exception vectors up to and including TRAP #15 each call their own handler stub within the monitor ROM. The remaining exception vectors are all directed to a single handler as they are not used within my design - i.e. vectored interrupts are not supported, only autovectored interrupts.
+
+Each exception handler stub in the ROM (apart from bus error, address error and TRAP #15) looks up the start address of the actual exception handler code in a table of addresses held in RAM (which is initialised by the montor program). The table is located at the start of RAM occupying addresses 0x100000..0x1003FF and is laid out just like a normal exception vector table.
 
 In order to use your own exception handler, you simply over write the RAM exception vector table entry with the address of your own handler.
+
+A 68010 processor can also be used but the current monitor program doesn't make use of the vector base register at the moment.
 
 # Jumpers
 + J1: DTACK delay of 1,2,3 or 4 clocks for the RCBus memory (MREQ) and I/O (IORQ) address spaces.
