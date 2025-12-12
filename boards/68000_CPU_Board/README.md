@@ -1,9 +1,10 @@
 # 68000 Processor Board
-The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source. A 68010 processor can also be used but the current monitor program doesn't make use of the vector base register at the moment.
 
 ![](../../images/Processor_Front.JPG)
 
 # Details
+The processor board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source. A 68010 processor can also be used but the current monitor program doesn't make use of the vector base register at the moment.
+
 The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards. There is no fancy ROM & RAM switching hardware so ROM is always located at address 0x000000.
 
 ## Reset

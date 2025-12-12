@@ -15,7 +15,7 @@ A 74LS139 generates the read and write signals for each of the memory chips and 
 A 74LS125 is used to generate a simple /DTACK signal driven directly from the EEPROM and SRAM chip select signals without any wait period.
 
 # Board Assembly
-Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
+Assembly of the board should be fairly straightforward as there are no surface mount devices to deal with.
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 

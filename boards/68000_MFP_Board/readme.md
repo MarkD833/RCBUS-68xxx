@@ -50,7 +50,7 @@ The complete RCBus system can be powered from the 5V pin of one of the USB-TTL s
 Note that there is a current limit of 500mA - imposed by the host system USB hardware - when the system is powered this way. It is relatively easy to exceed this limit once several boards are in use. I power my system from an external 5V supply connected to the RCBus backplane instead.
 
 # Board Assembly
-Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
+Assembly of the board should be fairly straightforward as there are no surface mount devices to deal with.
 
 If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
 
