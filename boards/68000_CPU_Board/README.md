@@ -83,7 +83,7 @@ A 68010 processor can also be used but the current monitor program doesn't make 
 + MREQ & IORQ Activity LEDs - The silkscreen labels I/O & MEM are the wrong way round!
 + Missing 4K7 pullup on the M1 signal - wire link M1 to a spare pin on RN1.
 
-# Still To Do
+# To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
 + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
 

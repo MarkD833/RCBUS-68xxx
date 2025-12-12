@@ -3,7 +3,7 @@
 ![](../../images/Serial_Front.JPG)
 
 # Details
-The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. The 4 serial ports are each fed to a 6-pin connector at the board edge. The layout of the 6 pins is compatible with an FTDI USB-TTL Serial interface board. 
+The serial board is populated with two 68681 (or equivalent) DUARTS giving 4 UARTs in total. The 4 serial ports are each fed to a 6-pin connector at the board edge. The layout of the 6 pins is compatible with an FTDI USB-TTL Serial interface board. Both DUART chips do not have to be fitted. The board will work with just one chip fitted.
 
 ## Address Decoding
 The address decoding is carried out by a 74LS688 combined with a 74LS138 to generate 8 separate 2048 byte blocks residing between addresses $D00000 and $D03FFF.
@@ -44,27 +44,11 @@ Note that there is a current limit of 500mA - imposed by the host system USB har
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
-If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
 # Jumpers
-+ Power (**only fit one jumper** if not using an external 5V power source)
-  + J3: 1-2 : Power the system from the USB-TTL Serial board on Serial #1
-  + J3: 2-3 : Power the system from the USB-TTL Serial board on Serial #2
-  + J6: 1-2 : Power the system from the USB-TTL Serial board on Serial #3
-  + J6: 2-3 : Power the system from the USB-TTL Serial board on Serial #4
-+ J12: Specify the interupt line to be used by the serial cards
-  + 1-2 : use /INT1
-  + 3-4 : use /INT2
-  + 5-6 : use /INT5
-  + 7-8 : use /INT6 
-+ J4: Exposes the 16 digital outputs from the 2 DUARTS as well as GND and +5V. Note that there is **NO** output protection circuitry.
-+ J10: Exposes the 12 digital inputs to the 2 DUARTS as well as GND and +5V. Note that there is **NO** input protection circuitry.
-+ J14: Specifies the clock source for the DUART baud rate generators
-  + 1-3 Use the onboard clock source
-  + 1-2 Use the RCBus clock source from CLOCK2
-  + 1-2 *and* 3-4: Use the onboard clock source and supply the RCBus CLOCK2 signal with the clock.
 + J1: IO Address selection
   + $D00000
   + $D00800
@@ -74,14 +58,38 @@ When fitting the 80-pin right angle connector, initially only solder a couple of
   + $D02800
   + $D03000
   + $D03800
++ J2: Serial #3 port
++ J3: (**only fit one jumper** if not using an external 5V power source)
+  + 1-2 : Power the system from the USB-TTL Serial board on Serial #1
+  + 2-3 : Power the system from the USB-TTL Serial board on Serial #2
+  + 1-2 : Power the system from the USB-TTL Serial board on Serial #3
+  + 2-3 : Power the system from the USB-TTL Serial board on Serial #4
++ J4: Exposes the 16 digital outputs from the 2 DUARTS as well as GND and +5V. Note that there is **NO** output protection circuitry.
++ J5: Serial #4 port
++ J7: Serial #1 port
++ J8: Serial #2 port
 + J9 (with J1): Specify the IO Address for Serial chip A
++ J10: Exposes the 12 digital inputs to the 2 DUARTS as well as GND and +5V. Note that there is **NO** input protection circuitry.
 + J11 (with J1): Specify the IO Address for Serial chip B
++ J12: Specify the interupt line to be used by the serial cards
+  + 1-2 : use /INT1
+  + 3-4 : use /INT2
+  + 5-6 : use /INT5
+  + 7-8 : use /INT6 
++ J14: Specifies the clock source for the DUART baud rate generators
+  + 1-3 Use the onboard clock source
+  + 1-2 Use the RCBus clock source from CLOCK2
+  + 1-2 *and* 3-4: Use the onboard clock source and supply the RCBus CLOCK2 signal with the clock.
+
+# Errors
+None so far.
 
 # Thoughts / Enhancements
 + Should the SIOs each have their own choice of interrupt level?
 + Move the 6-pin serial port connectors further in from the board edge.
 + Jumpers to allow TXD1 & RXD1 to route to the RCBus TX & RX signals.
 + Jumpers to allow TXD2 & RXD2 to route to the RCBus TX2 & RX2 signals.
+
 # To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
 + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
