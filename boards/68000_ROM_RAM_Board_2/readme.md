@@ -60,7 +60,11 @@ The pinout of the 32-pin FLASH and SRAM chips are slightly different and in orde
 + J12 (with J10): Specify the memory address for bank #1
 
 # Errors
-None so far.
++ The signals /RAM_CS and /ROM_CS don't go anywhere!
+  + /ROM_CS should have been called /CS_BANK0 & /RAM_CS should have been called /CS_BANK1
+    + Fix by connecting LS125 pin 4 to any pin on J11 & adding a 10K pullup resistor.
+    + Fix by connecting LS125 pin 1 to any pin on J12 & adding a 10K pullup resistor.
++ J4 & J5 at the top of U7 are not on a 0.1in pitch.
 
 # To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
@@ -71,10 +75,6 @@ None so far.
 
 
 # Errors
-+ The signals /RAM_CS and /ROM_CS don't go anywhere!
-  + /RAM_CS should be called /CS_BANK0 & /ROM_CS should be called /CS_BANK1
-    + Fix by connecting LS125 pin 1 to either pin 22 of bank 1 ICs & adding a 10K pullup resistor.
-    + Fix by connecting LS125 pin 4 to either pin 22 of bank 2 ICs & adding a 10K pullup resistor.
-+ J4 & J5 at the top of U7 are not on a 0.1in pitch.
+
 
 

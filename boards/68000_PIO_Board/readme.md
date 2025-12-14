@@ -61,8 +61,8 @@ Note the orientation of the two PI/T chips - they are effectively upside down.
 + J14: All contacts connected to GND
 + J15: All contacts connected to +5V
 
-# Reliability
-For some reason that I can't yet figure out, the 68230 board is very unreliable. The issue seems to be with the write timing as the chips always report the correct port pin levels during a read of the alternate data registers.
+# Reliability Issues
+For some reason the 68230 board is very unreliable, even with the error mentioned below corrected. The issue seems to be with the write timing as the chips always report the correct port pin levels during a read of the alternate data registers.
 
 I've tried 68230s from ST and Mostek with a simple test program with the timer configured to output a square wave on PC3 whilst also toggling pin PA0 in software. I'm getting all combinations of results from no pin activity, only PA0 toggles, only PC3 toggles and both PA0 and PC3 toggling.
 
