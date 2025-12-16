@@ -67,7 +67,7 @@ There are 4 LEDs on the board indicate accesses to the RCBus I/O and memory spac
 ## Power
 The complete RCBus system can be powered from the 5V pin of one of the USB-TTL serial connectors by fitting a jumper in place on the appropriate pins of J3.
 
-Note that there is a current limit of 500mA - imposed by the host system USB hardware - when the system is powered this way. It is relatively easy to exceed this limit once several boards are in use. I power my system from an external 5V supply connected to the RCBus backplane instead.
+Note that there is a current limit of 500mA - imposed by the host system USB hardware - when the system is powered this way. It is relatively easy to exceed this limit once several boards are in use and I recommend that the system be powered from an external 5V supply connected to the RCBus backplane instead.
 
 # Board Assembly
 Assembly of the board should be fairly straightforward as there are no surface mount devices to deal with, but see the note below regarding the 68302 socket.
