@@ -11,6 +11,7 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | 68000 MFP Board | Dual MC68901 multifunction peripheral board |
 | 68000 PIO Board | Dual MC68230 parallel interface / timer board |
 | 68000 SPI Board | 6 channel SPI master board - 3V3 and 5V ports |
+| 68000 LBE Board | Serial / parallel / timer board |
 | 68302 CPU Board | 68302 processor card using the PGA package |
 
 Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
