@@ -81,9 +81,25 @@ The board was designed around Alliance Memory AS6C4008 512K RAM chips and SST 39
 | Chip ID | Manufacturer | Chip Number | Description |
 | :---- | :---- |  :---- | :---- |
 | U1 | ?? | 74LS138N | 3 to 8 line decoder |
-| U2 | Philips | SCN68681 | Dual Universal Asynchronous Receiver/Transmitter |
-| U3 | Philips | SCN68681 | Dual Universal Asynchronous Receiver/Transmitter |
+| U2 | Philips | SCN68681 | Dual Universal Asynchronous Receiver/Transmitter **See Note** |
+| U3 | Philips | SCN68681 | Dual Universal Asynchronous Receiver/Transmitter **See Note** |
 | U4 | Philips | PC74HCT688P | 8 bit magnitude comparator |
+
+Note:
+There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not.
+
+Below are some 68681 DUARTs from different manufacturers and the relevant text from their datasheets:
+
++ Motorola MC68681
+  + If an external TTL-level clock is used, this pin should be tied to ground. 
++ Motorola MC68HC681
+  +  If an external CMOS-level clock is used, this pin must be left open. 
++ Philips SCC68681
+  + If a crystal is not used it is best to keep this pin not connected. It **must not** be grounded.
++ Philips SCN68681
+  + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
++ Toshiba TMP68681
+  + If an external TTL-level clock is used, this pin should be tied to ground. 
 
 ## Parallel I/O Board
 

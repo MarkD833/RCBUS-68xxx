@@ -48,6 +48,22 @@ If you choose have a turned pin socket for the system clock, then an 8-pin DIL t
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
+# DUART Chip Compatability
+There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not.
+
+Below are some 68681 DUARTs from different manufacturers and the relevant text from their datasheets:
+
++ Motorola MC68681
+  + If an external TTL-level clock is used, this pin should be tied to ground. 
++ Motorola MC68HC681
+  +  If an external CMOS-level clock is used, this pin must be left open. 
++ Philips SCC68681
+  + If a crystal is not used it is best to keep this pin not connected. It **must not** be grounded.
++ Philips SCN68681
+  + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
++ Toshiba TMP68681
+  + If an external TTL-level clock is used, this pin should be tied to ground. 
+
 # Jumpers
 + J1: IO Address selection
   + $D00000

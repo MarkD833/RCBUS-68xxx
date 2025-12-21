@@ -12,7 +12,7 @@ The MC68681 gave me:
 + 2 Serial Ports
 + 8 Digital Outputs
 + 6 Digital Inputs
-+ 1 24-bit Timer
++ 1 16-bit Timer
 
 The MC68901 gave me:
 + 1 Serial Port
