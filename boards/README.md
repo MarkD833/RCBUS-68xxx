@@ -18,7 +18,7 @@ Make sure to look at the readme files in each board folder as they will detail a
 
 A minimal 68000 (or 68010) system would comprise of a 68000/68010 CPU board, ROM/RAM board and SIO board.
 
-A minimal 68302 system would comprise of a 68302 CPU board and SIO board.
+A minimal 68302 system would comprise of a 68302 CPU board and a ROM/RAM board.
 
 ---
 
