@@ -61,6 +61,8 @@ Below are some 68681 DUARTs from different manufacturers and the relevant text f
   + If a crystal is not used it is best to keep this pin not connected. It **must not** be grounded.
 + Philips SCN68681
   + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
++ Philips SCC68692
+  + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
 + Toshiba TMP68681
   + If an external TTL-level clock is used, this pin should be tied to ground. 
 
