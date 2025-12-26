@@ -48,23 +48,25 @@ If you choose have a turned pin socket for the system clock, then an 8-pin DIL t
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
-# DUART Chip Compatability
-There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices.
+# Choice of DUART Chip
+There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices to those devices that allow the X2 pin to be grounded.
 
 Below are some 68681 DUARTs from different manufacturers and the relevant text from their datasheets:
 
-+ Motorola MC68681
++ Motorola MC68681 (max 38400 baud)
   + If an external TTL-level clock is used, this pin should be tied to ground. 
-+ Motorola MC68HC681
++ Motorola MC68HC681 (max 38400 baud)
   +  If an external CMOS-level clock is used, this pin must be left open. 
-+ Philips SCC68681
++ Philips SCC68681 (max 115200 baud)
   + If a crystal is not used it is best to keep this pin not connected. It **must not** be grounded.
-+ Philips SCN68681
++ Philips SCN68681 (max 115200 baud)
   + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
-+ Philips SCC68692
++ Philips SCC68692 (max 115200 baud)
   + If a crystal is not used it is best to keep this pin not connected although it is permissible to ground it.
-+ Toshiba TMP68681
++ Toshiba TMP68681 (max 38400 baud)
   + If an external TTL-level clock is used, this pin should be tied to ground. 
+
+For the Philips devices that support 115200 baud, this is achieved by putting the device into a test mode and is documented in the Philips Semiconductors document titled "Extended baud rates for SCN2681, SCN68681, SCC2691, SCC2692, SCC68681 and SCC2698B".
 
 # Jumpers
 + J1: IO Address selection
