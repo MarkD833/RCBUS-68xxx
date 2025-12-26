@@ -51,6 +51,8 @@ Similarly, a /BERR generator is not required as the MC68302 has an internal hard
 ## MC68681 SIO Board
 This board consists of a pair of 40-pin DIL MC68681 serial I/O chips and associated address decode logic as well as a crystal oscillator for the baud rate generators. This combination provides four serial ports, two 16-bit timer/counters as well as 16 digital outputs and 12 digital inputs.
 
+Please read the SIO board documentation as it details which of the alternative DUARTs are compatible with my SIO board. 
+
 ## MC68230 PIO Board
 This board consists of a pair of 48-pin DIL MC68230 parallel I/O chips and associated address decode logic. This combination provides 32 individually programmable digital I/O pins with up to 16 additional digital I/O pins depending on the port C functionality required and two 24-bit timer/counters.
 
