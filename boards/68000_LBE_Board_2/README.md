@@ -23,7 +23,7 @@ The design provides serial I/O, digital I/O and 4 16-bit timers.
 
 The X2 pin of the MC68681 has a solder jumper so that this pin can be grounded if required. This should allow a greater choice of MC68681 alternatives to be fitted.
 
-The 8254-2 requires its own DTACK circuitry using a 74LS175 and a 74LS125. With the spare gates on the 74LS125 I have managed to add is a bit banged I2C port.
+The 8254-2 requires its own DTACK circuitry using a 74LS175 and a 74LS125. With the spare gates on the 74LS125 I have managed to add in a bit banged I2C port. Time will tell if this particular feature is viable or not.
 
 This is very much a design concept at the moment and I need to determine if it is actually useable in practice.
 
