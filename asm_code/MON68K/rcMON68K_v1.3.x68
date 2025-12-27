@@ -1655,11 +1655,8 @@ PORTPARAMS: dc.l    9		   ; 38400,8,N,1
 *------------------------------------------------------------------------------
 * Monitor variables
 *------------------------------------------------------------------------------
-	ORG		STACK_START
-msgASCIIDump:
-	ds.b 20
-serBuff:   
-	ds.b	8
+msgASCIIDump    EQU STACK_START
+serBuff         EQU msgASCIIDump+20
 	
     END    START            * last line of source
 
