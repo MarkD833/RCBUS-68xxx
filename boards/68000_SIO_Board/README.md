@@ -109,7 +109,7 @@ None so far.
 + Move the 6-pin serial port connectors further in from the board edge.
 + Jumpers to allow TXD1 & RXD1 to route to the RCBus TX & RX signals.
 + Jumpers to allow TXD2 & RXD2 to route to the RCBus TX2 & RX2 signals.
-+ Solder jumper between the X2 pin and GND would support a wider range of compatible 68681s.
++ Board would support a wider range of compatible 68681s with a solder jumper between the X2 pin and GND.
 
 # To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
