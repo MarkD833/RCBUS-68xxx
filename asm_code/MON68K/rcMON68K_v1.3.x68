@@ -140,7 +140,11 @@ CR    equ $0D
 * handlers that then jump to (actually RETurn to) the address specified in the
 * RAM exception vector table.
 *------------------------------------------------------------------------------
-    ORG		(*+1)&-2	* make sure the table is word aligned
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	* make sure the table is word aligned
+    endif
 
 jmpBusErr:	ramVecJump	$02
 jmpAddrErr:	ramVecJump	$03
@@ -199,7 +203,11 @@ jmpUnused:	ramVecJump	$30
 * NOTE: Bus Error, Address Error & TRAP #15 are all hard coded to be handled by
 * routines in ROM and the entries in this table are not used.
 *------------------------------------------------------------------------------
-    ORG		(*+1)&-2	   * make sure the table is word aligned
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	   * make sure the table is word aligned
+    endif
 
 rom2ramIVT:
     DC.L    STACK_START    *00 Supervisor stack pointer
@@ -639,7 +647,12 @@ zdmsg:   dc.b	10,13,'STOP: Divide By Zero error occured near address $',0
 * #############################################################################
 * #############################################################################
 
-    ORG		(*+1)&-2	* make we start on a word aligned address
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	* make we start on a word aligned address
+    endif
+
 START:
     lea     STACK_START,sp     * Set the stack pointer just in case
 
