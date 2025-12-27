@@ -140,7 +140,11 @@ CR    equ $0D
 * handlers that then jump to (actually RETurn to) the address specified in the
 * RAM exception vector table.
 *------------------------------------------------------------------------------
-    ORG		(*+1)&-2	* make sure the table is word aligned
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	* make sure the table is word aligned
+    endif
 
 jmpBusErr:	ramVecJump	$02
 jmpAddrErr:	ramVecJump	$03
@@ -199,7 +203,11 @@ jmpUnused:	ramVecJump	$30
 * NOTE: Bus Error, Address Error & TRAP #15 are all hard coded to be handled by
 * routines in ROM and the entries in this table are not used.
 *------------------------------------------------------------------------------
-    ORG		(*+1)&-2	   * make sure the table is word aligned
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	   * make sure the table is word aligned
+    endif
 
 rom2ramIVT:
     DC.L    STACK_START    *00 Supervisor stack pointer
@@ -266,12 +274,12 @@ rom2ramIVT:
 * Print a message showing the PC and address being accessed
 *------------------------------------------------------------------------------
 handleBusErr:
-    lea     bemsg1(PC), a0	* first message
+    lea     (bemsg1,PC),a0	* first message
     bsr.w   putString
 	move.l	10(a7),d0		* get the program counter 
 	bsr.w	writeAddr32
 	
-    lea     bemsg2(PC), a0	* second message
+    lea     (bemsg2,PC),a0	* second message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -280,12 +288,12 @@ handleBusErr:
 * Print a message showing the PC and address being accessed
 *------------------------------------------------------------------------------
 handleAddrErr:
-    lea     aemsg1(PC), a0	* first message
+    lea     (aemsg1,PC),a0	* first message
     bsr.w   putString
 	move.l	10(a7),d0		* get the program counter 
 	bsr.w	writeAddr32
 	
-    lea     aemsg2(PC), a0	* second message
+    lea     (aemsg2,PC),a0	* second message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -293,7 +301,7 @@ handleAddrErr:
 * ILLEGAL INSTRUCTION handler
 *------------------------------------------------------------------------------
 handleIllInst:
-    lea     iimsg(PC), a0	* display message
+    lea     (iimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -301,7 +309,7 @@ handleIllInst:
 * DIVISION BY ZERO handler
 *------------------------------------------------------------------------------
 handleZeroDiv:
-    lea     zdmsg(PC), a0	* display message
+    lea     (zdmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -309,7 +317,7 @@ handleZeroDiv:
 * CHK handler
 *------------------------------------------------------------------------------
 handleChkInst:
-    lea     cimsg(PC), a0	* display message
+    lea     (cimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -317,7 +325,7 @@ handleChkInst:
 * TRAPV handler
 *------------------------------------------------------------------------------
 handleTrapV:
-    lea     tvmsg(PC), a0	* display message
+    lea     (tvmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -325,7 +333,7 @@ handleTrapV:
 * PRIVILEGE VIOLATION handler
 *------------------------------------------------------------------------------
 handlePriv:
-    lea     pvmsg(PC), a0	* display message
+    lea     (pvmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -333,7 +341,7 @@ handlePriv:
 * TRACE handler
 *------------------------------------------------------------------------------
 handleTrace:
-    lea     trmsg(PC), a0	* display message
+    lea     (trmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -341,7 +349,7 @@ handleTrace:
 * Unimplementd Instruction - Line A handler
 *------------------------------------------------------------------------------
 handleLineA:
-    lea     lamsg(PC), a0	* display message
+    lea     (lamsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -349,7 +357,7 @@ handleLineA:
 * Unimplementd Instruction - Line F handler
 *------------------------------------------------------------------------------
 handleLineF:
-    lea     lfmsg(PC), a0	* display message
+    lea     (lfmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -367,7 +375,7 @@ handleRes8:
 handleRes9:
 handleRes10:
 handleRes11:
-    lea     rimsg(PC), a0	* display message
+    lea     (rimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -375,7 +383,7 @@ handleRes11:
 * Uninitialised Interrupt handler
 *------------------------------------------------------------------------------
 handleUnInit:
-    lea     uimsg(PC), a0	* display message
+    lea     (uimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -383,7 +391,7 @@ handleUnInit:
 * Spurious Interrupt handler
 *------------------------------------------------------------------------------
 handleSpur:
-    lea     simsg(PC), a0	* display message
+    lea     (simsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -391,7 +399,7 @@ handleSpur:
 * Autovector Level 1 Exception handler
 *------------------------------------------------------------------------------
 handleAV1:
-    lea     av1msg(PC), a0	* display message
+    lea     (av1msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -399,7 +407,7 @@ handleAV1:
 * Autovector Level 2 Exception handler
 *------------------------------------------------------------------------------
 handleAV2:
-    lea     av2msg(PC), a0	* display message
+    lea     (av2msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -407,7 +415,7 @@ handleAV2:
 * Autovector Level 3 Exception handler
 *------------------------------------------------------------------------------
 handleAV3:
-    lea     av3msg(PC), a0	* display message
+    lea     (av3msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -415,7 +423,7 @@ handleAV3:
 * Autovector Level 4 Exception handler
 *------------------------------------------------------------------------------
 handleAV4:
-    lea     av4msg(PC), a0	* display message
+    lea     (av4msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -423,7 +431,7 @@ handleAV4:
 * Autovector Level 5 Exception handler
 *------------------------------------------------------------------------------
 handleAV5:
-    lea     av5msg(PC), a0	* display message
+    lea     (av5msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -431,7 +439,7 @@ handleAV5:
 * Autovector Level 6 Exception handler
 *------------------------------------------------------------------------------
 handleAV6:
-    lea     av6msg(PC), a0	* display message
+    lea     (av6msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -439,7 +447,7 @@ handleAV6:
 * Autovector Level 7 Exception handler
 *------------------------------------------------------------------------------
 handleAV7:
-    lea     av7msg(PC), a0	* display message
+    lea     (av7msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -447,7 +455,7 @@ handleAV7:
 * TRAP #0 Exception handler
 *------------------------------------------------------------------------------
 handleTrap0:
-    lea     tr0msg(PC), a0	* display message
+    lea     (tr0msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -455,7 +463,7 @@ handleTrap0:
 * TRAP #1 Exception handler
 *------------------------------------------------------------------------------
 handleTrap1:
-    lea     tr1msg(PC), a0	* display message
+    lea     (tr1msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -463,7 +471,7 @@ handleTrap1:
 * TRAP #2 Exception handler
 *------------------------------------------------------------------------------
 handleTrap2:
-    lea     tr2msg(PC), a0	* display message
+    lea     (tr2msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -471,7 +479,7 @@ handleTrap2:
 * TRAP #3 Exception handler
 *------------------------------------------------------------------------------
 handleTrap3:
-    lea     tr3msg(PC), a0	* display message
+    lea     (tr3msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -479,7 +487,7 @@ handleTrap3:
 * TRAP #4 Exception handler
 *------------------------------------------------------------------------------
 handleTrap4:
-    lea     tr4msg(PC), a0	* display message
+    lea     (tr4msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -487,7 +495,7 @@ handleTrap4:
 * TRAP #5 Exception handler
 *------------------------------------------------------------------------------
 handleTrap5:
-    lea     tr5msg(PC), a0	* display message
+    lea     (tr5msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -495,7 +503,7 @@ handleTrap5:
 * TRAP #6 Exception handler
 *------------------------------------------------------------------------------
 handleTrap6:
-    lea     tr6msg(PC), a0	* display message
+    lea     (tr6msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -503,7 +511,7 @@ handleTrap6:
 * TRAP #7 Exception handler
 *------------------------------------------------------------------------------
 handleTrap7:
-    lea     tr7msg(PC), a0	* display message
+    lea     (tr7msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -511,7 +519,7 @@ handleTrap7:
 * TRAP #8 Exception handler
 *------------------------------------------------------------------------------
 handleTrap8:
-    lea     tr8msg(PC), a0	* display message
+    lea     (tr8msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -519,7 +527,7 @@ handleTrap8:
 * TRAP #9 Exception handler
 *------------------------------------------------------------------------------
 handleTrap9:
-    lea     tr9msg(PC), a0	* display message
+    lea     (tr9msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -527,7 +535,7 @@ handleTrap9:
 * TRAP #10 Exception handler
 *------------------------------------------------------------------------------
 handleTrap10:
-    lea     tr10msg(PC), a0	* display message
+    lea     (tr10msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -535,7 +543,7 @@ handleTrap10:
 * TRAP #11 Exception handler
 *------------------------------------------------------------------------------
 handleTrap11:
-    lea     tr11msg(PC), a0	* display message
+    lea     (tr11msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -543,7 +551,7 @@ handleTrap11:
 * TRAP #12 Exception handler
 *------------------------------------------------------------------------------
 handleTrap12:
-    lea     tr12msg(PC), a0	* display message
+    lea     (tr12msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -551,7 +559,7 @@ handleTrap12:
 * TRAP #13 Exception handler
 *------------------------------------------------------------------------------
 handleTrap13:
-    lea     tr13msg(PC), a0	* display message
+    lea     (tr13msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -559,7 +567,7 @@ handleTrap13:
 * TRAP #14 Exception handler
 *------------------------------------------------------------------------------
 handleTrap14:
-    lea     tr14msg(PC), a0	* display message
+    lea     (tr14msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -567,7 +575,7 @@ handleTrap14:
 * TRAP #15 Exception handler
 *------------------------------------------------------------------------------
 handleTrap15:
-    lea     tr15msg(PC), a0	* display message
+    lea     (tr15msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -575,7 +583,7 @@ handleTrap15:
 * User Exception handler - all remaining exception handlers land here
 *------------------------------------------------------------------------------
 handleUnused:
-    lea     usermsg(PC), a0	* display message
+    lea     (usermsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -639,9 +647,14 @@ zdmsg:   dc.b	10,13,'STOP: Divide By Zero error occured near address $',0
 * #############################################################################
 * #############################################################################
 
-    ORG		(*+1)&-2	* make we start on a word aligned address
+    if __VASM
+        align 2
+    else
+        ORG		(*+1)&-2	* make we start on a word aligned address
+    endif
+
 START:
-    lea     STACK_START, sp     * Set the stack pointer just in case
+    lea     STACK_START,sp     * Set the stack pointer just in case
 
 	* copy the exception vector table into RAM
 	move.l	#rom2ramIVT,a0		* start of exception table in ROM
@@ -655,17 +668,17 @@ START:
 * Initialise the SCC68692 DUART port A
 *------------------------------------------------------------------------------
 
-    move.b  #$30, CRA       * Reset Transmitter
-    move.b  #$20, CRA       * Reset Reciever
-    move.b  #$10, CRA       * Reset Mode Register Pointer
+    move.b  #$30,CRA       * Reset Transmitter
+    move.b  #$20,CRA       * Reset Reciever
+    move.b  #$10,CRA       * Reset Mode Register Pointer
     
-    move.b  #$00, ACR       * Baud Rate Set #1
-    move.b  #$13, MRA       * No Parity & 8-bit
-    move.b  #$07, MRA       * Normal Mode, No CTS/RTS & 1 stop bit
-    move.b  #BAUD_RATE, CSRA      * Set Tx and Rx baud rates
-    move.b  #$00, IMR       * No interrupts
-    move.b  #$05, CRA       * Enable Transmit/Recieve
-    move.b  #$03, SOPR      * Turn off the 2 user LEDs on OP0 & OP1
+    move.b  #$00,ACR       * Baud Rate Set #1
+    move.b  #$13,MRA       * No Parity & 8-bit
+    move.b  #$07,MRA       * Normal Mode, No CTS/RTS & 1 stop bit
+    move.b  #BAUD_RATE,CSRA      * Set Tx and Rx baud rates
+    move.b  #$00,IMR       * No interrupts
+    move.b  #$05,CRA       * Enable Transmit/Recieve
+    move.b  #$03,SOPR      * Turn off the 2 user LEDs on OP0 & OP1
 
     iflt USE_REAL_UART
 	; using Sim68K COM port
@@ -686,14 +699,14 @@ START:
 * Warm Restart entry point
 *------------------------------------------------------------------------------
 monStart:
-    lea     strBanner1(PC), a0	* Show the monitor details
+    lea     (strBanner1,PC),a0	* Show the monitor details
     bsr.w   putString
 
-    lea		strCommands(PC), a0 * And the command help message
+    lea		(strCommands,PC),a0 * And the command help message
     bsr.w   putString
 
 monLoop:
-    lea     strPrompt(PC), a0   * Prompt
+    lea     (strPrompt,PC),a0   * Prompt
     bsr.w   putString
 
 monLoop_NP:
@@ -703,38 +716,38 @@ monLoop_NP:
 	cmpi.b	#LF,d0			* ignore Line-Feed
     beq.s   monLoop
 	
-    cmp.b   #'B', d0        * Boot EhBASIC v3.54
+    cmp.b   #'B',d0        * Boot EhBASIC v3.54
     beq.w   cmdBootEHBASIC
 
-    cmp.b   #'C', d0        * Boot CP/M-68K
+    cmp.b   #'C',d0        * Boot CP/M-68K
     beq.w   cmdBootCPM
 
-    cmp.b   #'D', d0        * Dump memory command
+    cmp.b   #'D',d0        * Dump memory command
     beq.w   cmdDispMemory
 
-    cmp.b   #'I', d0        * Read from I/O space address
+    cmp.b   #'I',d0        * Read from I/O space address
     beq.w   cmdIORead
 
-    cmp.b   #'M', d0        * Modify memory command
+    cmp.b   #'M',d0        * Modify memory command
     beq.w   cmdModifyMemory
 
-    cmp.b   #'O', d0        * Write to I/O space address
+    cmp.b   #'O',d0        * Write to I/O space address
     beq.w   cmdIOWrite
 
-    cmp.b   #'S', d0        * S record download
+    cmp.b   #'S',d0        * S record download
     beq.w   cmdDownload
 
-    cmp.b   #'G', d0        * Go command
+    cmp.b   #'G',d0        * Go command
     beq.w   cmdRun
 
-    cmp.b   #'?', d0        * Help command
+    cmp.b   #'?',d0        * Help command
     beq.w   cmdHelp
 
-    cmp.b   #' ', d0        * Ignore spaces
+    cmp.b   #' ',d0        * Ignore spaces
     ble.s   monLoop_NP		* go back without printing prompt    
 
 	move.b	d0,d1			* save the unknown char
-    lea     strUnkCmd(PC), a0   * unknown command
+    lea     (strUnkCmd,PC),a0   * unknown command
     bsr.w   putString
 	move.b	d1,d0			* get unnknown char back
 	bsr.w	writeByte		* print it
@@ -752,7 +765,7 @@ cmdBootEHBASIC:
 	* then EhBASIC hasn't been programmed in!
 	cmpi.w	#$FFFF,EHBASIC_BASE
 	bne.s	.bootEHBASIC
-    lea		strBASICErr1(PC), a0
+    lea		(strBASICErr1,PC),a0
     bsr.w   putString
     bra.w   monLoop
 
@@ -762,7 +775,7 @@ cmdBootEHBASIC:
 
     * I don't think EhBASIC can return back to the monitor but just in case it can
     * print out a message and wait for a reset.
-    lea		strBASICReturn(PC), a0
+    lea		(strBASICReturn,PC),a0
     bsr.w   putString
 .forever:
     bra.s	.forever
@@ -776,7 +789,7 @@ cmdBootCPM:
 	* hasn't been programmed in!
 	cmpi.w	#$FFFF,CPM_BASE
 	bne.s	.chkBIOS
-    lea		strCPMErr1(PC), a0
+    lea		(strCPMErr1,PC),a0
     bsr.w   putString
     bra.w   monLoop
 	
@@ -786,7 +799,7 @@ cmdBootCPM:
 	* BIOS hasn't been programmed in!
 	cmpi.w	#$FFFF,$6000
 	bne.s	.bootCPM
-    lea		strCPMErr2(PC), a0
+    lea		(strCPMErr2,PC),a0
     bsr.w   putString
     bra.w   monLoop
 	
@@ -796,7 +809,7 @@ cmdBootCPM:
 	
     * I don't think CP/M-68K can return back to the moitor but just in case it can
     * print out a message and wait for a reset.
-    lea		strCPMReturn(PC), a0
+    lea		(strCPMReturn,PC),a0
     bsr.w   putString
 .forever:
     bra.s	.forever
@@ -833,10 +846,10 @@ cmdRun:
 	bsr.w	hexToIntEcho	* from the serial port
 	bcs.w	monLoop			* back to prompt if there's an error
 
-    move.l  d0, a0			* copy start address into A0
+    move.l  d0,a0			* copy start address into A0
     jsr     (a0)            * jump to user code
 	
-	lea		strUserReturn(PC),a0
+	lea		(strUserReturn,PC),a0
     bsr.w   putString
 	
     bra.w	monLoop
@@ -945,81 +958,81 @@ cmdIOWrite:
 *------------------------------------------------------------------------------
 cmdDownload:
 	bsr.w	getc			* get the S-Record type
-	cmp.b   #'1', d0
+	cmp.b   #'1',d0
 	beq.s	.cdl_S1			* read in an S1 record
-	cmp.b   #'2', d0
+	cmp.b   #'2',d0
 	beq.s	.cdl_S2			* read in an S2 record
-	cmp.b   #'8', d0
+	cmp.b   #'8',d0
 	beq.w	.cdl_EOL89		* handle S8 SRec terminator
-	cmp.b   #'9', d0
+	cmp.b   #'9',d0
 	beq.w	.cdl_EOL89		* handle S9 SRec terminator
 
 	bne     .cdl_EOL		* not S1 or S2 so ignore to end of line
 			
 .cdl_S1:		
 	clr.l	d2
-	move.b  #2, d1			* 2 characters to read
+	move.b  #2,d1			* 2 characters to read
 	bsr     hexToInt		* convert to byte count
-	move.l  d0, d6			* D6 = byte count
-	move.l  d0, d7			* D7 = byte count (running checksum)
+	move.l  d0,d6			* D6 = byte count
+	move.l  d0,d7			* D7 = byte count (running checksum)
 
 	clr.l	d2
-	move.b  #4, d1			* 4 characters to read
+	move.b  #4,d1			* 4 characters to read
 	bsr     hexToInt		* convert to address
-	movea.l d0, a3			* A3 = destination address
-	add.b   d0, d7			* update checksum with bits 00..07
-	lsr.l   #8, d0
-	add.b   d0, d7			* update checksum with bits 08..15
+	movea.l d0,a3			* A3 = destination address
+	add.b   d0,d7			* update checksum with bits 00..07
+	lsr.l   #8,d0
+	add.b   d0,d7			* update checksum with bits 08..15
 
-	subq.w  #3, D6          * take off the 3 bytes we just read in
+	subq.w  #3,D6          * take off the 3 bytes we just read in
 
 	bra.s	.cdl_1				
 				
 .cdl_S2:			
 	clr.l	d2
-	move.b  #2, d1			* 2 characters to read
+	move.b  #2,d1			* 2 characters to read
 	bsr     hexToInt		* convert to byte count
-	move.l  d0, d6			* D6 = byte count
-	move.l  d0, d7			* D7 = byte count (running checksum)
+	move.l  d0,d6			* D6 = byte count
+	move.l  d0,d7			* D7 = byte count (running checksum)
 
 	clr.l	d2
-	move.b  #6, d1			* 6 characters to read
+	move.b  #6,d1			* 6 characters to read
 	bsr     hexToInt		* convert to address
-	movea.l d0, a3			* A3 = destination address
-	add.b   d0, d7			* update checksum with bits 00..07
-	lsr.l   #8, d0
-	add.b   d0, d7			* update checksum with bits 08..15
-	lsr.l   #8, d0
-	add.b   d0, d7			* update checksum with bits 16..23
+	movea.l d0,a3			* A3 = destination address
+	add.b   d0,d7			* update checksum with bits 00..07
+	lsr.l   #8,d0
+	add.b   d0,d7			* update checksum with bits 08..15
+	lsr.l   #8,d0
+	add.b   d0,d7			* update checksum with bits 16..23
 
-    subq.w  #4, d6          * take off the 4 bytes we just read in
+    subq.w  #4,d6          * take off the 4 bytes we just read in
 
 .cdl_1:
     tst.w   d6				* read all the bytes yet?
 	beq.s   .cdl_2
 
 	clr.l	d2
-	move.w  #2, d1			* 2 characters to read
+	move.w  #2,d1			* 2 characters to read
 	bsr     hexToInt		* convert to data byte
-	move.b  d0, (a3)+		* write the byte to memory
-	add.b   d0, d7			* update checksum
-	subq.w  #1, d6			* decrement byte count
+	move.b  d0,(a3)+		* write the byte to memory
+	add.b   d0,d7			* update checksum
+	subq.w  #1,d6			* decrement byte count
 	bra.s   .cdl_1
 
 .cdl_2:
 	clr.l	d2
-	move.w  #2, d1			* 2 characters to read
+	move.w  #2,d1			* 2 characters to read
 	bsr     hexToInt		* convert to checksum byte
-	add.b   d0, d7			* D7 = calc checksum + srec checksum
-	addq.b  #1, d7			* checksum + 1 should = 0 if OK
+	add.b   d0,d7			* D7 = calc checksum + srec checksum
+	addq.b  #1,d7			* checksum + 1 should = 0 if OK
 	beq.s   .cdl_X
 
-	move.b  #'X', d0		* checksum fail - print an X
+	move.b  #'X',d0		* checksum fail - print an X
 	bsr     putc
     bra.w	monLoop_NP		* return to main loop without prompt
 
 .cdl_X
-	move.b  #'.', d0		* checksum good - print a dot
+	move.b  #'.',d0		* checksum good - print a dot
 	bsr     putc
     bra.w	monLoop_NP		* return to main loop without prompt
 
@@ -1043,7 +1056,7 @@ cmdDownload:
 * Display the supported commands
 *------------------------------------------------------------------------------
 cmdHelp:
-    lea     strCommands(PC), a0
+    lea     (strCommands,PC),a0
     bsr.w   putString
     bra.w   monLoop
 
@@ -1053,7 +1066,7 @@ cmdHelp:
 * a0 - Start Address
 *------------------------------------------------------------------------------
 dumpRAM:
-    movem.l d0-d2/a1, -(SP) * Save registers
+    movem.l d0-d2/a1,-(SP) * Save registers
 	move.l	a0,a1			* move the start address to A1
 
 	bsr.w	putCRLF			* new line - trashes D0 & A0
@@ -1061,31 +1074,31 @@ dumpRAM:
 	move.w	#15,d1			* 16 rows of data (DBRA needs 1 less!)
 .dr_1:
 	move.w	#15,d2			* 16 bytes of data per row (DBRA needs 1 less!)
-    move.l  a1, d0			* copy the start address of the line into D0          
+    move.l  a1,d0			* copy the start address of the line into D0          
     bsr.w   writeAddr32     * Display as a 32-bit hex value
-    lea     strColonSpace(PC), a0
+    lea     (strColonSpace,PC),a0
     bsr.w   putString
-    lea		msgASCIIDump, a0
+    lea		msgASCIIDump,a0
 .dr_2:
-    move.b  (a1)+, d0       * Read a byte from RAM
+    move.b  (a1)+,d0       * Read a byte from RAM
     bsr.w   writeByte       * display byte as 2 hex digits	
 	bsr.w	makePrintable	* convert to printable character
 	move.b	d0,(a0)+		* save the printable char in output string
-    move.b  #' ', d0
+    move.b  #' ',d0
     bsr.w   putc			* insert a space
 	dbra	d2,.dr_2
 
-    move.b  #' ', d0
+    move.b  #' ',d0
     bsr.w   putc			* insert a space
 
 	move.b	#CR,(a0)+
 	move.b	#LF,(a0)+
 	move.b	#0,(a0)+
-    lea		msgASCIIDump, a0
+    lea		msgASCIIDump,a0
     bsr.w   putString		* print out the printable bytes
 	dbra	d1,.dr_1
 
-    movem.l (SP)+, d0-d2/a1 * Restore registers
+    movem.l (SP)+,d0-d2/a1 * Restore registers
 	rts
 	        
 *------------------------------------------------------------------------------
@@ -1093,11 +1106,11 @@ dumpRAM:
 * Only changes D0 if char is between 'a'..'z'
 *------------------------------------------------------------------------------
 chToUpper:
-    cmp.b   #'a', d0         
+    cmp.b   #'a',d0         
     blt.s   .done            * less than lower-case 'a' so leave alone
-    cmp.b   #'z', d0
+    cmp.b   #'z',d0
     bgt.s   .done            * greater than lower-case 'z' so leave alone
-    sub.b   #$20, d0         * convert to upper case
+    sub.b   #$20,d0         * convert to upper case
 .done:
     rts
     
@@ -1107,10 +1120,10 @@ chToUpper:
 * D0 holds the byte
 *------------------------------------------------------------------------------
 makePrintable:
-    cmp.b   #' ', d0         
+    cmp.b   #' ',d0         
     blt.s   .mp_1           * less than a SPACE (char 32)
 
-    cmp.b   #'~', d0         
+    cmp.b   #'~',d0         
     ble.s   .mp_x           * less than a DEL (char 127)
 
 .mp_1:
@@ -1151,10 +1164,10 @@ hexToInt:
 	bgt.s	.h2i_err		* quit if char is >'F'
 
 .h2i_2:
-	lsl.l	#4, d2
-	or.b    d0, d2			* insert the new digit
+	lsl.l	#4,d2
+	or.b    d0,d2			* insert the new digit
 
-	subq.b	#1, d1			* decrement the digit count
+	subq.b	#1,d1			* decrement the digit count
 	bne.s	.h2i_1			* go back for another digit?
 
 .h2i_x:
@@ -1201,10 +1214,10 @@ hexToIntEcho:
 	bgt.s	.h2i_err		* quit if char is >'F'
 
 .h2i_2:
-	lsl.l	#4, d2
-	or.b    d0, d2			* insert the new digit
+	lsl.l	#4,d2
+	or.b    d0,d2			* insert the new digit
 
-	subq.b	#1, d1			* decrement the digit count
+	subq.b	#1,d1			* decrement the digit count
 	bne.s	.h2i_1			* go back for another digit?
 
 .h2i_x:
@@ -1282,14 +1295,14 @@ easyTask24:
 easyTask25:
 easyTaskUnsupported:
 	exg		d0,d1			; put the task number into D1
-    lea     strEasyTask1(PC), a0
+    lea     (strEasyTask1,PC),a0
     bsr.w   putString
 	exg		d0,d1			; put the task number back into D0
 	divu	#10,d0			; divide task number by 10
     bsr.w   writeNibble		; output the 10's digit
 	swap	d0
     bsr.w   writeNibble		; output the 1's digit
-    lea     strEasyTask2(PC), a0
+    lea     (strEasyTask2,PC),a0
     bsr.w   putString
 .infloop:
     bra.s   .infloop
@@ -1302,7 +1315,7 @@ easyTask0:
 	andi.w	#$00FF,d1	* DBRA works on a WORD so make sure upper byte is zero
 	sub.b	#1,d1		* DBRA requires 1 less than actual number
 .loop:
-    move.b  (a1)+, d0    * Read in character
+    move.b  (a1)+,d0    * Read in character
     beq.s   .end         * Check for the null
     
     bsr.w   putc		 * Otherwise write the character
@@ -1319,7 +1332,7 @@ easyTask1:
 	andi.w	#$00FF,d1	* DBRA works on a WORD so make sure upper byte is zero
 	sub.b	#1,d1		* DBRA requires 1 less than actual number
 .loop:
-    move.b  (a1)+, d0    * Read in character
+    move.b  (a1)+,d0    * Read in character
     beq.s   .end         * Check for the null
     
     bsr.w   putc		 * Otherwise write the character
@@ -1361,7 +1374,7 @@ easyTask7:
 *------------------------------------------------------------------------------
 easyTask13:
 .loop:
-    move.b  (a1)+, d0    * Read in character
+    move.b  (a1)+,d0    * Read in character
     beq.s   .end         * Check for the null
     
     bsr.w   putc		 * Otherwise write the character
@@ -1376,7 +1389,7 @@ easyTask13:
 *------------------------------------------------------------------------------
 easyTask14:
 .loop:
-    move.b  (a1)+, d0    * Read in character
+    move.b  (a1)+,d0    * Read in character
     beq.s   .end         * Check for the null
     
     bsr.w   putc		 * Otherwise write the character
@@ -1391,7 +1404,7 @@ easyTask14:
 *------------------------------------------------------------------------------
 easy68kTrap15:
 	movem.l	d3/a0/a2,-(sp)
-	lea		easy68kTaskTable(PC),a2
+	lea		(easy68kTaskTable,PC),a2
 	cmp.b	#25,d0			; is task number greater than 25?
 	bgt		easyTaskUnsupported
 	
@@ -1477,7 +1490,7 @@ writeNibble:
 * NOTE: the putString function must follow this function
 *------------------------------------------------------------------------------
 putCRLF:
-    lea     strNewline(PC), a0
+    lea     (strNewline,PC),a0
 
 *------------------------------------------------------------------------------
 * Print a null terminated string
@@ -1485,7 +1498,7 @@ putCRLF:
 *------------------------------------------------------------------------------
 putString:
 .loop:
-    move.b  (a0)+, d0    * Read in character
+    move.b  (a0)+,d0    * Read in character
     beq.s   .end         * Check for the null
     
     bsr.s   putc		 * Otherwise write the character
@@ -1501,9 +1514,9 @@ putc:
     ifgt USE_REAL_UART
 	; using real hardware
 	
-    btst.b    #2, SRA      * Check if transmitter ready bit is set
+    btst.b    #2,SRA      * Check if transmitter ready bit is set
     beq     putc     
-    move.b  d0, TBA      * Transmit Character
+    move.b  d0,TBA      * Transmit Character
 	rts
 	
     endc
@@ -1550,7 +1563,7 @@ getc:
 	nop
 	nop
 	nop
-    move.b  RBA, d0      * Read Character into D0
+    move.b  RBA,d0      * Read Character into D0
     rts
 
 	endc
@@ -1655,11 +1668,8 @@ PORTPARAMS: dc.l    9		   ; 38400,8,N,1
 *------------------------------------------------------------------------------
 * Monitor variables
 *------------------------------------------------------------------------------
-	ORG		STACK_START
-msgASCIIDump:
-	ds.b 20
-serBuff:   
-	ds.b	8
+msgASCIIDump    EQU STACK_START
+serBuff         EQU msgASCIIDump+20
 	
     END    START            * last line of source
 
