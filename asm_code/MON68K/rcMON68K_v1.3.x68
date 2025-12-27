@@ -266,12 +266,12 @@ rom2ramIVT:
 * Print a message showing the PC and address being accessed
 *------------------------------------------------------------------------------
 handleBusErr:
-    lea     bemsg1(PC),a0	* first message
+    lea     (bemsg1,PC),a0	* first message
     bsr.w   putString
 	move.l	10(a7),d0		* get the program counter 
 	bsr.w	writeAddr32
 	
-    lea     bemsg2(PC),a0	* second message
+    lea     (bemsg2,PC),a0	* second message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -280,12 +280,12 @@ handleBusErr:
 * Print a message showing the PC and address being accessed
 *------------------------------------------------------------------------------
 handleAddrErr:
-    lea     aemsg1(PC),a0	* first message
+    lea     (aemsg1,PC),a0	* first message
     bsr.w   putString
 	move.l	10(a7),d0		* get the program counter 
 	bsr.w	writeAddr32
 	
-    lea     aemsg2(PC),a0	* second message
+    lea     (aemsg2,PC),a0	* second message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -293,7 +293,7 @@ handleAddrErr:
 * ILLEGAL INSTRUCTION handler
 *------------------------------------------------------------------------------
 handleIllInst:
-    lea     iimsg(PC),a0	* display message
+    lea     (iimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -301,7 +301,7 @@ handleIllInst:
 * DIVISION BY ZERO handler
 *------------------------------------------------------------------------------
 handleZeroDiv:
-    lea     zdmsg(PC),a0	* display message
+    lea     (zdmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -309,7 +309,7 @@ handleZeroDiv:
 * CHK handler
 *------------------------------------------------------------------------------
 handleChkInst:
-    lea     cimsg(PC),a0	* display message
+    lea     (cimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -317,7 +317,7 @@ handleChkInst:
 * TRAPV handler
 *------------------------------------------------------------------------------
 handleTrapV:
-    lea     tvmsg(PC),a0	* display message
+    lea     (tvmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -325,7 +325,7 @@ handleTrapV:
 * PRIVILEGE VIOLATION handler
 *------------------------------------------------------------------------------
 handlePriv:
-    lea     pvmsg(PC),a0	* display message
+    lea     (pvmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -333,7 +333,7 @@ handlePriv:
 * TRACE handler
 *------------------------------------------------------------------------------
 handleTrace:
-    lea     trmsg(PC),a0	* display message
+    lea     (trmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -341,7 +341,7 @@ handleTrace:
 * Unimplementd Instruction - Line A handler
 *------------------------------------------------------------------------------
 handleLineA:
-    lea     lamsg(PC),a0	* display message
+    lea     (lamsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -349,7 +349,7 @@ handleLineA:
 * Unimplementd Instruction - Line F handler
 *------------------------------------------------------------------------------
 handleLineF:
-    lea     lfmsg(PC),a0	* display message
+    lea     (lfmsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -367,7 +367,7 @@ handleRes8:
 handleRes9:
 handleRes10:
 handleRes11:
-    lea     rimsg(PC),a0	* display message
+    lea     (rimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -375,7 +375,7 @@ handleRes11:
 * Uninitialised Interrupt handler
 *------------------------------------------------------------------------------
 handleUnInit:
-    lea     uimsg(PC),a0	* display message
+    lea     (uimsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -383,7 +383,7 @@ handleUnInit:
 * Spurious Interrupt handler
 *------------------------------------------------------------------------------
 handleSpur:
-    lea     simsg(PC),a0	* display message
+    lea     (simsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -391,7 +391,7 @@ handleSpur:
 * Autovector Level 1 Exception handler
 *------------------------------------------------------------------------------
 handleAV1:
-    lea     av1msg(PC),a0	* display message
+    lea     (av1msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -399,7 +399,7 @@ handleAV1:
 * Autovector Level 2 Exception handler
 *------------------------------------------------------------------------------
 handleAV2:
-    lea     av2msg(PC),a0	* display message
+    lea     (av2msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -407,7 +407,7 @@ handleAV2:
 * Autovector Level 3 Exception handler
 *------------------------------------------------------------------------------
 handleAV3:
-    lea     av3msg(PC),a0	* display message
+    lea     (av3msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -415,7 +415,7 @@ handleAV3:
 * Autovector Level 4 Exception handler
 *------------------------------------------------------------------------------
 handleAV4:
-    lea     av4msg(PC),a0	* display message
+    lea     (av4msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -423,7 +423,7 @@ handleAV4:
 * Autovector Level 5 Exception handler
 *------------------------------------------------------------------------------
 handleAV5:
-    lea     av5msg(PC),a0	* display message
+    lea     (av5msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -431,7 +431,7 @@ handleAV5:
 * Autovector Level 6 Exception handler
 *------------------------------------------------------------------------------
 handleAV6:
-    lea     av6msg(PC),a0	* display message
+    lea     (av6msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -439,7 +439,7 @@ handleAV6:
 * Autovector Level 7 Exception handler
 *------------------------------------------------------------------------------
 handleAV7:
-    lea     av7msg(PC),a0	* display message
+    lea     (av7msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -447,7 +447,7 @@ handleAV7:
 * TRAP #0 Exception handler
 *------------------------------------------------------------------------------
 handleTrap0:
-    lea     tr0msg(PC),a0	* display message
+    lea     (tr0msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -455,7 +455,7 @@ handleTrap0:
 * TRAP #1 Exception handler
 *------------------------------------------------------------------------------
 handleTrap1:
-    lea     tr1msg(PC),a0	* display message
+    lea     (tr1msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -463,7 +463,7 @@ handleTrap1:
 * TRAP #2 Exception handler
 *------------------------------------------------------------------------------
 handleTrap2:
-    lea     tr2msg(PC),a0	* display message
+    lea     (tr2msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -471,7 +471,7 @@ handleTrap2:
 * TRAP #3 Exception handler
 *------------------------------------------------------------------------------
 handleTrap3:
-    lea     tr3msg(PC),a0	* display message
+    lea     (tr3msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -479,7 +479,7 @@ handleTrap3:
 * TRAP #4 Exception handler
 *------------------------------------------------------------------------------
 handleTrap4:
-    lea     tr4msg(PC),a0	* display message
+    lea     (tr4msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -487,7 +487,7 @@ handleTrap4:
 * TRAP #5 Exception handler
 *------------------------------------------------------------------------------
 handleTrap5:
-    lea     tr5msg(PC),a0	* display message
+    lea     (tr5msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -495,7 +495,7 @@ handleTrap5:
 * TRAP #6 Exception handler
 *------------------------------------------------------------------------------
 handleTrap6:
-    lea     tr6msg(PC),a0	* display message
+    lea     (tr6msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -503,7 +503,7 @@ handleTrap6:
 * TRAP #7 Exception handler
 *------------------------------------------------------------------------------
 handleTrap7:
-    lea     tr7msg(PC),a0	* display message
+    lea     (tr7msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -511,7 +511,7 @@ handleTrap7:
 * TRAP #8 Exception handler
 *------------------------------------------------------------------------------
 handleTrap8:
-    lea     tr8msg(PC),a0	* display message
+    lea     (tr8msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -519,7 +519,7 @@ handleTrap8:
 * TRAP #9 Exception handler
 *------------------------------------------------------------------------------
 handleTrap9:
-    lea     tr9msg(PC),a0	* display message
+    lea     (tr9msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -527,7 +527,7 @@ handleTrap9:
 * TRAP #10 Exception handler
 *------------------------------------------------------------------------------
 handleTrap10:
-    lea     tr10msg(PC),a0	* display message
+    lea     (tr10msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -535,7 +535,7 @@ handleTrap10:
 * TRAP #11 Exception handler
 *------------------------------------------------------------------------------
 handleTrap11:
-    lea     tr11msg(PC),a0	* display message
+    lea     (tr11msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 
@@ -543,7 +543,7 @@ handleTrap11:
 * TRAP #12 Exception handler
 *------------------------------------------------------------------------------
 handleTrap12:
-    lea     tr12msg(PC),a0	* display message
+    lea     (tr12msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -551,7 +551,7 @@ handleTrap12:
 * TRAP #13 Exception handler
 *------------------------------------------------------------------------------
 handleTrap13:
-    lea     tr13msg(PC),a0	* display message
+    lea     (tr13msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -559,7 +559,7 @@ handleTrap13:
 * TRAP #14 Exception handler
 *------------------------------------------------------------------------------
 handleTrap14:
-    lea     tr14msg(PC),a0	* display message
+    lea     (tr14msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -567,7 +567,7 @@ handleTrap14:
 * TRAP #15 Exception handler
 *------------------------------------------------------------------------------
 handleTrap15:
-    lea     tr15msg(PC),a0	* display message
+    lea     (tr15msg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -575,7 +575,7 @@ handleTrap15:
 * User Exception handler - all remaining exception handlers land here
 *------------------------------------------------------------------------------
 handleUnused:
-    lea     usermsg(PC),a0	* display message
+    lea     (usermsg,PC),a0	* display message
     bsr.w   putString
 	bra.w	handleCleanUp
 	
@@ -686,14 +686,14 @@ START:
 * Warm Restart entry point
 *------------------------------------------------------------------------------
 monStart:
-    lea     strBanner1(PC),a0	* Show the monitor details
+    lea     (strBanner1,PC),a0	* Show the monitor details
     bsr.w   putString
 
-    lea		strCommands(PC),a0 * And the command help message
+    lea		(strCommands,PC),a0 * And the command help message
     bsr.w   putString
 
 monLoop:
-    lea     strPrompt(PC),a0   * Prompt
+    lea     (strPrompt,PC),a0   * Prompt
     bsr.w   putString
 
 monLoop_NP:
@@ -734,7 +734,7 @@ monLoop_NP:
     ble.s   monLoop_NP		* go back without printing prompt    
 
 	move.b	d0,d1			* save the unknown char
-    lea     strUnkCmd(PC),a0   * unknown command
+    lea     (strUnkCmd,PC),a0   * unknown command
     bsr.w   putString
 	move.b	d1,d0			* get unnknown char back
 	bsr.w	writeByte		* print it
@@ -752,7 +752,7 @@ cmdBootEHBASIC:
 	* then EhBASIC hasn't been programmed in!
 	cmpi.w	#$FFFF,EHBASIC_BASE
 	bne.s	.bootEHBASIC
-    lea		strBASICErr1(PC),a0
+    lea		(strBASICErr1,PC),a0
     bsr.w   putString
     bra.w   monLoop
 
@@ -762,7 +762,7 @@ cmdBootEHBASIC:
 
     * I don't think EhBASIC can return back to the monitor but just in case it can
     * print out a message and wait for a reset.
-    lea		strBASICReturn(PC),a0
+    lea		(strBASICReturn,PC),a0
     bsr.w   putString
 .forever:
     bra.s	.forever
@@ -776,7 +776,7 @@ cmdBootCPM:
 	* hasn't been programmed in!
 	cmpi.w	#$FFFF,CPM_BASE
 	bne.s	.chkBIOS
-    lea		strCPMErr1(PC),a0
+    lea		(strCPMErr1,PC),a0
     bsr.w   putString
     bra.w   monLoop
 	
@@ -786,7 +786,7 @@ cmdBootCPM:
 	* BIOS hasn't been programmed in!
 	cmpi.w	#$FFFF,$6000
 	bne.s	.bootCPM
-    lea		strCPMErr2(PC),a0
+    lea		(strCPMErr2,PC),a0
     bsr.w   putString
     bra.w   monLoop
 	
@@ -796,7 +796,7 @@ cmdBootCPM:
 	
     * I don't think CP/M-68K can return back to the moitor but just in case it can
     * print out a message and wait for a reset.
-    lea		strCPMReturn(PC),a0
+    lea		(strCPMReturn,PC),a0
     bsr.w   putString
 .forever:
     bra.s	.forever
@@ -836,7 +836,7 @@ cmdRun:
     move.l  d0,a0			* copy start address into A0
     jsr     (a0)            * jump to user code
 	
-	lea		strUserReturn(PC),a0
+	lea		(strUserReturn,PC),a0
     bsr.w   putString
 	
     bra.w	monLoop
@@ -1043,7 +1043,7 @@ cmdDownload:
 * Display the supported commands
 *------------------------------------------------------------------------------
 cmdHelp:
-    lea     strCommands(PC),a0
+    lea     (strCommands,PC),a0
     bsr.w   putString
     bra.w   monLoop
 
@@ -1063,7 +1063,7 @@ dumpRAM:
 	move.w	#15,d2			* 16 bytes of data per row (DBRA needs 1 less!)
     move.l  a1,d0			* copy the start address of the line into D0          
     bsr.w   writeAddr32     * Display as a 32-bit hex value
-    lea     strColonSpace(PC),a0
+    lea     (strColonSpace,PC),a0
     bsr.w   putString
     lea		msgASCIIDump,a0
 .dr_2:
@@ -1282,14 +1282,14 @@ easyTask24:
 easyTask25:
 easyTaskUnsupported:
 	exg		d0,d1			; put the task number into D1
-    lea     strEasyTask1(PC),a0
+    lea     (strEasyTask1,PC),a0
     bsr.w   putString
 	exg		d0,d1			; put the task number back into D0
 	divu	#10,d0			; divide task number by 10
     bsr.w   writeNibble		; output the 10's digit
 	swap	d0
     bsr.w   writeNibble		; output the 1's digit
-    lea     strEasyTask2(PC),a0
+    lea     (strEasyTask2,PC),a0
     bsr.w   putString
 .infloop:
     bra.s   .infloop
@@ -1391,7 +1391,7 @@ easyTask14:
 *------------------------------------------------------------------------------
 easy68kTrap15:
 	movem.l	d3/a0/a2,-(sp)
-	lea		easy68kTaskTable(PC),a2
+	lea		(easy68kTaskTable,PC),a2
 	cmp.b	#25,d0			; is task number greater than 25?
 	bgt		easyTaskUnsupported
 	
@@ -1477,7 +1477,7 @@ writeNibble:
 * NOTE: the putString function must follow this function
 *------------------------------------------------------------------------------
 putCRLF:
-    lea     strNewline(PC),a0
+    lea     (strNewline,PC),a0
 
 *------------------------------------------------------------------------------
 * Print a null terminated string
