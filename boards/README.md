@@ -86,7 +86,7 @@ The board was designed around Alliance Memory AS6C4008 512K RAM chips and SST 39
 | U4 | Philips | PC74HCT688P | 8 bit magnitude comparator |
 
 Note:
-There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices.
+There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices. However you may be able to work around this by bending the X2 pin up so that it does not go into the IC socket.
 
 Below are some 68681 DUARTs from different manufacturers and the relevant text from their datasheets:
 

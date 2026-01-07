@@ -49,7 +49,7 @@ If you choose have a turned pin socket for the system clock, then an 8-pin DIL t
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
 # Choice of DUART Chip
-There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices to those devices that allow the X2 pin to be grounded.
+There are various 68681 DUARTs but unfortunately they are not all entirely compatible. The issue appears to be in relation to the X2 input pin when an external oscillator is used rather than a crystal, specifically whether the X2 pin should be grounded or not. My current SIO board design grounds the X2 pin which limits the DUART choices to those devices that allow the X2 pin to be grounded. However you may be able to work around this by bending the X2 pin up so that it does not go into the IC socket.
 
 Below are some 68681 DUARTs from different manufacturers and the relevant text from their datasheets:
 
