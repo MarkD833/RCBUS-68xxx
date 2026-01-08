@@ -2,20 +2,34 @@
 
 This folder contains the simple monitor program I created to support my RCBus 6800 system. The 68000 monitor uses the SIO board for its serial comms and is not compatible with my 68302 board although the same commands have been implemented.
 
-The current version of the monitor is v1.3 and it supports both CP/M-68K and EhBASIC which are separate applications that need to be programmed into the ROMs.
+# CP/M-68K
+As of MON68K v1.4 the ability to boot CP/M-68K from ROM has been removed as there was limited interest in CP/M-68K and few applications available for it.
 
-I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
+I have left MON68K v1.3 available as it is the last version that supports both CP/M-68K and EhBASIC which are separate applications that need to be programmed into the ROMs.
 
-The monitor operates at 38400 baud without any handshaking via serial port #1 on the SIO board.
+# Serial Communications
+## MON68K v1.3
+The monitor assumes that there is an MC68681 DUART present at address $D00000. The DUART serial port #1 operates at 38400,8,N,1 with no hardware flow control.
+
+## MON68K v1.4
+The monitor assumes that there is an MC68681 (or compatible) DUART present at address $D00000. The baud rate is determeined by the setting of HI_SPEED in the MON68K source code.
++ Setting HI_SPEED = 0 puts the DUART into normal operation mode and 38400 baud. 
++ Setting HI_SPEED = 1 puts the DUART into a test mode where 115200 baud is achieved.
+
+**Note:** 115200 baud can only be achieved when using a DUART that supports the test mode - i.e. one of the Philips devices.
+
+When operating the DUART in the test mode at 115200 buad, RTS/CTS hardware flow control is required. In order to use hardware flow control, the solder jumper JP2 on the rear of the SIO board needs to be bridged to allow the DUART OP0 signal to control the CTS signal.
 
 # Commands
-There a few basic commands that the monitor understands as follows:
+I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
+
+Th basic commands that the monitor understands are as follows:
 
 ## B
 
 Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first. I need to provide a write-up on how to include EhBASIC and/or a ROM image that already includes it.
 
-## C
+## C (v1.3 only)
 
 Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first. I need to provide a write-up on how to include CP/M-68K and/or a ROM image that already includes it.
 
