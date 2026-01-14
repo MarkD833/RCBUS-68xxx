@@ -23,7 +23,9 @@ When operating the DUART in the test mode at 115200 buad, RTS/CTS hardware flow 
 Hardware flow control is now used regardless of the baud rate.
 
 **Note:** The serial routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
- 
+
+**Limitations** There is currently an issue with EhBASIC. The TRAP#15 call that handles keyboard (i.e. serial) input appears not to work at all.
+
 # Commands
 I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
 
