@@ -52,7 +52,7 @@
 * interrupts.
 *******************************************************************************
 
-	INCLUDE "..\asm-inc\memory.inc"
+	INCLUDE "..\asm-inc\memory2.inc"
 	INCLUDE "..\asm-inc\devices.inc"
 
 *******************************************************************************
@@ -81,6 +81,8 @@ CR    equ $0D
 
 *------------------------------------------------------------------------------
 * Serial port receive buffer size - must be multiples of 2!
+* UPPER sets max chars in buffer before asking host PC to stop sending.
+* LOWER sets min chars in buffer before asking host PC to start sending again.
 *------------------------------------------------------------------------------
 SERIAL_BUFFER_SIZE  equ 256
 SERIAL_BUFFER_MASK  equ SERIAL_BUFFER_SIZE-1
@@ -732,9 +734,9 @@ monLoop_CRLF:
 * (B) Boot EhBASIC v3.54
 *------------------------------------------------------------------------------
 cmdBootEHBASIC:
-	* perform a simple check to see if EhBASIC has been programmed into the
-	* EEPROM by reading address 0x9000 in the EEPROM. If it contains 0xFFFF,
-	* then EhBASIC hasn't been programmed in!
+	* Perform a simple check to see if EhBASIC has been programmed into the
+	* EEPROM by reading the first address of EhBASIC in the EEPROM. If it
+    * contains 0xFFFF, then EhBASIC hasn't been programmed in!
 	cmpi.w	#$FFFF,EHBASIC_BASE
 	bne.s	.bootEHBASIC
     lea		strBASICErr1(PC), a0
@@ -1448,8 +1450,11 @@ easyTask6:
 * otherwise set to 0.
 *------------------------------------------------------------------------------
 easyTask7:
-	move.b	SRA,d1			    * get DUART status register
-	andi.b	#$01,d1			    * mask all but the RxRDY bit
+	move.b	#0,d1				* assume no char available
+    cmpi.w  #0,ser0RxSize       * check number of chars in rx queue
+	beq.s	.end
+	move.b	#1,d1				* there is at least 1 char available
+.end
 	rts
 
 *------------------------------------------------------------------------------
@@ -1678,6 +1683,9 @@ msgASCIIDump:
 
 	
     END    START                * last line of source
+
+
+
 
 
 

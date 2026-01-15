@@ -23,7 +23,7 @@ When operating the DUART in the test mode at 115200 buad, RTS/CTS hardware flow 
 Hardware flow control is now used regardless of the baud rate.
 
 **Note:** The serial routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
- 
+
 # Commands
 I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
 
