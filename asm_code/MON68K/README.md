@@ -24,7 +24,7 @@ Hardware flow control is now used regardless of the baud rate.
 
 **Note:** The serial routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
 
-**Limitations** There is currently an issue with EhBASIC. The TRAP#15 call that handles keyboard (i.e. serial) input appears not to work at all.
+**ERROR** There is currently an issue with the EASy68K task #7 routine - I forgot to alter it to check the new serial queue!
 
 # Commands
 I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
