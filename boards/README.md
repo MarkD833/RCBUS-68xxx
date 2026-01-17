@@ -8,6 +8,7 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | 68000 ROM RAM_Board | 128K ROM & 1M RAM board |
 | 68000 ROM/RAM Board v2 | 1M ROM & 1M RAM board |
 | 68000 SIO Board | Dual MC68681 serial board - 4 serial ports |
+| 68000 SIO & Maths | SCC68692 DUART + MC68881 maths coprocessor |
 | 68000 MFP Board | Dual MC68901 multifunction peripheral board |
 | 68000 PIO Board | Dual MC68230 parallel interface / timer board |
 | 68000 SPI Board | 6 channel SPI master board - 3V3 and 5V ports |
