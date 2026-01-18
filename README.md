@@ -79,14 +79,15 @@ This is a hybrid bit-bang SPI master board. It's a hybrid design as the serial t
 The board supports 6 SPI connections - three are 5v SPI and three are 3v3 SPI - along with a 5v to 3v3 regulator.
 
 ## Serial Parallel Timer 1 Board
+
 This board is my attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. By combining an MC68681 DUART with an MC68901 MFP I managed to achieve a similar board, but with a bit more functionality - mainly due to the MC68901.
 
-The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers.
+The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers and I've given it the acronym LBE1 for **L**ittle **B**it of **E**verything #1.
 
 ## Serial Parallel Timer 2 Board
 This board is my alternative attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. The serial port of the MC68901 is pretty slow so I came up with an alternative desgin using an 8254-2 Counter/Timer.
 
-The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers.
+The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers and I've given it the acronym LBE2 for **L**ittle **B**it of **E**verything #2.
 
 The board has some spare open collector outputs which I've used in an attempt to create a very simple bit-banged I2C port.
 
@@ -102,9 +103,13 @@ The current address map is as follows:
 | 0x100000..0x1FFFFF | SRAM | Fixed address range<sup>1</sup> |
 | 0x000000..0x5FFFFF | FLASH | Jumper selectable address range<sup>2</sup> |
 | 0x000000..0x5FFFFF | SRAM | Jumper selectable address range<sup>2</sup> |
-| 0xD00000..0xD03FFF | DUARTs | Jumper selectable address range |
+| 0xD00000..0xD03FFF | DUARTs | Jumper selectable address range <sup>5</sup>|
+| 0xD00000..0xD03FFF | LBE#1 | Jumper selectable address range <sup>5</sup>|
+| 0xD00000..0xD03FFF | LBE#2 | Jumper selectable address range <sup>5</sup>|
+| 0xD00000..0xD03FFF | MATH | Jumper selectable address range <sup>5</sup>|
 | 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable address range |
 | 0xD10000..0xD13FFF | MFPs | Jumper selectable address range |
+| 0xD20000..0xD23FFF | SPI | Fixed address range |
 | 0xF00000..0xF7FFFF | RCBus /MREQ | Fixed address range<sup>3</sup> - partially decoded |
 | 0xF80000..0xFFFFFF | RCBus /IORQ | Fixed address range<sup>3</sup> - partially decoded |
 | 0xFC0000..0xFCFFFF | RCBus /MREQ | Fixed address range<sup>4</sup> |
@@ -114,7 +119,8 @@ The current address map is as follows:
 2. These addresses apply to the ROM/RAM V2 board
 3. These addresses apply to the MC68000 board
 4. These addresses apply to the MC68302 board
-
+5. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
+ 
 # Testing
 The 68000 board, the ROM/RAM v1 board, the serial I/O board and the MFP board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
 
