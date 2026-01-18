@@ -15,11 +15,17 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
   + [68901 Multifunction Board](#mc68901-mfp-board)
   + [128K ROM + 1M RAM Board](#memory-board-v1)
   + [1M ROM + 1M RAM Board](#memory-board-v2)
+  + [SPI Hybrid Bit-Bang Master Board](#spi-master-board)<sup>*</sup>
+  + [Serial + Parallel + Timer Board #1](#serial-parallel-timer-1-board)<sup>*</sup>
+  + [Serial + Parallel + Timer Board #2](#serial-parallel-timer-2-board)<sup>*</sup>
+  + [Serial + Maths Board](#serial-maths-board)<sup>*</sup>
 - [Address Map](#address-map)
 - [Testing](#testing)
 - [RCBus Compatability](#rcbus-compatability)
 - [Software Development](#software-development)
 - [Hardware Library](#hardware-library)
+
+* These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
 
 # The RCBus
 RCBus is an extended version of the [RC2014&trade;](https://rc2014.co.uk/) bus that was put together by members of the [retro-comp](https://groups.google.com/g/retro-comp) google group. The latest RCBus specification as of Oct 2025 is v1.0 and can be found [here](https://smallcomputercentral.com/rcbus/).
@@ -66,6 +72,24 @@ This ROM/RAM board is designed for two Winbond W27C512 EEPROMs to provide 128K o
 This ROM/RAM board is designed for two SST39SF040 FLASH memory chips to provide 1M of non-volatile memory organised as 512K of 16-bit wide memory and two Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory. The board also includes address decode logic and a simple /DTACK generator.
 
 By reconfiguring the boards jumpers, the board will support four SST39SF040 FLASH memory chips to provide 2M of non-volatile memory organised as 1M of 16-bit wide memory or four Alliance Memory AS6C4008 RAM chips to provide 2M of volatile memory organised as 1M of 16-bit wide memory.
+
+## SPI Master Board
+This is a hybrid bit-bang SPI master board. It's a hybrid design as the serial to parallel and parallel to serial conversions are both done in hardware. The only bit-bang element is the pulses required to generate the SPI clock signal.
+
+The board supports 6 SPI connections - three are 5v SPI and three are 3v3 SPI - along with a 5v to 3v3 regulator.
+
+## Serial Parallel Timer 1 Board
+This board is my attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. By combining an MC68681 DUART with an MC68901 MFP I managed to achieve a similar board, but with a bit more functionality - mainly due to the MC68901.
+
+The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers.
+
+## Serial Parallel Timer 2 Board
+This board is my alternative attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. The serial port of the MC68901 is pretty slow so I came up with an alternative desgin using an 8254-2 Counter/Timer.
+
+The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers.
+
+## Serial Maths Board
+This board provides 2 serial ports using an SCC68692 DUART and an MC68881 (or MC68882) maths co-processor board configured as a peripheral device to the MC68000 processor.
 
 # Address Map
 The current address map is as follows:
