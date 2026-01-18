@@ -88,6 +88,8 @@ This board is my alternative attempt to make a 68000 equivalent of Steve Cousins
 
 The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers.
 
+The board has some spare open collector outputs which I've used in an attempt to create a very simple bit-banged I2C port.
+
 ## Serial Maths Board
 This board provides 2 serial ports using an SCC68692 DUART and an MC68881 (or MC68882) maths co-processor board configured as a peripheral device to the MC68000 processor.
 
