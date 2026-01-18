@@ -25,7 +25,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
 - [Software Development](#software-development)
 - [Hardware Library](#hardware-library)
 
-* These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
+<sup>*</sup> These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
 
 # The RCBus
 RCBus is an extended version of the [RC2014&trade;](https://rc2014.co.uk/) bus that was put together by members of the [retro-comp](https://groups.google.com/g/retro-comp) google group. The latest RCBus specification as of Oct 2025 is v1.0 and can be found [here](https://smallcomputercentral.com/rcbus/).
