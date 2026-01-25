@@ -1,6 +1,6 @@
 # 68000 LBE (Little Bit of Everything) Board #1
 
-![](../../images/LBE_Front.jpg)
+![](../../images/LBE_Front.JPG)
 
 # Details
 
