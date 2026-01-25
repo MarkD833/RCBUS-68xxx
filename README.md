@@ -85,7 +85,7 @@ This board is my attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 
 The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers and I've given it the acronym LBE1 for **L**ittle **B**it of **E**verything #1.
 
 ## Serial Parallel Timer 2 Board
-This board is my alternative attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. The serial port of the MC68901 is pretty slow so I came up with an alternative desgin using an 8254-2 Counter/Timer.
+This board is my alternative attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. The serial port of the MC68901 is pretty slow so I came up with an alternative desgin, sacrificing the extra serial port for 16-bit timers, using an 8254-2 Counter/Timer.
 
 The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers and I've given it the acronym LBE2 for **L**ittle **B**it of **E**verything #2.
 

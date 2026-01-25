@@ -1,0 +1,20 @@
+Reference,Value,Datasheet,Footprint,Qty,Description
+"C2,C4,C5,C9,C10",100n,~,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,5,Unpolarized ceramic capacitor
+"D1,D2",LED,~,LED_THT:LED_D3.0mm,2,Light emitting diode
+J1,Conn_02x04_Odd_Even,~,MyLibrary2023:PinHeader_2x04_P2.54mm_Vertical,1,"Generic connector, double row, 02x04"
+J2,Conn_01x04,~,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,"Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+J3,RCBus_80PIN_68000,~,MyLibrary2023:RCBus_80p_Medium,1,"Generic connector, double row, 02x20, right angle"
+J4,Conn_02x02_Odd_Even,~,Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical,1,"Generic connector, double row, 02x02"
+J5,Conn_02x06_Odd_Even,~,Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Horizontal,1,"Generic connector, double row, 02x06, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+J6,Conn_02x03_Odd_Even,~,Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Horizontal,1,"Generic connector, double row, 02x03, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+J8,Conn_02x08_Odd_Even,~,Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Horizontal,1,"Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+"J12,J13,J18",Conn_01x08,~,MyLibrary2023:PinHeader_1x08_P2.54mm_Vertical,3,"Generic connector, single row, 01x08"
+"J15,J16,J17",Conn_01x06,~,Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Horizontal,3,"Generic connector, single row, 01x06, right angle"
+"JP1,JP2,JP3,JP4,JP5,JP6",SolderJumper,~,Jumper:SolderJumper-2_P1.3mm_Open_Pad1.0x1.5mm,6,"Solder Jumper, 2-pole, open"
+R1,10K,~,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,1,
+"R2,R3",1K,~,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,2,Resistor
+U1,68901P,,Package_DIP:DIP-48_W15.24mm,1,Parallel Interface
+U2,68681P,,Package_DIP:DIP-40_W15.24mm_Socket,1,DUART
+U6,74LS688,http://www.ti.com/lit/gpn/sn74LS688,MyLibrary2023:DIP-20_W7.62mm_Socket,1,8-bit magnitude comparator
+U7,74LS138,http://www.ti.com/lit/gpn/sn74LS138,Package_DIP:DIP-16_W7.62mm_Socket,1,Decoder 3 to 8 active low outputs
+X1,3.6864MHz,,Oscillator:Oscillator_DIP-8,1,"Crystal Clock Oscillator, DIP8-style metal package"
