@@ -24,6 +24,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
 - [RCBus Compatability](#rcbus-compatability)
 - [Software Development](#software-development)
 - [Hardware Library](#hardware-library)
+- [Component Sourcing](#component-sourcing)
 
 <sup>*</sup> These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
 
@@ -168,4 +169,9 @@ I'm not a C++ programmer so I figured I would try and learn about C++ and classe
 Having returned to the world of microcontrollers by playing around with some Arduino UNO boards, I figured that I might try and create some hardware libraries in the style of Arduino.
 
 Currently I have a serial port library that provides similar functionality to some of the functions in the [Arduino Serial class](https://docs.arduino.cc/language-reference/en/functions/communication/serial/) that supports the dual MC68681 SIO board.
+
+# Component Sourcing
+Whilst many of the TTL logic devices are generally still available as NOS (New Old Stock), almost all the larger chips (CPUs, DUARTS etc) are now obsolete and can be difficult to locate. Here in the UK my sources are either [Silicon Ark](https://www.silicon-ark.co.uk/) or ebay.
+
+I've also used AliExpress but a note of caution. It has been my experience that quite a few sellers on AliExpress are claiming that their chips are new devices. In reality these devices have most likely been reclaimed from old scrapped boards and have solder on their pins. My experience with these devices is that they do work as they should but the presence of the solder makes their pins 'sticky'. After several insertions and removals, either the IC socket breaks or a pin breaks off the device. For me, this was particually the case when using EEPROM or FLASH devices and going through the early burn and learn programming process.
 

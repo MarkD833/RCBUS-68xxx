@@ -122,5 +122,28 @@ Below are some 68681 DUARTs from different manufacturers and the relevant text f
 | U5 | ST | MK68901N-04 | Multi-Function Peripheral |
 | U6 | Philips | PC74HCT688P | 8 bit magnitude comparator |
 
-Note there isn't a U1 or U3 as I forgot to re-annotate the schematic.
+Note there isn't a U1 or U3 as I forgot to re-annotate the schematic!
+
+## Little Bit of Everything #1
+
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U1 | ST | MK68901N-04 | Multi-Function Peripheral |
+| U2 | Philips | SCC68692 | Dual Universal Asynchronous Receiver/Transmitter |
+| U6 | Philips | PC74HCT688P | 8 bit magnitude comparator |
+| U7 | ?? | 74LS138N | 3 to 8 line decoder |
+
+Note there isn't a U3, U4 or U5 as I forgot to re-annotate the schematic!
+
+## Little Bit of Everything #2
+
+| Chip ID | Manufacturer | Chip Number | Description |
+| :---- | :---- |  :---- | :---- |
+| U1 | Intel | P8254 | Timer |
+| U2 | Philips | SCC68692 | Dual Universal Asynchronous Receiver/Transmitter |
+| U3 | Phillips | PC74HCT125P | Quad tri-state buffer |
+| U4 | ST | 74LS175 | Quadruple D-Type flip-flop |
+| U5 | TI? | SN74LS10N | Triple 3-input NAND gate |
+| U6 | Philips | PC74HCT688P | 8 bit magnitude comparator |
+| U7 | ?? | 74LS138N | 3 to 8 line decoder |
 
