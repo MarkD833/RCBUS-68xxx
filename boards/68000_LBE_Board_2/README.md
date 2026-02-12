@@ -27,4 +27,7 @@ The 8254-2 requires its own DTACK circuitry using a 74LS175 and a 74LS125. With 
 
 This is very much a design concept at the moment and I need to determine if it is actually useable in practice.
 
+# Outcome
+
+This board didn't get beyond the prototype stage. I found that the timer outputs of the 8254 were not compatible with the generation of interrupts.
 
