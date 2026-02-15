@@ -124,7 +124,7 @@ Below are some 68681 DUARTs from different manufacturers and the relevant text f
 
 Note there isn't a U1 or U3 as I forgot to re-annotate the schematic!
 
-## Little Bit of Everything #1
+## Little Bit of Everything
 
 | Chip ID | Manufacturer | Chip Number | Description |
 | :---- | :---- |  :---- | :---- |

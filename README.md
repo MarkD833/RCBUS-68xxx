@@ -16,8 +16,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
   + [128K ROM + 1M RAM Board](#memory-board-v1)
   + [1M ROM + 1M RAM Board](#memory-board-v2)
   + [SPI Hybrid Bit-Bang Master Board](#spi-master-board)<sup>*</sup>
-  + [Serial + Parallel + Timer Board #1](#serial-parallel-timer-1-board)<sup>*</sup>
-  + [Serial + Parallel + Timer Board #2](#serial-parallel-timer-2-board)<sup>*</sup>
+  + [Serial + Parallel + Timer Board](#serial-parallel-timer-board)<sup>*</sup>
   + [Serial + Maths Board](#serial-maths-board)<sup>*</sup>
 - [Address Map](#address-map)
 - [Testing](#testing)
@@ -79,18 +78,11 @@ This is a hybrid bit-bang SPI master board. It's a hybrid design as the serial t
 
 The board supports 6 SPI connections - three are 5v SPI and three are 3v3 SPI - along with a 5v to 3v3 regulator.
 
-## Serial Parallel Timer 1 Board
+## Serial Parallel Timer Board
 
 This board is my attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. By combining an MC68681 DUART with an MC68901 MFP I managed to achieve a similar board, but with a bit more functionality - mainly due to the MC68901.
 
 The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers and I've given it the acronym LBE1 for **L**ittle **B**it of **E**verything #1.
-
-## Serial Parallel Timer 2 Board
-This board is my alternative attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. The serial port of the MC68901 is pretty slow so I came up with an alternative desgin, sacrificing the extra serial port for 16-bit timers, using an 8254-2 Counter/Timer.
-
-The board provides 2 serial ports, 8 digital outputs, 6 digital inputs and four 16-bit timers and I've given it the acronym LBE2 for **L**ittle **B**it of **E**verything #2.
-
-The board has some spare open collector outputs which I've used in an attempt to create a very simple bit-banged I2C port.
 
 ## Serial Maths Board
 This board provides 2 serial ports using an SCC68692 DUART and an MC68881 (or MC68882) maths co-processor board configured as a peripheral device to the MC68000 processor.
@@ -105,9 +97,8 @@ The current address map is as follows:
 | 0x000000..0x5FFFFF | FLASH | Jumper selectable address range<sup>2</sup> |
 | 0x000000..0x5FFFFF | SRAM | Jumper selectable address range<sup>2</sup> |
 | 0xD00000..0xD03FFF | DUARTs | Jumper selectable address range <sup>5</sup>|
-| 0xD00000..0xD03FFF | LBE#1 | Jumper selectable address range <sup>5</sup>|
-| 0xD00000..0xD03FFF | LBE#2 | Jumper selectable address range <sup>5</sup>|
-| 0xD00000..0xD03FFF | MATH | Jumper selectable address range <sup>5</sup>|
+| 0xD00000..0xD03FFF | LBE | Jumper selectable address range <sup>5</sup>|
+| 0xD00000..0xD03FFF | DUART + MATH | Jumper selectable address range <sup>5</sup>|
 | 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable address range |
 | 0xD10000..0xD13FFF | MFPs | Jumper selectable address range |
 | 0xD20000..0xD23FFF | SPI | Fixed address range |
