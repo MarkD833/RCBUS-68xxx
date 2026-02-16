@@ -20,9 +20,9 @@ Note that the CLOCK2 pin may also be used by the serial, parallel and multifunct
 ## Chip Selects
 The 68302 processor has 4 user programmable chip select signals - /CS0, /CS1, /CS2 & /CS3.
 
-/CS0 is automatically configured by the processor at reset for an 8K block of memory starting at address $000000. /CS0 would normally be used to select a non-volatile memory device that holds the boot code. My ROM/RAM board includes address decoding to select the pair of ROMs at address $000000 so /CS0 isn't needed. However there's a solder jumper that can be used to routine it to RCBus pin 45 if required.
+/CS0 is automatically configured by the processor at reset for an 8K block of memory starting at address $000000. /CS0 would normally be used to select a non-volatile memory device that holds the boot code. My ROM/RAM board includes address decoding to select the pair of ROMs at address $000000 so /CS0 isn't needed. However there's a solder jumper that can be used to route it to RCBus pin 45 if required.
 
-/CS1 is disabled by the processor at reset. I intended this chip select to select the volatile memory device on my ROM/RAM board, but as the board includes address decoding to select the pair of RAMs at address $100000, /CS1 isn't needed. However there's a solder jumper that can be used to routine it to RCBus pin 46 if required.
+/CS1 is disabled by the processor at reset. I intended this chip select to select the volatile memory device on my ROM/RAM board, but as the board includes address decoding to select the pair of RAMs at address $100000, /CS1 isn't needed. However there's a solder jumper that can be used to route it to RCBus pin 46 if required.
 
 /CS2 is disabled by the processor at reset. This chip select signal is used to enable access to the RCBus memory and i/o spaces. The /CS2 address decoding is configured for a 128K block of memory that is split into 2 64K blocks by half of a 74LS139. Accessing the lower 64K block generates an /MREQ on the RCBus and accessing the upper 64K block generates an /IORQ on the RCBus.
 
@@ -125,4 +125,3 @@ None so far.
 # To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
 + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
-
