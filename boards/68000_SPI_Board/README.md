@@ -1,6 +1,6 @@
 # Hybrid Bit-Bang SPI Master Board
 
-![](../../images/SPI_Board.jpg)
+![](../../images/SPI_Board.JPG)
 
 # Details
 This board is my attempt at an SPI interface for my RCBus 68000 system. It differs from most designs in that it is neither a true fully hardware SPI implementation (like a National Semiconductor TP3465V or a CPLD based solution) or a fully bit-banged software SPI implementation.
