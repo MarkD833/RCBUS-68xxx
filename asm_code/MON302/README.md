@@ -8,6 +8,10 @@ I wanted a simple monitor that supported a few basic commands. This monitor was 
 
 The monitor operates at 38400 baud without any handshaking via SCC1.
 
+I have a new version of MON302 that works with a modified ROM/RAM v2 board using the 68302 chip select signals directly rather than the address being decoded on the memory board. This version of MON302 will boot with ROM at address 0x000000 and then remap the RAM to address 0x000000 so that the vector table can be altered.
+
+I am also working on a new version of MON302 that will use SCC2 and hardware handshaking at 115200 baud.
+
 # Commands
 There a few basic commands that the monitor understands as follows:
 
