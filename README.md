@@ -10,6 +10,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
 - [The Boards](#the-boards)
   - [Series 1](#series-1-boards)
     + [68000 Processor Board](#mc68000-cpu-board)
+    + [68020 Processor Board](#mc68020-cpu-board)
     + [68302 Processor Board](#mc68302-cpu-board)
     + [68681 Serial I/O Board](#mc68681-sio-board)
     + [68230 Parallel I/O Board](#mc68230-pio-board)
@@ -38,8 +39,10 @@ My boards are designed around the RCBus 80 pin format in order to support the ad
 There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901. A CTC chip may not be needed as the MC68230 and MC68681 have their own timers and the MC68901 has 4 simple timers.
 
 # The Boards
-The boards below are my current suite of MC68xxx processors and peripherals. There are no surface mount devices or programable logic devices (PALs, GALs, CPLDs etc) in my design. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
+The boards below are my current suite of MC68xxx processors and peripherals. There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
 
+My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
+ 
 The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. All the boards are 4-layer boards with +5V and GND on the inner 2 layers.
 
 There are more details of each board in the boards folder.
@@ -49,6 +52,11 @@ These boards are based around my intial experimentation with the MC68000 ecosyst
 
 ### MC68000 CPU Board
 This board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source. The glue logic handles autovector interrupts, generates the /BERR signal and provides the /DTACK signal for the RCBus MREQ and IORQ address spaces as well as the the RCBus /MREQ, /IORQ, /RD & /WR signals.
+
+Devices that are addressed outside of the RCBus MREQ and IORQ address range must supply their own /DTACK signal.
+
+### MC68020 CPU Board
+This board consists of a PGA packaged MC68020 processor, a CPLD, interrupt priority encoder  and the processor clock source. The CPLD handles autovector interrupts, generates the /BERR signal and provides the /DTACK signal for the RCBus MREQ and IORQ address spaces as well as the the RCBus /MREQ, /IORQ, /RD & /WR signals. It also handles the dynamic bus sizing of the 68020
 
 Devices that are addressed outside of the RCBus MREQ and IORQ address range must supply their own /DTACK signal.
 

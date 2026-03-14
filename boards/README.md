@@ -2,6 +2,10 @@
 
 These folders contain the KiCad (v8/v9) design files for the various RCBus 68000 boards I'm currently testing.
 
+## Series 1 boards
+
+The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Processor boards support autovectored interrupts only.
+
 | Board Folder | Description |
 | :---- | :---- |
 | 68000 CPU Board | 68000 processor card using the PLCC package variant of the 68000 |
@@ -13,8 +17,24 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 | 68000 PIO Board | Dual MC68230 parallel interface / timer board |
 | 68000 SPI Board | 6 channel SPI master board - 3V3 and 5V ports |
 | 68000 LBE Board | Serial / parallel / timer board |
+| 68020 CPU Board | 68020 processor card using the PGA package |
 | 68302 CPU Board | 68302 processor card using the PGA package |
 
+Note that the 68020 board is still very much at the prototype stage.
+
+## Series 2 boards
+
+The series 2 boards are based on my time spent with the series 1 boards and the hope is that the processor boards will feature a mixture of vectored and autovectored interrupts.
+
+| Board Folder | Description |
+| :---- | :---- |
+| 68000 CPU Board Series 2 | 68000 processor card using the PLCC package variant of the 68000 |
+| 68000 SIO Board Series 2 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports |
+| 68000 PIO Board Series 2 | Dual MC68230 parallel interface / timer board |
+
+Note that the series 2 boards are still very much at the prototype stage.
+
+## Notes
 Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
 A minimal 68000 (or 68010) system would comprise of a 68000/68010 CPU board, ROM/RAM board and SIO board.
