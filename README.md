@@ -8,7 +8,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
 - [The RCBus](#the-rcbus)
 - [Zilog Compatability](#zilog-compatability)
 - [The Boards](#the-boards)
-  - Series 1(#series-1)
+  - Series 1(#series-1-boards)
     + [68000 Processor Board](#mc68000-cpu-board)
     + [68302 Processor Board](#mc68302-cpu-board)
     + [68681 Serial I/O Board](#mc68681-sio-board)
@@ -19,7 +19,7 @@ This repository is my offering of a Motorola MC68000 (and family) design for RCB
     + [SPI Hybrid Bit-Bang Master Board](#spi-master-board)<sup>*</sup>
     + [Serial + Parallel + Timer Board](#serial-parallel-timer-board)<sup>*</sup>
     + [Serial + Maths Board](#serial-maths-board)<sup>*</sup>
-  - Series 2(#series-2)
+  - Series 2(#series-2-boards)
 - [Address Map](#address-map)
 - [Testing](#testing)
 - [RCBus Compatability](#rcbus-compatability)
