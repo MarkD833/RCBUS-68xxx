@@ -2,24 +2,42 @@
 
 This folder contains the simple monitor program I created to support my RCBus 68302 system. The 68302 monitor uses the internal Serial Comms Controllers (SCCs) and is not compatible with my 68000 board although the same commands have been implemented.
 
-The current version of the monitor is v0.2 and it supports both CP/M-68K and EhBASIC which are separate applications that need to be programmed into the ROMs.
-
 I wanted a simple monitor that supported a few basic commands. This monitor was originally written for my 68008 board and then modified for my 68302 board before being modified again to support my RCBus 68302 board. None of the commands support any use of cursor keys or the backspace/delete keys.
 
 The monitor operates at 38400 baud without any handshaking via SCC1.
 
-I have a new version of MON302 that works with a modified ROM/RAM v2 board using the 68302 chip select signals directly rather than the address being decoded on the memory board. This version of MON302 will boot with ROM at address 0x000000 and then remap the RAM to address 0x000000 so that the vector table can be altered.
+There are now two versions of the monitor program.
 
-I am also working on a new version of MON302 that will use SCC2 and hardware handshaking at 115200 baud.
+## The original monitor (rcMON68302_v0.2) 
+This is my original version of the monitor and it supports both CP/M-68K and EhBASIC which are separate applications that need to be programmed into the ROMs. The ROMs are mapped starting at address 0x000000.
 
+## The ROM/RAM swapping monitor (rcMON68302_sw_v1.0)
+This version of the monitor utilises the MC68302 chip select hardware and signals /CS0 and /CS1. /CS0 selects the ROM chips and /CS1 selects the RAM chips.
+
+Note that CP/M-68K and EhBASIC have been dropped from this version of the monitor.
+
+The monitor has been tested with a modified ROM/RAM v2 board. This version of MON302 will boot with ROM at address 0x000000. It will then map the RAM starting at address 0x000000 and move the ROM up to address 0x600000.
+
+In order to use this version of the monitor, a few hardware changes need to be made to the ROM/RAM v2 as follows:
+  + U1 (74LS125) should be removed as the 68302 is configured to generate the /DTACK signals for /CS0 and /CS1 itself
+  + U5 (74LS138) should be removed as the 68302 is configured to generate the chip select signals itself
+  + A wire link inserted between pin J1-45 and any pin on J11 - this is /CS0 for the ROMs
+  + A wire link inserted between pin J1-46 and any pin on J12 - this is /CS1 for the RAMs
+
+Although not tested, this version of the monitor should also work with the original ROM/RAM board with the following changes:
+  + U1 (74LS125) should be removed as the 68302 is configured to generate the /DTACK signals for /CS0 and /CS1 itself
+  + U5 (74LS138) should be removed as the 68302 is configured to generate the chip select signals itself
+  + A wire link inserted between pin J2-45 and pin U8-15 - this is /CS0 for the ROMs
+  + A wire link inserted between pin J2-46 and pin U8-14 - this is /CS1 for the RAMs
+  
 # Commands
 There a few basic commands that the monitor understands as follows:
 
-## B
+## B (v0.2 only)
 
 Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first. I need to provide a write-up on how to include EhBASIC and/or a ROM image that already includes it.
 
-## C
+## C (v0.2 only)
 
 Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first. I need to provide a write-up on how to include CP/M-68K and/or a ROM image that already includes it.
 
