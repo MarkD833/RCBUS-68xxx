@@ -1,6 +1,6 @@
 # Setting up the GNU C Compiler environment
 
-The steps outlined below are my notes on how I set up a Windows 10 development environment so I could write C code and compile and run it on my RCBus 68000 hardware.
+The steps outlined below are my notes on how I set up a Windows 10 (or Windows 11) development environment so I could write C code and compile and run it on my RCBus 68000 hardware.
 
 # What software is required
 
@@ -59,9 +59,9 @@ My setup reports back:
 Next, check that the GCC binaries can be found by typing:
 
 ```
-m68k-elf-gcc –version
+m68k-elf-gcc –-version
 ```
-If successful, you should see something similar to this displayed:
+Note the two '-' before version. If successful, you should see something similar to this displayed:
 
 ```
 m68k-elf-gcc.exe (Tranaptic-2023/06/16-13:17:25) 13.1.0
