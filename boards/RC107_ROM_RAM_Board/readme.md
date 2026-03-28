@@ -8,7 +8,9 @@ The ROM & RAM board is designed to plug into an RCBus-80 backplane with support 
 ## Address Decoding
 The address decoding is carried out by a 74LS138 and divides the lower 8Mb of memory space into eight 1Mb blocks. Each pair of chips can be assigned to any of the 8 chip selects - but not both pairs to the same chip select.
 
-Note that if this is the only memory board in the 68000 system, then a pair of FLASH chips should be assigned to /CS0 so that the 68000 finds the stack pointer and program counter on boot.
+**Note:** If this is the only memory board in the 68000 system, then a pair of FLASH chips should be assigned to /CS0 so that the 68000 finds the stack pointer and program counter on boot.
+
+**Note:** If this board is used with an MC68302 processor, then see the note further down regarding the ability to remap the ROM & RAM devices.
 
 ## Bus Width 
 A 74LS139 generates the read and write signals for each of the memory chips and takes care of byte or word accesses.
@@ -59,6 +61,14 @@ The pinout of the 32-pin FLASH and SRAM chips are slightly different and in orde
 + J11 (with J10): Specify the memory address for bank #0
 + J12 (with J10): Specify the memory address for bank #1
 
+# MC68302 ROM & RAM Remapping
+
+If the version of the MC68302 monitor is used that makes use of remapping the chip select signals, then the following hardware changes are required to this board:
+  + U1 (74LS125) should be removed as the 68302 is configured to generate the /DTACK signals for /CS0 and /CS1 itself
+  + U5 (74LS138) should be removed as the 68302 is configured to generate the chip select signals itself
+  + A wire link inserted between pin J1-45 and any pin on J11 - this is /CS0 for the ROMs
+  + A wire link inserted between pin J1-46 and any pin on J12 - this is /CS1 for the RAMs
+  
 # Errors
 + The signals /RAM_CS and /ROM_CS don't go anywhere!
   + /ROM_CS should have been called /CS_BANK0 & /RAM_CS should have been called /CS_BANK1
@@ -69,10 +79,6 @@ The pinout of the 32-pin FLASH and SRAM chips are slightly different and in orde
 # To Do
 + Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
 + Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
-
-
-
-
 
 # Errors
 

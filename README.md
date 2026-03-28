@@ -1,34 +1,21 @@
 # RCBus Motorola 68xxx Project(s)
 
-This repository is my offering of a Motorola MC68000 (and family) design for RCBus. 
+This repository is my attempt at introducing some of the Motorola MC68000 (and family) devices into the RCBus ecosystem. 
 
+The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board, ROM/RAM board and quad serial board.
 ![](./images/Board_Set_1.JPG)
+
+Please note that this is my hobby project and I have no formal training in hardware design. There could be some real gotchas here.
 
 # Table of contents
 - [The RCBus](#the-rcbus)
 - [Zilog Compatability](#zilog-compatability)
 - [The Boards](#the-boards)
-  - [Series 1](#series-1-boards)
-    + [68000 Processor Board](#mc68000-cpu-board)
-    + [68020 Processor Board](#mc68020-cpu-board)
-    + [68302 Processor Board](#mc68302-cpu-board)
-    + [68681 Serial I/O Board](#mc68681-sio-board)
-    + [68230 Parallel I/O Board](#mc68230-pio-board)
-    + [68901 Multifunction Board](#mc68901-mfp-board)
-    + [128K ROM + 1M RAM Board](#memory-board-v1)
-    + [1M ROM + 1M RAM Board](#memory-board-v2)
-    + [SPI Hybrid Bit-Bang Master Board](#spi-master-board)<sup>*</sup>
-    + [Serial + Parallel + Timer Board](#serial-parallel-timer-board)<sup>*</sup>
-    + [Serial + Maths Board](#serial-maths-board)<sup>*</sup>
-  - [Series 2](#series-2-boards)
 - [Address Map](#address-map)
-- [Testing](#testing)
 - [RCBus Compatability](#rcbus-compatability)
 - [Software Development](#software-development)
 - [Hardware Library](#hardware-library)
 - [Component Sourcing](#component-sourcing)
-
-<sup>*</sup> These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
 
 # The RCBus
 RCBus is an extended version of the [RC2014&trade;](https://rc2014.co.uk/) bus that was put together by members of the [retro-comp](https://groups.google.com/g/retro-comp) google group. The latest RCBus specification as of Oct 2025 is v1.0 and can be found [here](https://smallcomputercentral.com/rcbus/).
@@ -39,73 +26,49 @@ My boards are designed around the RCBus 80 pin format in order to support the ad
 There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901. A CTC chip may not be needed as the MC68230 and MC68681 have their own timers and the MC68901 has 4 simple timers.
 
 # The Boards
-The boards below are my current suite of MC68xxx processors and peripherals. There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
+The boards below are my current suite of MC68xxx processors and peripherals. I have re-organised and re-named the boards in order to more easily identify them.
 
-My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
+There are currently 2 types of board, the series 1 boards that I've give the names RC1xx to and the series 2 boards that I've given the names RC2xx to.
+
+There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
+
+My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor cards. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
  
 The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. All the boards are 4-layer boards with +5V and GND on the inner 2 layers.
 
-There are more details of each board in the boards folder.
+There are more details of each board in their respective boards folder.
 
 ## Series 1 Boards
-These boards are based around my intial experimentation with the MC68000 ecosystem. The processor boards use autovectored interrupts and the various I/O boards don't support any form of interrupt acknowledge sequence.
+These boards are based around my intial experimentation with an MC68000 ecosystem. The processor boards use autovectored interrupts and the various I/O boards don't support any form of interrupt acknowledge sequence.
 
-### MC68000 CPU Board
-This board consists of a PLCC packaged MC68000 processor, bits of glue logic and the processor clock source. The glue logic handles autovector interrupts, generates the /BERR signal and provides the /DTACK signal for the RCBus MREQ and IORQ address spaces as well as the the RCBus /MREQ, /IORQ, /RD & /WR signals.
+| ID | Type | Description |
+| :---- | :---- | :---- |
+| RC101 | CPU | MC68000 CPU Board |
+| RC102 | Memory | 128K ROM & 1M RAM Memory Board |
+| RC103 | Serial | Dual MC68681 DUART Serial Board |
+| RC104 | Parallel | Dual MC68230 PI/T Board |
+| RC105 | Serial & Parallel | Dual MC68901 MFP Board |
+| RC106 | CPU | MC68302 CPU Board |
+| RC107 | Memory | 1M ROM & 1M RAM Memory Board |
+| RC108 | SPI | Hybrid SPI Master Board<sup>*</sup> |
+| RC109 | Serial & Parallel | MC68681 DUART & MC68901 MFP Board |
+| RC110 | CPU | MC68020 CPU Board<sup>*</sup> |
+| RC111 | Serial & Maths | MC68681 DUART & MC68881 Maths<sup>*</sup> |
 
-Devices that are addressed outside of the RCBus MREQ and IORQ address range must supply their own /DTACK signal.
-
-### MC68020 CPU Board
-This board consists of a PGA packaged MC68020 processor, a CPLD, interrupt priority encoder  and the processor clock source. The CPLD handles autovector interrupts, generates the /BERR signal and provides the /DTACK signal for the RCBus MREQ and IORQ address spaces as well as the the RCBus /MREQ, /IORQ, /RD & /WR signals. It also handles the dynamic bus sizing of the 68020
-
-Devices that are addressed outside of the RCBus MREQ and IORQ address range must supply their own /DTACK signal.
-
-### MC68302 CPU Board
-This board consists of a 132-pin PGA packaged MC68302 processor, bits of glue logic and the processor clock source. The glue logic primarily generates the RCBus /MREQ, /IORQ, /RD & /WR signals. The board features 2 serial ports and an SPI port as well as autovector interrupts. 
-
-A /DTACK generator is not required as the MC68302 has internal logic to automatically generate a /DTACK for any address within the address rance of each of its 4 chip select signals.
-
-Similarly, a /BERR generator is not required as the MC68302 has an internal hardware watchdog timer that is enabled at reset and will generate a Bus Error if a /DTACK isn't generated by the internal chip select logic or an external device.
-
-### MC68681 SIO Board
-This board consists of a pair of 40-pin DIL MC68681 serial I/O chips and associated address decode logic as well as a crystal oscillator for the baud rate generators. This combination provides four serial ports, two 16-bit timer/counters as well as 16 digital outputs and 12 digital inputs.
-
-Please read the SIO board documentation as it details which of the alternative DUARTs are compatible with my SIO board. 
-
-### MC68230 PIO Board
-This board consists of a pair of 48-pin DIL MC68230 parallel I/O chips and associated address decode logic. This combination provides 32 individually programmable digital I/O pins with up to 16 additional digital I/O pins depending on the port C functionality required and two 24-bit timer/counters.
-
-### MC68901 MFP Board
-This board consists of a pair of 48-pin DIL MC68901 multifunction chips and associated address decode logic. This combination provides 16 individually programmable digital I/O pins, eight 8-bit timers and two serial ports.
-
-### Memory Board v1
-This ROM/RAM board is designed for two Winbond W27C512 EEPROMs to provide 128K of non-volatile memory organised as 64K of 16-bit wide memory and two Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory. The board also includes address decode logic and a simple /DTACK generator.
-
-### Memory Board v2
-This ROM/RAM board is designed for two SST39SF040 FLASH memory chips to provide 1M of non-volatile memory organised as 512K of 16-bit wide memory and two Alliance Memory AS6C4008 RAM chips to provide 1M of volatile memory organised as 512K of 16-bit wide memory. The board also includes address decode logic and a simple /DTACK generator.
-
-By reconfiguring the boards jumpers, the board will support four SST39SF040 FLASH memory chips to provide 2M of non-volatile memory organised as 1M of 16-bit wide memory or four Alliance Memory AS6C4008 RAM chips to provide 2M of volatile memory organised as 1M of 16-bit wide memory.
-
-### SPI Master Board
-This is a hybrid bit-bang SPI master board. It's a hybrid design as the serial to parallel and parallel to serial conversions are both done in hardware. The only bit-bang element is the pulses required to generate the SPI clock signal.
-
-The board supports 6 SPI connections - three are 5v SPI and three are 3v3 SPI - along with a 5v to 3v3 regulator.
-
-### Serial Parallel Timer Board
-
-This board is my attempt to make a 68000 equivalent of Steve Cousins Z80 [SC110 board](https://smallcomputercentral.com/rcbus/sc100-series/sc110-z80-serial-rc2014-3/) which consists of a Z80 SIO/2 serial chip and a Z80 CTC counter timer chip. By combining an MC68681 DUART with an MC68901 MFP I managed to achieve a similar board, but with a bit more functionality - mainly due to the MC68901.
-
-The board provides 3 serial ports, 8 digital i/o pins, 8 digital outputs, 6 digital inputs, a 16-bit timer and four 8-bit timers and I've given it the acronym LBE1 for **L**ittle **B**it of **E**verything #1.
-
-### Serial Maths Board
-This board provides 2 serial ports using an SCC68692 DUART and an MC68881 (or MC68882) maths co-processor board configured as a peripheral device to the MC68000 processor.
+<sup>*</sup> These boards are either under development or going through basic testing. Once I'm confident in the board operation, I will put the design files into the boards folder.
 
 ## Series 2 Boards
 These boards are based on my expereince with the earlier series 1 boards and are an attempt to introduce vectored interrupts to the boards that use chips such as the MC68681 DUART or the MC68230 PIO. The introduction of vectored interrupts requires additional interrupt acknowledge signals on the RCBus-80 backplane. In order to not run out of pins, I have chosen to use IRQ2, IRQ3, IRQ5 and IRQ6 as vectored interrupts, leaving IRQ1, IRQ4 and IRQ7 as autovectored interrupts. 
 
-Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. I wanted to avoid programmable logic but it became clear that that wasn't going to be an option. I spent a bit of time researching before I settled on using Atmel (now Microchip) ATF1502 CPLD devices in a 44-pin PLCC package. I chose these devices as it appears that they can be programmed using nothing more complex than one of the FTDI USB-Serial boards.
+Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. I wanted to avoid programmable logic but it became clear that that wasn't going to be an option. I spent a bit of time researching before I settled on using Atmel (now Microchip) ATF1502 CPLD devices in a 44-pin PLCC package. I chose these devices as it appears that they can be programmed using nothing more complex than one of the FTDI USB-Serial boards and open source software.
 
-I currently have a 68000 board, an SIO board and a PIO board on the desk waiting to be populated to check out the feasibility of vectored interrupts. I've put some very basic details in the boards folder for now.
+| ID | Type | Description |
+| :---- | :---- | :---- |
+| RC201 | CPU | MC68000 CPU Board |
+| RC202 | Serial | MC68681 DUART Serial Board (inc bit-bang SPI, I2C & 1-Wire) |
+| RC203 | Parallel | Dual MC68230 PI/T Board |
+
+These boards are on the desk waiting to be populated to check out the feasibility of vectored interrupts. I've put some very basic details in the boards folder for now.
 
 # Address Map
 The current address map is as follows:
@@ -132,17 +95,8 @@ The current address map is as follows:
 3. These addresses apply to the MC68000 board
 4. These addresses apply to the MC68302 board
 5. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
- 
-# Testing
-The 68000 board, the ROM/RAM v1 board, the serial I/O board and the MFP board are working and a small monitor program is running that allows me to download Motorola S-records. Both S2 (16-bit) & S3 (24-bit) record types are handled although in reality only S3 records make sense with the current memory configuration.
 
-The 68302 board has a version of my small monitor program running on it with the main serial I/O via SCC1.
-
-The ROM/RAM V2 board has been assembled and partially tested.
-
-The 68230 board has had some issues relating to how the chip select signal is generated. A simple wiring change appears to have resolved this.
- 
-The monitor currently supports a few of the EASy68K TRAP #15 text I/O functions - currently just tasks 0, 1, 5, 6, 13 & 14 - which are all related to text input/output. Further tasks may be added as I need them.
+Note: When using the MC68302 CPU board and a modified ROM/RAM board, the ROM devices will initially be mapped to address 0x000000 and selected with the chip select signal /CS0. The MC68302 can then remap /CS0 (and /CS1 for the RAM devices) to an alternate location in the address space. 
 
 # RCBus Compatability
 I have a number of Steve Cousin's RC2014&trade; / RCBus boards that I have been able to use successfully in the 68000 system. The code folder holds some example code for these boards as well as CP/M-68K v1.3 using the CompactFlash storage.
@@ -166,15 +120,11 @@ I've also had success in porting some of Dean Netherton's [HDMI for RC](https://
 # Software Development
 All of the early software - i.e. the monitor program - was developed and initially tested using EASy68K & SIM68K under Windows 10.
 
-I've now moved my development across to a Linux Mint system and discovered that EASy68K doesn't particularly like running under WINE. Luckily I still have a Windows 10 PC available.
+I moved my development across to a Linux Mint system for a few months but eventually the number of niggles became too much and I've now moved to a Windows 11 system.
 
-I now have a command line version of the EASy68K assembler that runs just fine from a Linux command prompt. I've made a few tweaks and corrections and you can find it in a separate repository called EASy68K-asm.
-
-I've now switched to using GCC v15.2.0 to compile my C and C++ programs.
+I've left the command line version of the EASy68K assembler in another repository as that runs just fine from a Linux command prompt. I made a few tweaks and corrections and you can find it in a separate repository called EASy68K-asm.
 
 Unfortunately I've had little success in building Newlib or similar libraries to create a libc for my system. This is purely down to my lack of experience / understanding of the configuration and build process. I've therefore resorted to rolling my own libc using the code detailed in [The Standard C Library by P.J.Plauger](https://www.amazon.co.uk/Standard-C-Library-P-J-Plauger/dp/0131315099) as a starting point. 
-
-I've managed to correctly configure the objdump tool to generate an assembler listing file that can then be modified by the Linux SED command such that SIM68K will accept the file and I can debug C++ code running on SIM68K.
 
 # Hardware Library
 I'm not a C++ programmer so I figured I would try and learn about C++ and classes and decided to throw myself in at the deep end - the really deep end!

@@ -26,6 +26,8 @@ The 68302 processor has 4 user programmable chip select signals - /CS0, /CS1, /C
 
 /CS2 is disabled by the processor at reset. This chip select signal is used to enable access to the RCBus memory and i/o spaces. The /CS2 address decoding is configured for a 128K block of memory that is split into 2 64K blocks by half of a 74LS139. Accessing the lower 64K block generates an /MREQ on the RCBus and accessing the upper 64K block generates an /IORQ on the RCBus.
 
+**NOTE:** If using the version of MON302 that supports remapping of the ROM and RAM address spaces, then please see the RC107 readme file for details on the hardware modifications needed to the ROM/RAM board to support this.
+
 ## DTACK & Bus Error
 The user programmable chip select signals can also be configured to internally generate the DTACK signal so no external gates are required. My ROM/RAM board generates its own DTACK signal so DTACK is disabled for /CS0 & /CS1. /CS2 is configured to for 2 wait states.
 
