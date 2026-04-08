@@ -70,7 +70,8 @@ $(BUILD_DIR)/%.s.o: %.s
 # assembly using GNU GCC
 $(BUILD_DIR)/%.S.o: %.S
 	@if not exist "$(dir $@)" mkdir "$(subst /,\,$(dir $@))"
-	$(CC) -march=$(CPU) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+#	$(CC) -march=$(CPU) -c $< -o $@
 
 # compiling C source
 $(BUILD_DIR)/%.c.o: %.c
