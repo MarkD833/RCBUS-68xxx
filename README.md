@@ -2,7 +2,7 @@
 
 This repository is my attempt at introducing some of the Motorola MC68000 (and family) devices into the RCBus ecosystem. 
 
-The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board, ROM/RAM board and quad serial board.
+The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board, ROM/RAM board and quad serial board all plugged into one of Steve Cousin's [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) backplanes.
 ![](./images/Board_Set_1.JPG)
 
 Please note that this is my hobby project and I have no formal training in hardware design. There could be some real gotchas here.
@@ -23,7 +23,7 @@ RCBus is an extended version of the [RC2014&trade;](https://rc2014.co.uk/) bus t
 My boards are designed around the RCBus 80 pin format in order to support the additional address and data signals.
 
 # Zilog Compatability
-There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901. A CTC chip may not be needed as the MC68230 and MC68681 have their own timers and the MC68901 has 4 simple timers.
+There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901, but note that the single UART in the 68901 quite limited. A CTC chip may not be needed as the MC68230 and MC68681 have their own timers and the MC68901 has 4 simple timers.
 
 # The Boards
 The boards below are my current suite of MC68xxx processors and peripherals. I have re-organised and re-named the boards in order to more easily identify them.

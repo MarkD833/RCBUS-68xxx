@@ -1,31 +1,30 @@
 # RCBUS MC68000 Software
 
 This folder contains the C software that I've either developed myself or ported to my RCBus 68000 board(s).
-The source code was built using GCC68K v13.1.0 using Tom Storey's bare metal 68K suite.
+The source code was built using GCC68K v13.1.0.
 
-The development environment I setup is documented in the Win10-gcc-setup.md file in the root of the repository. 
+I'm using Windows 11 and all my builds are done from the Windows CMD prompt. I use Notepad++ as my editor.
+
+I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
+
+The development environment I setup is documented in the Win-gcc-setup.md file in the root of the repository. You should have a read of this as it details how to create the crt0 runtime file as well as a simple library of C functions (libc) and a library of mathematical functions (libm).
+
+**NOTE:** The crt0 and libc files are required for all example programs.
 
 | Code | Description |
 | :---- | :---- |
 | [SC611](#SC611) | SC611 MicroSD module. |
 | [SC704](#SC704) | SC704 I2C Bus Master module. |
 | [TMS9918A](#TMS9918A) | Shiela Dixon's TMSEMU TMS9918A module. |
-
-Since moving from Win10 to Linux Mint, I've started using GCC v15.2.0 and have made progress developing my own crt0 file to support my C & C++ code and developed / ported the following:
-
-| Code | Description |
-| :---- | :---- |
 | [V9958A](#V9958A) | Dean Netherton's HDMI for RC module. |
-  
-I'm still learning about the GCC compiler & assembler so there's likely to be some issues with this code that I'm not aware of yet.
 
 ---
 
 ## SC611
-### SPI Read
-The code in the SC611_SPI_Read folder provides a more user friendly version of the SC611 assembler code. This is the first RCBus module I attempted to write high level code for and it includes some assembly language in the sc611.S file that handles the bit bang 8-bit and 16-bit transfers.
+### SPI Read & Write
+The code in the SC611_SPI_Read_Write folder provides a more user friendly version of the SC611 assembler code. The code attempts to write a text string to an external EEPROM connected to the SC611 SPI connector. It has been tested with a Microchip 25LC256 SPI EEPROM.
 
-This code also introduced the code to support the 4 serial ports on the MC68681 as well as some simple printing routines to avoid bringing in printf().
+This is the first RCBus module I attempted to write high level code for and it includes some assembly language in the sc611.S file that handles the bit bang 8-bit and 16-bit transfers.
 
 ---
 
