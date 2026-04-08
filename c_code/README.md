@@ -11,6 +11,8 @@ The development environment I setup is documented in the Win-gcc-setup.md file i
 
 **NOTE:** The crt0 and libc files are required for all example programs.
 
+The `simple_hello` example is the first piece of code I created to test my setup of the GCC tools. It's also about the only piece of code with inline assembler that GCC didn't complain about!  
+ 
 | Code | Description |
 | :---- | :---- |
 | [SC611](#SC611) | SC611 MicroSD module. |
@@ -32,8 +34,8 @@ This is the first RCBus module I attempted to write high level code for and it i
 ### I2C Scan
 The code in the SC704_I2C_Scan folder implements a simple program to scan each I2C address from 0x08 to 0x7F to see if a device is present at that address and prints out the device addresses found to be active.
 
-### I2C Read
-The code in the SC704_I2C_Read folder demonstrates how to read some data from the preprogrammed 25LC256 EEPROM on the SC704 board.
+### I2C Read & Write
+The code in the SC704_I2C_Read folder demonstrates how to write and read back some data from the 25LC256 EEPROM on the SC704 board.
 
 ---
 
@@ -64,5 +66,7 @@ The code in the V9958-Dots folder demonstrates plotting pixels. It's not quite t
 The code in the V9958-Lines folder demonstrates drawing lines. It's not quite the same as Deans original demo code as I have yet to implement a function to return pseudo-random numbers so it simply draws a rectangular box on the screen instead.
 
 ### Mbrot
-The code in the V9958-Mbrot folder demonstrates the plotting of a mandelbrot set. I had to implement my own fabs() function as I don't have a libm (maths) library.
+The code in the V9958-Mbrot folder demonstrates the plotting of a mandelbrot set. With my 68000 running from a 7.3728MHz clock, it takes just over 14 minutes to plot.
+ 
+
 
