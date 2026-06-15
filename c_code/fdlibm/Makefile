@@ -55,13 +55,11 @@ $(LIB_NAME): $(OBJS)
 # Rule to assemble using GNU AS - assembler file with LOWERCASE .s extension
 $(BUILD_DIR)/%.s.o: $(SRC_DIR)/%.s
 	@if not exist "$(dir $@)" mkdir "$(subst /,\,$(dir $@))"
-	$(info assemble using AS)
 	$(AS) $(ASFLAGS) -c $< -o $@
 
 # Rule to assemble using GNU GCC - assembler file with UPPERCASE .S extension
 $(BUILD_DIR)/%.S.o: $(SRC_DIR)/%.S
 	@if not exist "$(dir $@)" mkdir "$(subst /,\,$(dir $@))"
-	$(info assemble using GCC)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule to compile C source files

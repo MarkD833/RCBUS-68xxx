@@ -1,7 +1,7 @@
 *****************************************************************
 *                                                               *
 *                 CP/M-68K BIOS                                 *
-*       Basic Input/Output Subsystem v1.5                       *
+*       Basic Input/Output Subsystem v1.6                       *
 *           For my RCBus 68000 board                            *
 *             CompactFlash Version                              *
 *                                                               *
@@ -18,6 +18,9 @@
 * This code is configured so it can be assembled using EASY68K.
 * Assumes at least a 64Mb CompactFlash card as BIOS assumes 6
 * drives (A..F), each of 8Mb.
+*****************************************************************
+* NOTE: Serial I/O should be done using the EASy68K TRAP #15
+* calls to correctly use the interrupt driven serial port.
 *****************************************************************
 
 	INCLUDE "..\asm-inc\memory.inc"
@@ -57,8 +60,9 @@ MAXDISK     EQU    6              * this BIOS supports 6 drives
 *
     org     INIT_ENTRY            * bios initialization entry point
 _init:
-    move.b  #0,IMR                * disable DUART interrupts
-    move.w  #$2700,sr             * disable all interrupts
+* Leave the interrupts as they are!
+*    move.b  #0,IMR                * disable DUART interrupts
+*    move.w  #$2700,sr             * disable all interrupts
 
     ifne DEBUG
         bsr.w   SerBInit
@@ -159,12 +163,12 @@ wboot:
 * D0 = 1 if byte available, otherwise D0 = 0
 *****************************************************************
 constat:
-    btst.b  #0,SRA                * check RxRDYA bit
-    beq     nochar                * branch if not
-    moveq.l #$1,d0                * set result to true
-    rts
-nochar:
-    clr.l   d0                    * set result to false
+    move.l  d1,-(sp)              * save D1
+	move.l  #7,d0                 * TASK #7 - check for keyboard input
+    trap    #15
+	
+	move.l  d1,d0                 * transfer the status into D0
+	move.l  (sp)+,d1              * restore D1
     rts
 
 *****************************************************************
@@ -175,8 +179,13 @@ conin:
     bsr     constat               * see if key pressed
     tst     d0
     beq     conin                 * wait until key pressed
-    move.b  RBA,d0                * get the byte
-    and.l   #$7f,d0               * clear all but low 7 bits
+
+    move.l  d1,-(sp)              * save D1
+	move.l  #5,d0                 * TASK #5 - read a character
+    trap    #15
+
+	move.l  d1,d0                 * transfer the character into D0
+	move.l  (sp)+,d1              * restore D1
     rts
 
 *****************************************************************
@@ -184,9 +193,10 @@ conin:
 * Write the byte in D1 to DUART channel A
 *****************************************************************
 conout:
-    btst.b  #2,SRA                * check TxRDYA bit
-    beq     conout                * wait until DUART is ready
-    move.b  d1,TBA                * and output it
+    move.l  d0,-(sp)              * save D0
+	move.l  #6,d0                 * TASK #6 - write a character
+    trap    #15
+	move.l  (sp)+,d0              * restore D0
     rts
 
 *****************************************************************
@@ -882,10 +892,13 @@ dpb:
 *****************************************************************
 * Allocate some storage right up at the top of available RAM 
 * to hold our BIOS variables.
+* The sizes are defined in memory.inc and the CCP + BDOS are
+* configured to use 4096 bytes of RAM starting at address CCP_BSS_BASE
+* which is hard coded to be $1FD800.
 *
-* The monitor uses    $1FF800 .. $1FFFFF
-* This BIOS uses      $1FF000 .. $1FF7FF
-* The CCP & BDOS uses $1FE000 .. $1FEFFF
+* The CCP & BDOS uses $1FD800 .. $1FE7FF (CCP_PRIV = 4096 bytes)
+* This BIOS uses      $1FE800 .. $1FF7FF (BIOS_PRIV = 4096 bytes)
+* The monitor uses    $1FF800 .. $1FFFFF (MON_PRIV = 2048 bytes)
 *
 
     org        RAM_BASE+RAM_LEN-BIOS_PRIV-MON_PRIV
