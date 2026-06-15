@@ -9,7 +9,7 @@ The file MON68Kv1.5+CCP+BIOS+BASIC-38400.s68 uses a 38400 baud serial port and s
 
 The file MON68Kv1.5+CCP+BIOS+BASIC-115200.s68 uses a 115200 baud serial port and can be used with one of the Philips high speed DUART chips.
 
-**NOYE:** The MON68K monitor now uses RTS/CTS flow control to control the flow of data from the host PC. In order to use hardware flow control, the solder jumper JP2 on the rear of the SIO board needs to be bridged to allow the DUART OP0 signal to control the CTS signal. The serial receive routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
+**NOTE:** The MON68K monitor now uses RTS/CTS flow control to control the flow of data from the host PC. In order to use hardware flow control, the solder jumper JP2 on the rear of the SIO board needs to be bridged to allow the DUART OP0 signal to control the CTS signal. The serial receive routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
 
 In order to use these files, you can either load one into your prom programmer and program the odd and even bytes into separate ROMs or you can load it into EASyBIN and generate a pair of binary files that your prom programmer can then program into separate ROMs.
 
