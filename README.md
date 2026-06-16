@@ -3,9 +3,10 @@
 This repository is my attempt at introducing some of the Motorola MC68000 (and family) devices into the RCBus ecosystem. 
 
 The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board, ROM/RAM board and quad serial board all plugged into one of Steve Cousin's [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) backplanes.
+
 ![](./images/Board_Set_1.JPG)
 
-Please note that this is my hobby project and I have no formal training in hardware design. There could be some real gotchas here.
+**CAUTION:** This is my hobby project and I have no formal training in hardware design. What works for me may be simply down to the logic device series that I happen to have in my stash. There could be some real gotchas here that have yet to reveal themselves.
 
 # Table of contents
 - [The RCBus](#the-rcbus)
@@ -20,19 +21,19 @@ Please note that this is my hobby project and I have no formal training in hardw
 # The RCBus
 RCBus is an extended version of the [RC2014&trade;](https://rc2014.co.uk/) bus that was put together by members of the [retro-comp](https://groups.google.com/g/retro-comp) google group. The latest RCBus specification as of Oct 2025 is v1.0 and can be found [here](https://smallcomputercentral.com/rcbus/).
 
-My boards are designed around the RCBus 80 pin format in order to support the additional address and data signals.
+My boards are designed around the RCBus 80 pin format in order to support the additional address and data signals to support the MC68000 family of devices.
 
 # Zilog Compatability
-There is no intention to support any Zilog specific chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901, but note that the single UART in the 68901 quite limited. A CTC chip may not be needed as the MC68230 and MC68681 have their own timers and the MC68901 has 4 simple timers.
+There is no intention to support any Zilog family of chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901, but note that the single UART in the MC68901 is quite limited in terms of baud rate. A CTC chip may not be needed as the MC68230 and MC68681 each have a built-in timer and the MC68901 has 4 simple timers.
 
 # The Boards
 The boards below are my current suite of MC68xxx processors and peripherals. I have re-organised and re-named the boards in order to more easily identify them.
 
-There are currently 2 types of board, the series 1 boards that I've give the names RC1xx to and the series 2 boards that I've given the names RC2xx to.
+There are currently 2 series of board. The series 1 boards I've give the names RC1xx to and the series 2 boards I've given the names RC2xx to.
 
 There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
 
-My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor cards. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
+My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor card. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
  
 The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. All the boards are 4-layer boards with +5V and GND on the inner 2 layers.
 
@@ -60,7 +61,7 @@ These boards are based around my intial experimentation with an MC68000 ecosyste
 ## Series 2 Boards
 These boards are based on my expereince with the earlier series 1 boards and are an attempt to introduce vectored interrupts to the boards that use chips such as the MC68681 DUART or the MC68230 PIO. The introduction of vectored interrupts requires additional interrupt acknowledge signals on the RCBus-80 backplane. In order to not run out of pins, I have chosen to use IRQ2, IRQ3, IRQ5 and IRQ6 as vectored interrupts, leaving IRQ1, IRQ4 and IRQ7 as autovectored interrupts. 
 
-Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. I wanted to avoid programmable logic but it became clear that that wasn't going to be an option. I spent a bit of time researching before I settled on using Atmel (now Microchip) ATF1502 CPLD devices in a 44-pin PLCC package. I chose these devices as it appears that they can be programmed using nothing more complex than one of the FTDI USB-Serial boards and open source software.
+Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. I wanted to avoid programmable logic and started looking at surface mount variants of the DIL chips but it became clear that that wasn't going to be an option. I spent a bit of time researching before I settled on using Atmel (now Microchip) ATF1502 CPLD devices in a 44-pin PLCC package. I chose these devices as it appears that they can be programmed using nothing more complex than one of the FTDI USB-Serial boards and open source software.
 
 | ID | Type | Description |
 | :---- | :---- | :---- |
