@@ -2,10 +2,10 @@
 
 Still at the prototyping stage so just a 3D render at the moment.
 
-![](../../images/S2_68000_CPU_VI_Board.png)
+![](../../images/RC201-68000_CPU_VI_Board_v2.png)
 
 # Details
-This is a 3D render of my new 68000 CPU board that will hopefully support a mixture of vectored and autovectored interrupts. I have the bare board on the bench and am slowly starting to populate it starting with the ATF1502 CPLD device and learning along the way how to program it and use WinCUPL2 at the same time.
+This is a 3D render of my newer 68000 CPU board that will hopefully support a mixture of vectored and autovectored interrupts. I've redesigned it to avoid the use of a CPLD and will shortly be sending the board files off to JLCPCB.
 
 This is very much a prototype at the moment and I need to see if it is actually works in practice.
 
