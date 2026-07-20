@@ -32,6 +32,8 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports |
 | RC203 | Dual MC68230 parallel interface / timer board |
 | RC204 | 1M ROM & 3M RAM board |
+| RC205 | 68020 processor card using the PGA package |
+| RC206 | 68008 processor card using the PLCC package variant of the 68008 |
 
 Note that the series 2 boards are still very much at the prototype stage.
 
