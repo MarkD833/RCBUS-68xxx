@@ -28,6 +28,7 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 
 | ID | Description |
 | :---- | :---- |
+| RC200 | RCBus-80 Developers Backplane |
 | RC201 | 68000 processor card using the PLCC package variant of the 68000 |
 | RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports |
 | RC203 | Dual MC68230 parallel interface / timer board |
