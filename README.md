@@ -65,6 +65,7 @@ Supporting vectored interrupts requires additional logic on the processor board 
 
 | ID | Type | Description |
 | :---- | :---- | :---- |
+| RC200 | 8-Slot RCBus Backplane | integrated CompactFlash, buttons & LED interfaces |
 | RC201 | CPU | MC68000 CPU Board |
 | RC202 | Serial | MC68681 DUART Serial Board (inc bit-bang SPI, I2C & 1-Wire) |
 | RC203 | Parallel | Dual MC68230 PI/T Board |
