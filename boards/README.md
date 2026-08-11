@@ -35,8 +35,11 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | RC204 | 1M ROM & 3M RAM board |
 | RC205 | 68020 processor card using the PGA package |
 | RC206 | 68008 processor card using the PLCC package variant of the 68008 |
+| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching |
+| RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching |
+| RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching |
 
-Note that the series 2 boards are still very much at the prototype stage.
+Note that the series 2 boards are still very much at the prototype stage with RC201 & RC203 currently being bench tested.
 
 ## Notes
 Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
