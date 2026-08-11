@@ -68,6 +68,12 @@ Supporting vectored interrupts requires additional logic on the processor board 
 | RC201 | CPU | MC68000 CPU Board |
 | RC202 | Serial | MC68681 DUART Serial Board (inc bit-bang SPI, I2C & 1-Wire) |
 | RC203 | Parallel | Dual MC68230 PI/T Board |
+| RC204 | 1M ROM & 3M RAM board (some SMD devices) |
+| RC205 | 68020 processor card using the PGA package |
+| RC206 | 68008 processor card using the PLCC package variant of the 68008 |
+| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching |
+| RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching |
+| RC209 | 1M ROM & 3M RAM board (some SMD devices) - automatic BOOT ROM switching |
 
 These boards are on the desk waiting to be populated to check out the feasibility of vectored interrupts. I've put some very basic details in the boards folder for now.
 
