@@ -2,7 +2,7 @@
 
 This repository is my attempt at introducing some of the Motorola MC68000 (and family) devices into the RCBus ecosystem. 
 
-The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board, ROM/RAM board and quad serial board all plugged into one of Steve Cousin's [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) backplanes.
+The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CPU board (RC101), ROM/RAM board (RC102) and quad serial board (RC103) all plugged into one of Steve Cousin's [SC701](https://smallcomputercentral.com/rcbus/sc700-series/sc701-rcbus-backplane/) backplanes.
 
 ![](./images/Board_Set_1.JPG)
 
@@ -31,11 +31,13 @@ The boards below are my current suite of MC68xxx processors and peripherals. I h
 
 There are currently 2 series of board. The series 1 boards I've give the names RC1xx to and the series 2 boards I've given the names RC2xx to.
 
+My early series 1 boards (RC101 to RC105) were a bit of a designing frenzy with not too much thought after I got carried away with Kicad and JLCPCB!
+
 There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
 
-My series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor card. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
+Some of my series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor card. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
  
-The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. All the boards are 4-layer boards with +5V and GND on the inner 2 layers.
+The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. A lot of the boards are 4-layer boards with +5V and GND on the inner 2 layers, mainly in order to squeeze in all the chips into the small board space.
 
 There are more details of each board in their respective boards folder.
 
@@ -61,7 +63,7 @@ These boards are based around my intial experimentation with an MC68000 ecosyste
 ## Series 2 Boards
 These boards are based on my expereince with the earlier series 1 boards and are an attempt to introduce vectored interrupts to the boards that use chips such as the MC68681 DUART or the MC68230 PIO. The introduction of vectored interrupts requires additional interrupt acknowledge signals on the RCBus-80 backplane. In order to not run out of pins, I have chosen to use IRQ2, IRQ3, IRQ5 and IRQ6 as vectored interrupts, leaving IRQ1, IRQ4 and IRQ7 as autovectored interrupts. 
 
-Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. I wanted to avoid programmable logic and started looking at surface mount variants of the DIL chips but it became clear that that wasn't going to be an option. I spent a bit of time researching before I settled on using Atmel (now Microchip) ATF1502 CPLD devices in a 44-pin PLCC package. I chose these devices as it appears that they can be programmed using nothing more complex than one of the FTDI USB-Serial boards and open source software.
+Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. My 68000 board currently under test appears to successfully handle vectored interrupts without the need for SMD package variants of the DIL chips or any CPLD device - although there is one bug that will hopefully be corrected with the next version of the board.
 
 | ID | Type | Description |
 | :---- | :---- | :---- |
