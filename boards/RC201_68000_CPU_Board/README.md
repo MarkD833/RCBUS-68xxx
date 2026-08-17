@@ -1,6 +1,6 @@
 # 68000 Processor Board (Series 2)
 
-Actual image of the processor board under test.
+Actual image of the processor board under test with IRQ2, IRQ5 and IRQ6 configured for autovectored interrupts and IRQ3 for vectored interrupts.
 
 ![](../../images/RC201-68000_CPU_VI_Board_v2_Real.JPG)
 
