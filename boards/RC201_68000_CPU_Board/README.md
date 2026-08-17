@@ -2,7 +2,7 @@
 
 Actual image of the processor board under test.
 
-![](../../images/RC201-68000_CPU_VI_Board_v2_Real.png)
+![](../../images/RC201-68000_CPU_VI_Board_v2_Real.JPG)
 
 # Details
 This is my newer 68000 CPU board that will hopefully support a mixture of vectored and autovectored interrupts. I've redesigned it to avoid the use of a CPLD and will shortly be sending the board files off to JLCPCB.
