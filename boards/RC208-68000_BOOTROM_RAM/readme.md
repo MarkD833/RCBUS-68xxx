@@ -10,7 +10,7 @@ This is my RC208 BOOT ROM & RAM board and it is designed to plug into an RCBus-8
 This board is an enhanced version of my earlier RC107 board. This board presents the flash memory at address 0x000000 at reset and disables access to the RAM. After 4 address strobes, the flash memory is automatically moved up to address 0x700000 and the RAM becomes available at address 0x000000.
 
 ## Address Decoding
-The address decoding is carried out by a 74LS138 and divides the lower 8Mb of memory space into eight 1Mb blocks.
+The address decoding is carried out by a 74LS138 that divides the lower 8Mb of memory space into eight 1Mb blocks.
 
 After reset, the 74LS165 sets its Q7 output to a '1'. This '1' is then OR'd with address lines A20, A21 and A22 using 3 OR gates of the 74LS32 forcing their outputs to be a '1'. The outputs of the 3 OR gates are then fed into the A0, A1 and A2 inputs of the 74LS138 which forces output O7 of the 74LS138 low selecting the ROMs.
 
