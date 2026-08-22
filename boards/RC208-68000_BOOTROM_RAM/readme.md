@@ -55,5 +55,5 @@ Remember to set JP1 accordingly!
 None so far.
 
 # History
-v1.1 - rear silkscreen correction for JP1
-v1.0 - initial design
++ v1.1 - rear silkscreen correction for JP1
++ v1.0 - initial design
