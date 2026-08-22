@@ -6,19 +6,19 @@ These folders contain the KiCad (v8/v9) design files for the various RCBus 68000
 
 The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Processor boards support autovectored interrupts only.
 
-| ID | Description |
-| :---- | :---- |
-| RC101 | 68000 processor card using the PLCC package variant of the 68000 |
-| RC102 | 128K ROM & 1M RAM board |
-| RC103 | Dual MC68681 serial board - 4 serial ports |
-| RC104 | Dual MC68230 parallel interface / timer board |
-| RC105 | Dual MC68901 multifunction peripheral board |
-| RC106 | 68302 processor card using the PGA package |
-| RC107 | 1M ROM & 1M RAM board |
-| RC108 | 6 channel SPI master board - 3V3 and 5V ports |
-| RC109 | Serial / parallel / timer board |
-| RC110 | 68020 processor card using the PGA package |
-| RC111 | SCC68692 DUART + MC68881 maths coprocessor |
+| ID | Description | Notes |
+| :---- | :---- | :---- |
+| RC101 | 68000 processor card using the PLCC package variant of the 68000 | |
+| RC102 | 128K ROM & 1M RAM board | |
+| RC103 | Dual MC68681 serial board - 4 serial ports | |
+| RC104 | Dual MC68230 parallel interface / timer board | |
+| RC105 | Dual MC68901 multifunction peripheral board | |
+| RC106 | 68302 processor card using the PGA package | |
+| RC107 | 1M ROM & 1M RAM board | |
+| RC108 | 6 channel SPI master board - 3V3 and 5V ports | |
+| RC109 | Serial / parallel / timer board | |
+| RC110 | 68020 processor card using the PGA package | |
+| RC111 | SCC68692 DUART + MC68881 maths coprocessor | |
 
 Note that the 68020 board is still very much at the prototype stage.
 
@@ -26,18 +26,18 @@ Note that the 68020 board is still very much at the prototype stage.
 
 The series 2 boards are based on my time spent with the series 1 boards and the hope is that the processor boards will feature a mixture of vectored and autovectored interrupts.
 
-| ID | Description |
-| :---- | :---- |
-| RC200 | RCBus-80 Developers Backplane |
-| RC201 | 68000 processor card using the PLCC package variant of the 68000 |
-| RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports |
-| RC203 | Dual MC68230 parallel interface / timer board |
-| RC204 | 1M ROM & 3M RAM board |
-| RC205 | 68020 processor card using the PGA package |
-| RC206 | 68008 processor card using the PLCC package variant of the 68008 |
-| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching |
-| RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching |
-| RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching |
+| ID | Description | Notes |
+| :---- | :---- | :---- |
+| RC200 | RCBus-80 Developers Backplane | |
+| RC201 | 68000 processor card using the PLCC package variant of the 68000 | |
+| RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports | |
+| RC203 | Dual MC68230 parallel interface / timer board | |
+| RC204 | 1M ROM & 3M RAM board | |
+| RC205 | 68020 processor card using the PGA package | |
+| RC206 | 68008 processor card using the PLCC package variant of the 68008 | |
+| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | |
+| RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching | |
+| RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching | |
 
 Note that the series 2 boards are still very much at the prototype stage with RC201 & RC203 currently being bench tested.
 
