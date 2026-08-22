@@ -9,12 +9,12 @@ The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Proce
 | ID | Description | Notes |
 | :---- | :---- | :---- |
 | RC101 | 68000 processor card using the PLCC package variant of the 68000 | |
-| RC102 | 128K ROM & 1M RAM board | |
+| RC102 | 128K ROM & 1M RAM board | Use RC208 instead |
 | RC103 | Dual MC68681 serial board - 4 serial ports | |
 | RC104 | Dual MC68230 parallel interface / timer board | |
 | RC105 | Dual MC68901 multifunction peripheral board | |
 | RC106 | 68302 processor card using the PGA package | |
-| RC107 | 1M ROM & 1M RAM board | |
+| RC107 | 1M ROM & 1M RAM board | Use RC208 instead |
 | RC108 | 6 channel SPI master board - 3V3 and 5V ports | |
 | RC109 | Serial / parallel / timer board | |
 | RC110 | 68020 processor card using the PGA package | |
@@ -35,7 +35,7 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | RC204 | 1M ROM & 3M RAM board | |
 | RC205 | 68020 processor card using the PGA package | |
 | RC206 | 68008 processor card using the PLCC package variant of the 68008 | |
-| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | |
+| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | Abandoned - use RC208 instead |
 | RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching | |
 | RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching | |
 
