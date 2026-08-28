@@ -32,7 +32,7 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | RC201 | 68000 processor card using the PLCC package variant of the 68000 | |
 | RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports | |
 | RC203 | Dual MC68230 parallel interface / timer board | |
-| RC204 | 1M ROM & 3M RAM board | |
+| RC204 | 1M ROM & 3M RAM board | Untested but likely replaced with RC209 shortly |
 | RC205 | 68020 processor card using the PGA package | |
 | RC206 | 68008 processor card using the PLCC package variant of the 68008 | |
 | RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | Abandoned - use RC208 instead |
