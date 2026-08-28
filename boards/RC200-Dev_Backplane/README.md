@@ -26,11 +26,17 @@ The 2x20 header for the CompactFlash adapter can be a standard 2x20 0.1in (2.54m
 # Jumpers
 I have tried to replicate the jumper configurations that Steve provides on his SC701 so please refer to his documentation.
 
+For my RCBus-68000, pinheaders J9..J22 should all have jumpers fitted to allow all signals to pass through. 
+
+J23 should normally have a jumper fitted to connect the DS1233 reset signal to the backplane.
+
+J24 can be used to provide an off-board reset switch if needed.
+ 
 # Future Enhancements
 + Connect backplane D8..D15 to D8..D15 of the CompactFlash adapter to potentially allow for 16-bit data transfers.
 
 # Errors
-None so far.
++ C18 - depending on the height of this capacitor, you may find it isn't possible to fully insert a board into the last backplane slot without bending the capacitor out of the way slightly.
 
 # History
 + v1.0 - initial design
