@@ -1,4 +1,4 @@
-# 68692 Serial I/O Board (Series 2)
+# RC202 - 68692 Serial I/O Board
 
 Image of the RC202 serial I/O board during testing.
 
@@ -21,6 +21,8 @@ The I2C port is fed to a 4-pin connector at the board edge and the layout of the
 The address decoding is carried out by a 74LS688 combined with a 74LS138 to generate 5 separate 2048 byte blocks residing between addresses $D00000 and $D027FF.
 
 The base address of the DUART is determined by the placement of a jumper between adjacent pins on J7 & J8.
+
+Note that if this is the only serial board in the system, then the address range must be configured for D00000..D007FF (J7-1 jumpered to J8-1) in order for the monitor program to access the serial port.
 
 ## Device Register Access
 The registers of the 68681 DUART are 8 bits wide and are accessed on consecutive ODD addresses from the base address set by the address decode logic. Assuming that the /CS0 jumper has been fitted, then the first few registers are accessed on the following addresses:

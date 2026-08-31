@@ -1,4 +1,4 @@
-# 68000 Processor Board (Series 2)
+# RC201 - 68000 Processor Board
 
 Actual image of the processor board under test with IRQ2, IRQ5 and IRQ6 configured for autovectored interrupts and IRQ3 for vectored interrupts.
 
