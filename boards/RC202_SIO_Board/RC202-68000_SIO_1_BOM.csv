@@ -1,0 +1,21 @@
+Reference,Value,Qty,Description
+"C1,C2,C3,C4,C5,C6,C7",100n,7,Unpolarized ceramic capacitor
+D1,LED,1,Light emitting diode
+J1,RCBus_80PIN_68000,1,"Generic connector, double row, 02x40, right angle"
+J2,Conn_02x06_Odd_Even,1,"Generic connector, double row, 02x06"
+"J3,J4,J12,J14",Conn_01x06,4,"Generic connector, single row, 01x06, right angle"
+"J5,J9,J10,J15,J16",Conn_02x02_Odd_Even,5,"Generic connector, double row, 02x02"
+J6,Conn_02x10_Odd_Even,1,"Generic connector, double row, 02x10"
+"J7,J8",Conn_01x05,2,"Generic connector, single row, 01x05"
+J11,Conn_01x04,1,"Generic connector, single row, 01x04"
+J13,Conn_02x04_Odd_Even,1,"Generic connector, double row, 02x04"
+"JP1,JP2,JP3,JP4,JP6,JP7,JP8",SolderJumper,7,"Solder Jumper, 2-pole, open"
+R1,1K,1,Resistor
+RN1,4K7,1,"8 resistor network, star topology, bussed resistors, small symbol"
+U1,74LS138,1,Decoder 3 to 8 active low outputs
+U2,SCC68692C1A44,1,DUART + 8 Outputs & 6 Inputs
+U3,74LS125,1,Quad buffer 3-State outputs
+U4,74LS688,1,8-bit magnitude comparator
+U5,24LC128,1,"I2C Serial EEPROM, 128Kb, DIP-8"
+X1,3.6864MHz,1,"Crystal Clock Oscillator, DIP8-style metal package"
+X2,1.0MHz,1,"Crystal Clock Oscillator, DIP8-style metal package"
