@@ -7,7 +7,7 @@ Image of the RC202 serial I/O board during testing.
 # Details
 The serial I/O board consists of a PLCC packaged Philips SCC68692 DUART, 3 discrete logic ICs and an I2C EEPROM. In addition to the 2 UARTs, the board also provides a bit-banged I2C interface and a bit-banged SPI interface with 2 SPI ports.
 
-The SCC68692 DUART is compatible with MC68681 but supports up to 115200 baud via a test mode. The test mode is documented in the Philips Semiconductors document titled "Extended baud rates for SCN2681, SCN68681, SCC2691, SCC2692, SCC68681 and SCC2698B".
+The SCC68692 DUART is compatible with MC68681 but supports up to 115200 baud via a test mode. The test mode is documented in the Philips Semiconductors document titled "Extended baud rates for SCN2681, SCN68681, SCC2691, SCC2692, SCC68681 and SCC2698B". I've put a PDF of this document in the board folder.
 
 The 2 serial ports are each fed to a 6-pin connector at the board edge. The layout of the 6 pins is compatible with an FTDI USB-TTL Serial interface board.
 
@@ -80,6 +80,8 @@ Serial hardware flow control can be achieved on each of the 2 serial ports by sh
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
 If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 

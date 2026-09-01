@@ -13,6 +13,8 @@ The reset signal for the processor board must be supplied externally, entering t
 ## Processor Clock
 The processor/system clock source is an oscillator in an 8-pin DIL/DIP can (X1 in the schematic). I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies. Basic testing was done with a 7.3728MHz oscillator.
 
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
+
 The 68302 doesn't have an E clock signal like the 68000 does so I chose to have the option to route the output of Timer #1 to the RCBus CLOCK2 pin (61) via a jumper.
 
 Note that the CLOCK2 pin may also be used by the serial, parallel and multifunction boards (via jumpers on their boards) to share a clock source between them - usually to feed the baud rate generators and timers. If this feature is used, then the CLOCK2 jumper must not be fitted.
@@ -75,6 +77,8 @@ Note that there is a current limit of 500mA - imposed by the host system USB har
 Assembly of the board should be fairly straightforward as there are no surface mount devices to deal with, but see the note below regarding the 68302 socket.
 
 If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 

@@ -68,7 +68,9 @@ There were a couple of gates left over and I've used them to drive and activity 
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
 If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
- 
+
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
+
 Make sure you insert the chips into their sockets in the correct orientation. Also pay attention to the orientation of the 68000 processor as it is possible the insert it into the PLCC socket in the wrong orientation. 
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.

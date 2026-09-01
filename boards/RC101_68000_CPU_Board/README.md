@@ -13,6 +13,8 @@ The reset signal for the processor board must be supplied externally, entering t
 ## Processor Clock
 The processor/system clock source is an oscillator in an 8-pin DIL/DIP can (X1 in the schematic). I used a turned pin socket to hold the oscillator as it made it easy to quickly swap in and out oscillators of different frequencies. Basic testing was done with a 7.3728MHz oscillator. An 18.432MHz oscillator was also tried and CP/M-68K appeared to work correctly with no issues accessing the CompactFlash drive. 
 
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
+ 
 There's also a jumper (J4) to allow the processor E clock to be routed onto the RCBus CLOCK2 pin (61) if required. However, note that the CLOCK2 pin may also be used by the serial, parallel and multifunction boards (via jumpers on their boards) to share a clock source between them - usually to feed the baud rate generators and timers. If this feature is used, then the E clock jumper **must not** be fitted.
 
 ## DTACK & Bus Error
@@ -51,7 +53,9 @@ Assembly of the board should be fairly straightforward. There are no surface mou
 Depending on your choice of LED colour, the associated current limiting resistor may need to be altered.
 
 If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
- 
+
+A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
+
 ICs are orientated in different directions - make sure you insert the chips into their sockets in the correct orientation. Also pay attention to the orientation of the 68000 processor - see note below. 
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
