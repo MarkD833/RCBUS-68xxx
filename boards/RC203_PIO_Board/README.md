@@ -24,7 +24,7 @@ Each PI/T generates its own /DTACK signal internally which is then routed back t
 
 **Without a clock source, the PI/T will not respond (i.e. generate a /DTACK) and a BUS ERROR will be raised by the processor card.**
 
-When using the main clock source, check your PI/T datasheet to ensure that you do not exceed the limitations of the TIN pin for your PI/T.
+When using a main processor clock source above 7.3728MHz, check your PI/T datasheet to ensure that you do not exceed the limits of the CLK pin. If the main processor clock exceeds the specs for the CLK pin, then switch to using CLOCK2 as the source and set J2 and J6 appropriately. Also remember to set J5 on the RC202 SIO board to share its clock on CLOCK2.
 
 ## Interrupts
 The board design supports autovectored interrupt generation by each PI/T at levels 2,3,5 or 6 depending on the placement of a jumper on J8 (PI/T #1) or J10 (PI/T #2). The RC201 processor card must also be configured to support autovectored interrupts at the same interrupt level.
