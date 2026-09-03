@@ -29,20 +29,18 @@ There is no intention to support any Zilog family of chips such as the PIO, SIO,
 # The Boards
 The boards below are my current suite of MC68xxx processors and peripherals. I have re-organised and re-named the boards in order to more easily identify them.
 
-There are currently 2 series of board. The series 1 boards I've give the names RC1xx to and the series 2 boards I've given the names RC2xx to.
-
-My early series 1 boards (RC101 to RC105) were a bit of a designing frenzy with not too much thought after I got carried away with Kicad and JLCPCB!
-
-There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
-
-Some of my series 2 designs do use programmable logic - an Atmel ATF1502 or ATF1504 - on the processor card. These devices were chosen as they are easy to program with a simple readily available FTDI USB-to-Serial board and open source software.
- 
 The board dimensions should be the size of an RCBus "medium" module as detailed in the RCBus specification v1.0 - roughly 4in x 2.1in excluding the edge connector. A lot of the boards are 4-layer boards with +5V and GND on the inner 2 layers, mainly in order to squeeze in all the chips into the small board space.
 
 There are more details of each board in their respective boards folder.
 
+There are currently 2 series of board. The series 1 boards I've give the names RC1xx to and the series 2 boards I've given the names RC2xx to.
+
 ## Series 1 Boards
-These boards are based around my intial experimentation with an MC68000 ecosystem. The processor boards use autovectored interrupts and the various I/O boards don't support any form of interrupt acknowledge sequence.
+These boards are based around my intial experimentation with an MC68000 ecosystem. The processor boards all use autovectored interrupts and the various I/O boards don't support any form of interrupt acknowledge sequence. These boards were a bit of a designing frenzy with not too much thought after I got carried away with Kicad and JLCPCB!
+
+There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 designs. The only programmable devices are the 2 EEPROMs containing my own simple monitor program and optionally CP/M-68K v1.3 and EhBASIC.
+
+**NOTE:** The series 1 boards have been largly superseeded by the series 2 boards as my knowledge expanded.
 
 | ID | Type | Description |
 | :---- | :---- | :---- |
@@ -78,7 +76,7 @@ Supporting vectored interrupts requires additional logic on the processor board 
 | RC208 | 1M ROM & 1M RAM board | automatic BOOT ROM switching |
 | RC209 | 1M ROM & 3M RAM board | some SMD devices & automatic BOOT ROM switching |
 
-These boards are on the desk waiting to be populated to check out the feasibility of vectored interrupts. I've put some very basic details in the boards folder for now.
+Some of these boards are now working whilst others are on the desk waiting to be populated. For the working boards, there are all the details in their respective boards folder. For the boards under test, I've put some very basic details in their boards folder for now.
 
 # Address Map
 The current address map is as follows:
