@@ -10,10 +10,10 @@ The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Proce
 
 | ID | Description | Notes |
 | :---- | :---- | :---- |
-| RC101 | 68000 processor card using the PLCC package variant of the 68000 | |
+| RC101 | 68000 processor card using the PLCC package variant of the 68000 | Use RC201 instead |
 | RC102 | 128K ROM & 1M RAM board | Use RC208 instead |
-| RC103 | Dual MC68681 serial board - 4 serial ports | |
-| RC104 | Dual MC68230 parallel interface / timer board | |
+| RC103 | Dual MC68681 serial board - 4 serial ports | Use RC202 (2 serial ports only) for vectored interrupt support |
+| RC104 | Dual MC68230 parallel interface / timer board | Use RC203 for vectored interrupt support |
 | RC105 | Dual MC68901 multifunction peripheral board | |
 | RC106 | 68302 processor card using the PGA package | |
 | RC107 | 1M ROM & 1M RAM board | Use RC208 instead |
