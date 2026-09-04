@@ -11,6 +11,7 @@ The image below is of my first RCBus-80 MC68000 system, comprising an MC68000 CP
 # Table of contents
 - [The RCBus](#the-rcbus)
 - [Zilog Compatability](#zilog-compatability)
+- [DTACK](#dtack)
 - [The Boards](#the-boards)
 - [Address Map](#address-map)
 - [RCBus Compatability](#rcbus-compatability)
@@ -25,6 +26,13 @@ My boards are designed around the RCBus 80 pin format in order to support the ad
 
 # Zilog Compatability
 There is no intention to support any Zilog family of chips such as the PIO, SIO, CTC or KIO as their signals and timing are just too different. The PIO and SIO have equivalents in the MC68230 and MC68681 chips. The KIO has a sort-of equivalent in the MC68901, but note that the single UART in the MC68901 is quite limited in terms of baud rate. A CTC chip may not be needed as the MC68230 and MC68681 each have a built-in timer and the MC68901 has 4 simple timers.
+
+# DTACK
+A common design choice when putting together a 68000 based system is to ground the /DTACK (Data Transfer Acknowledge) pin on the processor. With this design choice, there will not be a BUS ERROR exception.
+
+Whilst this simplifies the design, I personally prefer to try and implement a simple /DTACK.
+
+For my memory boards, I generate a /DTACK signal directly from the chip select signal and for the RCBus IO and Memory spaces I have a simple delay before generating a /DTACK on the processor card itself. Boards that use devices that are 68000 compatible (MC68681 or MC68230 for example) generate their own /DTACK internally. 
 
 # The Boards
 The boards below are my current suite of MC68xxx processors and peripherals. I have re-organised and re-named the boards in order to more easily identify them.
