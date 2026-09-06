@@ -11,6 +11,11 @@ There are now two versions of the monitor program.
 ## The original monitor (rcMON68302_v0.2) 
 This is my original version of the monitor and it supports both CP/M-68K and EhBASIC which are separate applications that need to be programmed into the ROMs. The ROMs are mapped starting at address 0x000000.
 
+### Memory Usage
+The monitor uses the first 1K of RAM (0x100000..0x1003FF) to hold the exception vector table. When developing code, make sure that you do not overwrite it with any of your s-records. If you use a specific exception, then it is better to insert the exception handler address via software.
+
+The monitor also uses a few Kb up at the top of RAM for its own purposes.
+
 ## The ROM/RAM swapping monitor (rcMON68302_sw_v1.0)
 This version of the monitor utilises the MC68302 chip select hardware and signals /CS0 and /CS1. /CS0 selects the ROM chips and /CS1 selects the RAM chips.
 
@@ -30,6 +35,11 @@ Although not tested, this version of the monitor should also work with the origi
   + A wire link inserted between pin J2-45 and pin U8-15 - this is /CS0 for the ROMs
   + A wire link inserted between pin J2-46 and pin U8-14 - this is /CS1 for the RAMs
   
+### Memory Usage
+The monitor uses the first 1K of RAM (0x000000..0x0003FF) to hold the exception vector table. When developing code, make sure that you do not overwrite it with any of your s-records. If you use a specific exception, then it is better to insert the exception handler address via software.
+
+The monitor also uses a few Kb up at the top of RAM for its own purposes.
+
 # Commands
 There a few basic commands that the monitor understands as follows:
 

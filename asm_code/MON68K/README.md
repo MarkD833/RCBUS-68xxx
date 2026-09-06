@@ -15,6 +15,11 @@ The monitor uses RTS/CTS flow control to control the flow of data from the host 
 
 **Note:** The serial receive routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
 
+# Memory Usage
+The monitor uses the first 1K of RAM (0x100000..0x1003FF) to hold the exception vector table. When developing code, make sure that you do not overwrite it with any of your s-records. If you use a specific exception, then it is better to insert the exception handler address via software.
+
+The monitor also uses a few Kb up at the top of RAM for its own purposes.
+
 # Commands
 I wanted a simple monitor that supported a few basic commands. None of the commands support any use of cursor keys or the backspace/delete keys.
 
