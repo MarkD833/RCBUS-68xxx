@@ -92,25 +92,25 @@ I'm trying to keep this global address map as up to date as I can. The current a
 | Board | Board | Address Range | Notes |
 | :---- | :---- | :---- | :---- |
 | RC101 | 68000 CPU | MREQ: 0xF00000..0xF7FFFF<br>IORQ: 0xF80000..0xFFFFFF | |
-| RC102 | EEPROM & RAM | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x1FFFFF | See note #2 |
+| RC102 | 128K EEPROM & 1M RAM | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x1FFFFF | See note #2 |
 | RC103 | DUAL DUARTs | 0xD00000..0xD03FFF | Jumper selectable address range - See note #1 |
 | RC104 | DUAL PI/Ts | 0xD08000..0xD0BFFF | Jumper selectable address range |
-| RC105 | 0xD10000..0xD13FFF | Jumper selectable address range |
-| RC106 | MFPs | MREQ: 0xFD0000..0xFDFFFF<br>IORQ: 0xFE0000..0xFEFFFF | 68302 CPU | Software programmable via /CS3 |
-| RC107 | FLASH & RAM | 0x000000..0x5FFFFF | Jumper selectable 1Mb blocks - See note #2 |
+| RC105 | MFPs | 0xD10000..0xD13FFF | Jumper selectable address range |
+| RC106 | 68302 CPU | MREQ: 0xFD0000..0xFDFFFF<br>IORQ: 0xFE0000..0xFEFFFF | Software programmable via /CS3 |
+| RC107 | 1M FLASH & 1M RAM | 0x000000..0x5FFFFF | Jumper selectable 1Mb blocks - See note #2 |
 | RC108 | Hybrid SPI | 0xD20000..0xD23FFF | |
 | RC109 | DUART & MFP | 0xD00000..0xD03FFF | Jumper selectable address range - See note #1|
 | RC110 | 68020 CPU | TBD | |
 | RC111 | DUART & MATH | TBD | Jumper selectable address range - See note #1 |
-| RC201 | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | |
-| RC202 | 68000 CPU | 0xD00000..0xD027FF | DUART | Jumper selectable address range - See note #1 |
+| RC201 | 68000 CPU | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | |
+| RC202 | DUART | 0xD00000..0xD027FF | Jumper selectable address range - See note #1 |
 | RC203 | DUAL PI/Ts | 0xD08000..0xD0BFFF | Jumper selectable address range |
-| RC204 | FLASH & RAM | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x3FFFFF | See note #2 |
+| RC204 | 1M FLASH & 3M RAM | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x3FFFFF | See note #2 |
 | RC205 | 68020 CPU | TBD | |
 | RC206 | 68008 CPU | TBD | |
-| RC207 | FLASH & RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #3 |
-| RC208 | FLASH & RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
-| RC209 | FLASH & RAM | RAM: 0x000000..0x2FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
+| RC207 | 1M FLASH & 1M RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #3 |
+| RC208 | 1M FLASH & 1M RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
+| RC209 | 1M FLASH & 3M RAM | RAM: 0x000000..0x2FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
 
 1. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
 2. RAM addresses 0x100000..0x1003FF hold the exception vector table.
