@@ -87,30 +87,35 @@ Supporting vectored interrupts requires additional logic on the processor board 
 Some of these boards are now working whilst others are on the desk waiting to be populated. For the working boards, there are all the details in their respective boards folder. For the boards under test, I've put some very basic details in their boards folder for now.
 
 # Address Map
-The current address map is as follows:
+I'm trying to keep this global address map as up to date as I can. The current address map is as follows:
 
-| Address Range | Device | Notes |
-| :---- | :---- | :---- |
-| 0x000000..0x01FFFF | EEPROM | Fixed address range<sup>1</sup> |
-| 0x100000..0x1FFFFF | SRAM | Fixed address range<sup>1</sup> |
-| 0x000000..0x5FFFFF | FLASH | Jumper selectable address range<sup>2</sup> |
-| 0x000000..0x5FFFFF | SRAM | Jumper selectable address range<sup>2</sup> |
-| 0xD00000..0xD03FFF | DUARTs | Jumper selectable address range <sup>5</sup>|
-| 0xD00000..0xD03FFF | LBE | Jumper selectable address range <sup>5</sup>|
-| 0xD00000..0xD03FFF | DUART + MATH | Jumper selectable address range <sup>5</sup>|
-| 0xD08000..0xD0BFFF | PI/Ts | Jumper selectable address range |
-| 0xD10000..0xD13FFF | MFPs | Jumper selectable address range |
-| 0xD20000..0xD23FFF | SPI | Fixed address range |
-| 0xF00000..0xF7FFFF | RCBus /MREQ | Fixed address range<sup>3</sup> - partially decoded |
-| 0xF80000..0xFFFFFF | RCBus /IORQ | Fixed address range<sup>3</sup> - partially decoded |
-| 0xFC0000..0xFCFFFF | RCBus /MREQ | Fixed address range<sup>4</sup> |
-| 0xFD0000..0xFDFFFF | RCBus /IORQ | Fixed address range<sup>4</sup> - partially decoded |
+| Board | Address Range | Board | Notes |
+| :---- | :---- | :---- | :---- |
+| RC101 | MREQ: 0xF00000..0xF7FFFF<br>IORQ: 0xF80000..0xFFFFFF | 68000 CPU | |
+| RC102 | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x1FFFFF | EEPROM & RAM | See note #2 |
+| RC103 | 0xD00000..0xD03FFF | DUAL DUARTs | Jumper selectable address range - See note #1 |
+| RC104 | 0xD08000..0xD0BFFF | DUAL PI/Ts | Jumper selectable address range |
+| RC105 | 0xD10000..0xD13FFF | MFPs | Jumper selectable address range |
+| RC106 | MREQ: 0xFD0000..0xFDFFFF<br>IORQ: 0xFE0000..0xFEFFFF | 68302 CPU | Software programmable via /CS3 |
+| RC107 | 0x000000..0x5FFFFF | FLASH & RAM | Jumper selectable 1Mb blocks - See note #2 |
+| RC108 | 0xD20000..0xD23FFF | Hybrid SPI | |
+| RC109 | 0xD00000..0xD03FFF | DUART & MFP | Jumper selectable address range - See note #1|
+| RC110 | TBD | 68020 CPU | |
+| RC111 | TBD | DUART & MATH | Jumper selectable address range - See note #1 |
+| RC201 | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | 68000 CPU | |
+| RC202 | 0xD00000..0xD027FF | DUART | Jumper selectable address range - See note #1 |
+| RC203 | 0xD08000..0xD0BFFF | DUAL PI/Ts | Jumper selectable address range |
+| RC204 | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x3FFFFF | FLASH & RAM | See note #2 |
+| RC205 | TBD | 68020 CPU | |
+| RC206 | TBD | 68008 CPU | |
+| RC207 | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | FLASH & RAM | See note #3 |
+| RC208 | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | FLASH & RAM | See note #4 |
+| RC209 | RAM: 0x000000..0x2FFFFF<br>ROM: 0x700000..0x7FFFFF | FLASH & RAM | See note #4 |
 
-1. These addresses apply to the ROM/RAM V1 board
-2. These addresses apply to the ROM/RAM V2 board
-3. These addresses apply to the MC68000 board
-4. These addresses apply to the MC68302 board
-5. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
+1. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
+2. RAM addresses 0x100000..0x1003FF hold the exception vector table.
+3. ROM is at address 0x000000 until 1st write then RAM at 0x000000 and ROM at 0x700000.
+4. ROM is at address 0x000000 until 4th /AS then RAM at 0x000000 and ROM at 0x700000.
 
 Note: When using the MC68302 CPU board and a modified ROM/RAM board, the ROM devices will initially be mapped to address 0x000000 and selected with the chip select signal /CS0. The MC68302 can then remap /CS0 (and /CS1 for the RAM devices) to an alternate location in the address space. 
 
