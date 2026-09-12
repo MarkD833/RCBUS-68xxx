@@ -60,25 +60,21 @@ The pinout of the 32-pin FLASH and SRAM chips are slightly different and in orde
   + $500000 .. $5FFFFF
 + J11 (with J10): Specify the memory address for bank #0
 + J12 (with J10): Specify the memory address for bank #1
++ JP1: Solder link to connect RCBus /CS_ROM to /CS_BANK0 (Bank 0 must have FLASH memory fitted).
++ JP2: Solder link to connect RCBus /CS_RAM to /CS_BANK1 (Bank 1 must have SRAM memory fitted).
 
 # MC68302 ROM & RAM Remapping
 
 If the version of the MC68302 monitor is used that makes use of remapping the chip select signals, then the following hardware changes are required to this board:
   + U1 (74LS125) should be removed as the 68302 is configured to generate the /DTACK signals for /CS0 and /CS1 itself
   + U5 (74LS138) should be removed as the 68302 is configured to generate the chip select signals itself
-  + A wire link inserted between pin J1-45 and any pin on J11 - this is /CS0 for the ROMs
-  + A wire link inserted between pin J1-46 and any pin on J12 - this is /CS1 for the RAMs
+  + Solder links JP1 and JP2 on the rear of the board must be made.
   
 # Errors
-+ The signals /RAM_CS and /ROM_CS don't go anywhere!
-  + /ROM_CS should have been called /CS_BANK0 & /RAM_CS should have been called /CS_BANK1
-    + Fix by connecting LS125 pin 4 to any pin on J11 & adding a 10K pullup resistor.
-    + Fix by connecting LS125 pin 1 to any pin on J12 & adding a 10K pullup resistor.
-+ J4 & J5 at the top of U7 are not on a 0.1in pitch.
+Nothing yet - but give it time :-(
 
-# To Do
-+ Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-+ Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
-  
+# History
++ v2.0 - corrected missing /CS signals, fixed J4 & J5 pitch, added 10K pullups to /CS lines
++ v1.0 - initial designed
 
 
