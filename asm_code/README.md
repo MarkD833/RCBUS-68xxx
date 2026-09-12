@@ -3,6 +3,8 @@
 This folder contains the assembler software that I've either developed myself or ported to my RCBus 68000 board(s).
 The software can be assembled using EASy68K under Windows or EASy68K-asm under Linux (see my EASy68K-asm repository).
 
+**Note:** With the introduction of the RC2xx series of boards and in particular the RC208 ROM/RAM board, these demonstration files will very likely not load or run as they expect the RAM to be at address 0x100000. The RC208 board maps RAM to address 0x000000 after boot. A simple change of the ORG locations should fix it.
+ 
 There are also two s-record files containing MON68K v1.5, CP/M-68K v1.3 & EhBASIC v3.54. Note that these files are not compatible with the 68302 board.
 
 The file MON68Kv1.5+CCP+BIOS+BASIC-38400.s68 uses a 38400 baud serial port and should be compatible with all MC68681 DUART variants.
