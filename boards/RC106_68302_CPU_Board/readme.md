@@ -5,7 +5,9 @@
 # Details
 The processor board consists of a PGA packaged MC68302 processor, bits of glue logic and the processor clock source.
 
-The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards. There is currently no fancy ROM & RAM switching hardware so ROM is always located at address 0x000000. However, as the 68302 is capable of swapping address ranges assigned the the chip selects, this feature will be implemented in software in the near future.
+The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards.
+
+If using latest version of the MON302 that supports ROM & RAM remapping via software then the RC102 ROM/RAM board should not be used without some hardware modification.
 
 ## Reset
 The reset signal for the processor board must be supplied externally, entering the board via pin 20 of the RCBus connector. This should not be an issue if you are using one of Steve Cousins's backplanes.
@@ -22,13 +24,19 @@ Note that the CLOCK2 pin may also be used by the serial, parallel and multifunct
 ## Chip Selects
 The 68302 processor has 4 user programmable chip select signals - /CS0, /CS1, /CS2 & /CS3.
 
-/CS0 is automatically configured by the processor at reset for an 8K block of memory starting at address $000000. /CS0 would normally be used to select a non-volatile memory device that holds the boot code. My ROM/RAM board includes address decoding to select the pair of ROMs at address $000000 so /CS0 isn't needed. However there's a solder jumper that can be used to route it to RCBus pin 45 if required.
+/CS0 is automatically configured by the processor at reset for an 8K block of memory starting at address $000000. /CS0 would normally be used to select a non-volatile memory device that holds the boot code. However there's a solder jumper (JP1) that can be used to route /CS0 to RCBus pin 45 if required.
++ RC102 ROM/RAM board includes address decoding to select the pair of ROMs at address $000000 so /CS0 isn't needed (must use older version of MON302)
++ RC107 ROM/RAM board supports external chip selects - see RC107 readme for more details
++ RC208 ROM/RAM board **MUST** set the ROM chip select to EXT
 
-/CS1 is disabled by the processor at reset. I intended this chip select to select the volatile memory device on my ROM/RAM board, but as the board includes address decoding to select the pair of RAMs at address $100000, /CS1 isn't needed. However there's a solder jumper that can be used to route it to RCBus pin 46 if required.
+/CS1 is disabled by the processor at reset. I intended this chip select to select the volatile memory device on my RC107 ROM/RAM board. There's a solder jumper (JP2) that can be used to route /CS1 to RCBus pin 46 if required.
++ RC102 ROM/RAM board includes address decoding to select the pair of RAMs at address $100000 so /CS1 isn't needed (must use older version of MON302)
++ RC107 ROM/RAM board supports external chip selects - see RC107 readme for more details
++ RC208 ROM/RAM board **MUST** set the RAM chip select to EXT
 
-/CS2 is disabled by the processor at reset. This chip select signal is used to enable access to the RCBus memory and i/o spaces. The /CS2 address decoding is configured for a 128K block of memory that is split into 2 64K blocks by half of a 74LS139. Accessing the lower 64K block generates an /MREQ on the RCBus and accessing the upper 64K block generates an /IORQ on the RCBus.
+/CS2 is disabled by the processor at reset. This chip select signal is used to enable access to the RCBus memory and i/o spaces. The /CS2 address decoding is configured for a 128K block of memory that is split into two 64K blocks by half of a 74LS139. Accessing the lower 64K block generates an /MREQ on the RCBus and accessing the upper 64K block generates an /IORQ on the RCBus.
 
-**NOTE:** If using the version of MON302 that supports remapping of the ROM and RAM address spaces, then please see the RC107 readme file for details on the hardware modifications needed to the ROM/RAM board to support this.
+**NOTE:** If using the newer version of MON302 that supports remapping of the ROM and RAM address spaces, then please see the relevant ROM/RAM board readme file for details on the hardware modifications needed to the ROM/RAM board to support this.
 
 ## DTACK & Bus Error
 The user programmable chip select signals can also be configured to internally generate the DTACK signal so no external gates are required. My ROM/RAM board generates its own DTACK signal so DTACK is disabled for /CS0 & /CS1. /CS2 is configured to for 2 wait states.

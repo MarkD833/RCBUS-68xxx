@@ -41,7 +41,7 @@ Finally, set JP1 and J2 for your specific configuration (see below).
 
 If the version of my MC68302 monitor is used that can remap the /CS0 and /CS1 chip select signals, then U1 (74LS125), U5 (74LS138), U8 (74LS165) and U9 (74LS32) are not required but can be fitted if the board is also going to be used with a 68000 or 68010 processor later.
 
-Remember to set JP1 accordingly!
+**WARNING** When using a 68302 processor you must set J2 so that both ROM & RAM jumpers are set to EXT so that the chip selects are controlled by the 68302. Leaving them in the LS138 position will most likely result in the processor entering the HALT state.
 
 # Jumpers
 + J1 - Chip Selects
