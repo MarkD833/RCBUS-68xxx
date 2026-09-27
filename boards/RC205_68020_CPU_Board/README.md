@@ -1,11 +1,10 @@
 # 68020 Processor Board
 
-Still at the prototyping stage so just a 3D render at the moment.
+There's now some real hardware!
 
-![](../../images/RC205-68020_CPU_1.png)
+![](../../images/RC205-68020_CPU_2.JPG)
 
 # Details
-This is a 3D render of my new 68020 processor board. It's still very early in the design and it should have similar functions as the RC201 68000 board.
+This is my attempt at getting a 68020 processor running on RCBus. There's going to be some challenges along the way as I've not used a 68020 before. I'm also 30 years late to the CPLD world so a bit of catching up to do.
 
-This is very much a prototype at the moment and I need to see if I can get the CPLD logic design correct so that it is actually works in practice.
-
+The board is built and basic operation, although not entirely successful, is showing signs that I'm on the right track. The monitor program spits out a few characters but then the board crashes so some debugging with my recently acquired [GusmanB 24 channel logic analyser](https://github.com/gusmanb/logicanalyzer/tree/master) is required to figure out what I may have done wrong. However, I suspect that it's a timing problem.
