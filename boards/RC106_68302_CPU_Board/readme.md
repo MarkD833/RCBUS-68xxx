@@ -125,7 +125,7 @@ The 2 solder jumpers are located on the rear of the board and are used to route 
 + JP2: solder this jumper to connect /CS1 to RCBus pin 46.
 
 # Errors
-None so far.
+A fundamental flaw in the way interrupts are handled has come to light. This appears to only affect interrupts generated internally by the 68302 such as serial port or timer interrupts. It seems that when the 68302 generates its own interrupt - when an SCC receive buffer is full for example - it exposes this interrupt to the outside world by setting its FC0, FC1 & FC2 bits to a 7. This causes the current external logic to drive the /AVEC pin and create a level 4 autovectored interrupt rather than a level 4 vectored interrupt. All 68302 internally generated interrupts are level 4.
 
 # Thoughts / Enhancements
 + Should I have used SCC1 for the monitor port?
