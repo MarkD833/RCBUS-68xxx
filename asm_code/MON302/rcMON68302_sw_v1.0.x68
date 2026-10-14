@@ -1,5 +1,5 @@
 *******************************************************************************
-* rcMon-68302 v0.3 - sw version (see below)
+* rcMon-68302 v1.0 - sw version (see below)
 *******************************************************************************
 * Written to support my own RCBus 68302 board. Supports simple S-Record loading as
 * well as memory display & modification. No breakpoints, single stepping or
