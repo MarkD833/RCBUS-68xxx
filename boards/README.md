@@ -6,7 +6,7 @@ These folders contain the KiCad (v8/v9/v10) design files for the various RCBus 6
 
 The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Processor boards support autovectored interrupts only.
 
-**NOTE:** The series 1 boards have been largly superseeded by the series 2 boards as my knowledge expanded.
+**NOTE:** The series 1 boards have been largly superseeded by the series 2 boards as my knowledge expanded and have generally been superseeded by the RC2xx series 2 boards.
 
 | ID | Description | Notes |
 | :---- | :---- | :---- |
