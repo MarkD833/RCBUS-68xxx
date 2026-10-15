@@ -1,6 +1,7 @@
 Reference,Qty,Value,Footprint,Datasheet
 "C1,C2,C3,C4,C5,C6,C7,C8,C11,C12,C13,C14,C15,C16,C17",15,100n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,
-"C9,C18",2,100uF,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm,
+C9,1,100uF,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm,
+C18,1,100uF,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm - 7mm or 8mm tall,
 C10,1,1n,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm,
 CON1,1,CONN_IDE_02x20,Connector_IDC:IDC-Header_2x20_P2.54mm_Vertical,
 "D1,D2,D4,D5,D6,D7,D8,D9,D10,D11,D12",11,LED,LED_THT:LED_D3.0mm,

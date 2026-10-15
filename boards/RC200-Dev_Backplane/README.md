@@ -18,6 +18,8 @@ As well as combining Steve's SC701, SC719 and SC729 into one board, I've also ad
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
+Note regarding C18 - the capacitor is rather close to the pins that poke out the back of a board fitted to slot 8. Either use a standard height 100uF capacitor and bend the legs to 90 degrees so it sits horizontal to the board or use one of the lower profile capacitors that are around 7mm or 8mm tall.
+
 Depending on your choice of LED colours, the associated current limiting resistor may need to be altered to give visually similar brightnesses.
 
 # CompactFlash Adapter Header

@@ -29,6 +29,8 @@ A 74LS125 is used to generate a simple /DTACK signal driven directly from the EE
 # Board Assembly
 Assembly of the board should be fairly straightforward as there are no surface mount devices to deal with. All ICs are socketed except the 74LS32 and the 74LS165 which are soldered directly into the board.
 
+Note, however the choice of capacitor for C9. You may find that a standard disc ceramic 100nF part is too tall and the ROM chip will not fully engage with the IC socket. On MLCC through hole capacitor should be smaller and can fit in nicely.
+
 The only tricky bit is the cutting of one of the 32-pin DIL sockets to remove the horizontal spacers.
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
