@@ -1,0 +1,153 @@
+Name       68020.pld;
+Partno     RC205;
+Date       23-09-2026;
+Revision   1.0;
+Designer   Mark Durham;
+Company    ;
+Assembly   RC205;
+Location   U4;
+Device     F1502ISPPLCC44;
+
+/* ****************************************************************************************** */
+/* This file holds the CPLD design for the ATF1502AS device on my RC205 68020 processor board */
+/* Feel free to copy and modify this file for your own needs, but please credit me and        */
+/* where you got it from. Thanks.                                                             */
+/*                                                                                            */
+/* WARNING: This is my first attempt at using WinCUPL to design for the Atmel ATF1502AS CPLD  */
+/*          Hopefully this design will work for you                                           */
+/* ****************************************************************************************** */
+
+/* INPUT Signals */
+pin  2 = A18;
+pin  4 = FC0;
+pin  5 = FC1;
+pin  6 = FC2;
+pin  8 = A17;
+pin 11 = SIZ0;       /* bus sizing SIZ0 */
+pin 12 = SIZ1;       /* bus sizing SIZ1 */
+pin 17 = A0;
+pin 18 = A1;
+pin 19 = A2;
+pin 20 = A3;
+pin 21 = AS;         /* address strobe */
+pin 25 = DS;         /* data strobe */
+pin 27 = RnW;        /* read (high) write (low) signal */
+pin 28 = A23;
+pin 29 = A22;
+pin 31 = A21;
+pin 33 = A20;
+pin 34 = A19;
+pin 43 = SYSCLK;     /* system clock */
+
+/* OUTPUT Signals */
+pin  9 = !IACK;      /* on board interrupt acknowledge signal - INVERTED */
+pin 14 = !RC_DTACK;  /* DTACK for the RCBus MEM & IO spaces - INVERTED */
+pin 16 = !BERR;      /* bus error signal - INVERTED */
+pin 24 = LDS;        /* lower data strobe */
+pin 26 = UDS;        /* upper data strobe */
+pin 36 = !RC_MREQ;   /* RCBus MREQ signal - INVERTED */
+pin 37 = !RC_RD;     /* RCBus read signal - INVERTED */
+pin 39 = !RC_WR;     /* RCBus write signal - INVERTED */
+pin 40 = !RC_IORQ;   /* RCBus IORQ signal - INVERTED */
+
+/* ******************************************************************** */
+/* BUS ERROR and DTACK                                                  */
+/* A 7 bit binary counter is implemented below that is clocked from the */
+/* system clock. Counter only counts when address strobe is low and is  */
+/* reset each time address strobe goes high.                            */
+/* When the count reaches 7, an RCBus DTACK signal is generated if MREQ */
+/* or IORQ are active. When the counter reaches 127, the BUS ERROR      */
+/* signal is latched until address strobe goes high.                    */ 
+/* ******************************************************************** */
+
+/* BURIED NODES */
+/* BUS ERROR and DTACK - 7 bit binary counter */
+NODE ctr0;
+NODE ctr1;
+NODE ctr2;
+NODE ctr3;
+NODE ctr4;
+NODE ctr5;
+NODE ctr6;
+
+/* ********************************** */
+/* BUS ERROR and DTACK binary counter */
+/* ********************************** */
+/* this is the actual 7 bit binary counter */
+ctr0.d = !ctr0;
+ctr1.d = ctr1 $ ctr0;
+ctr2.d = ctr2 $ (ctr1 & ctr0);
+ctr3.d = ctr3 $ (ctr2 & ctr1 & ctr0);
+ctr4.d = ctr4 $ (ctr3 & ctr2 & ctr1 & ctr0);
+ctr5.d = ctr5 $ (ctr4 & ctr3 & ctr2 & ctr1 & ctr0);
+ctr6.d = ctr6 $ (ctr5 & ctr4 & ctr3 & ctr2 & ctr1 & ctr0);
+
+/* reset all 7 bits of the counter when address strobe (AS) is high */
+ctr0.ar = AS;
+ctr1.ar = AS;
+ctr2.ar = AS;
+ctr3.ar = AS;
+ctr4.ar = AS;
+ctr5.ar = AS;
+ctr6.ar = AS;
+
+/* use the system clock to clock each stage of the 7 bit counter */
+ctr0.ck = SYSCLK;
+ctr1.ck = SYSCLK;
+ctr2.ck = SYSCLK;
+ctr3.ck = SYSCLK;
+ctr4.ck = SYSCLK;
+ctr5.ck = SYSCLK;
+ctr6.ck = SYSCLK;
+
+/* the actual BUS ERROR signal comes from all the counter bits being a 1 */
+/* which should be a count of 127 system clocks and is latched until AS goes high */ 
+BERR.ck = (ctr6 & ctr5 & ctr4 & ctr3 & ctr2 & ctr1 & ctr0 );
+BERR.d = 'b'1;
+BERR.ar = AS;
+
+/* ******************************************************************************* */
+/* Generate the /UDS and /LDS signals                                              */
+/* Note that the UDS and LDS logic levels do not need inverting at the output pins */
+/* ******************************************************************************* */
+UDS = DS # A0;
+LDS = DS # (!A0 & SIZ0 & !SIZ1);
+
+/* **************************************************************** */
+/* Generate MREQ when A23..A19 = 1 and A18 = 0 and A17 = 0          */
+/* i.e addresses 0xF80000 .. 0xF9FFFF                               */
+/* RC_MREQ will be a 1 here so it needs inverting on the output pin */
+/* **************************************************************** */
+RC_MREQ = A23 & A22 & A21 & A20 & A19 & !A18 & !A17 & !AS;
+
+/* **************************************************************** */
+/* Generate nIORQ when A23..A19 = 1 and A18 = 0 and A17 = 1         */
+/* i.e addresses 0xFA0000 .. 0xFBFFFF                               */
+/* RC_IORQ will be a 1 here so it needs inverting on the output pin */
+/* **************************************************************** */
+RC_IORQ = A23 & A22 & A21 & A20 & A19 & !A18 & A17 & !AS;
+
+/* ******************************************************** */
+/* Generate the RC_RD and RC_WR signals                     */
+/* Both signals need inverting on their output pins         */
+/* ******************************************************** */
+RC_RD = ( !LDS & RnW & !AS & RC_MREQ )
+      # ( !LDS & RnW & !AS & RC_IORQ );
+RC_WR = ( !LDS & !RnW & !AS & RC_MREQ )
+      # ( !LDS & !RnW & !AS & RC_IORQ );
+
+/* ***************************************************************** */
+/* Generate the DTACK for MREQ & IORQ when the BERR counter          */
+/* reaches 7 and RC_MREQ or RC_IORQ are asserted                     */
+/* Change these equations if you want a longer or shorter DTACK      */
+/* RC_DTACK will be a 1 here so it needs inverting on the output pin */
+/* ***************************************************************** */
+RC_DTACK = ( RC_MREQ & ctr2 & ctr1 & ctr0 )
+         # ( RC_IORQ & ctr2 & ctr1 & ctr0 );
+
+/* ******************************************************** */
+/* Generate the IACK signal for the 74LS156                 */
+/* IACK will only be a 1 when the 3 FC bits are a 1 which   */
+/* indicates an interrupt acknowledge state                 */
+/* ******************************************************** */
+IACK = FC0 & FC1 & FC2;

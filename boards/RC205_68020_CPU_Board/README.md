@@ -34,7 +34,7 @@ This partial decoding results in the RCBus I/O and memory spaces appearing multi
 For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xFA0001, address 0x01 is accessed at address 0xFA0003 etc.
 
 ## Onboard LEDs
-There were a couple of gates left over and I've used them to drive and activity LED for accesses to the RCBus I/O space as well as a HALT LED. Note that the I/O LED will only glow faintly.
+There were a couple of gates left over and I've used them to drive and activity LED for accesses to the RCBus Memory & I/O space as well as a HALT LED. Note that the I/O LED will only glow faintly.
 
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are a few surface mount 0805 resistors and capacitors to deal with but these should be relatively easy to solder with a fine tipped soldering iron.
