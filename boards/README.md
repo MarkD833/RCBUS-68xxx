@@ -19,7 +19,7 @@ The series 1 boards are my first attempt at a 68000 based RCBus-80 system. Proce
 | RC107 | 1M ROM & 1M RAM board | Use RC208 instead |
 | RC108 | 6 channel SPI master board - 3V3 and 5V ports | |
 | RC109 | Serial / parallel / timer board | |
-| RC110 | 68020 processor card using the PGA package | |
+| RC110 | 68020 processor card using the PGA package | Use RC205 for vectored interrupt support |
 | RC111 | SCC68692 DUART + MC68881 maths coprocessor | |
 
 Note that the 68020 board is still very much at the prototype stage.
