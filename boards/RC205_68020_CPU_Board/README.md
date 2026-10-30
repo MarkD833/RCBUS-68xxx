@@ -41,7 +41,7 @@ Assembly of the board should be fairly straightforward. There are a few surface 
 
 After my experience creating a PGA socket out of several SIL turned pin sockets for my 68302 board, I seriously recommend a proper PGA socket for this processor. Look for a 13x13 PGA socket to begin with. There are sockets out there that are 13x13 with more pins than required. These can either be cut off or even pushed out of the socket housing.
  
-If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
 
 A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. You can trim the 4 pins of the oscillator so it sits flush with the socket if this is an issue for your board. Please be aware of this.
 
