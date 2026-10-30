@@ -67,7 +67,7 @@ There were a couple of gates left over and I've used them to drive and activity 
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are no surface mount devices to deal with.
 
-If you choose have a turned pin socket for the system clock, then an 8-pin DIL surned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
+If you choose have a turned pin socket for the system clock, then an 8-pin DIL turned pin socket can be used. I flipped the socket over - so pins pointing upwards - and easily pushed out pins 2,3,6 & 7.
 
 A **note of caution** when using a socketed oscillator - there is the possibility that the metal can of the oscillator could accidentally short out pins on the next board. Please be aware of this.
 
