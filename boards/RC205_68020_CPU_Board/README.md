@@ -1,5 +1,7 @@
 # RC205 - 68020 Processor Board
 
+<code style="color : red"Text in RED</code>
+
 Actual image of the processor board under test with IRQ2 & IRQ6 configured for autovectored interrupts and IRQ3 & IRQ5 configured for vectored interrupts.
 
 ![](../../images/RC205-68020_CPU_2.JPG)
