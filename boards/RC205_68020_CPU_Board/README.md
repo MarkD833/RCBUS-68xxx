@@ -1,6 +1,6 @@
 # RC205 - 68020 Processor Board
 
-** NOTE: There is an issue with this design that creates eratic operation when using speeds above 7.3728MHz - please do not use these board files until I sort it out.** 
+**NOTE: There is an issue with this design that creates eratic operation when using speeds above 7.3728MHz - please do not use these board files until I sort it out.** 
 
 Actual image of the processor board under test with IRQ2 & IRQ6 configured for autovectored interrupts and IRQ3 & IRQ5 configured for vectored interrupts.
 
