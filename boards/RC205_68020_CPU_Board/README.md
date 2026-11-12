@@ -36,7 +36,7 @@ This partial decoding results in the RCBus I/O and memory spaces appearing multi
 For both I/O and memory spaces, consecutive memory locations are accessed on the ODD bytes such that I/O address 0x00 is accessed at address 0xFA0001, address 0x01 is accessed at address 0xFA0003 etc.
 
 ## Onboard LEDs
-There were a couple of gates left over and I've used them to drive and activity LED for accesses to the RCBus Memory & I/O space as well as a HALT LED. Note that the I/O LED will only glow faintly.
+There were a couple of gates left over and I've used them to drive and activity LED for accesses to the RCBus Memory & I/O space as well as a HALT LED. Note that the Memory & I/O LEDs may not be of much use as their ON times are so short.
 
 # Board Assembly
 Assembly of the board should be fairly straightforward. There are a few surface mount 0805 resistors and capacitors to deal with but these should be relatively easy to solder with a fine tipped soldering iron.
@@ -51,7 +51,7 @@ Make sure you insert the chips into their sockets in the correct orientation. Al
 
 When fitting the 80-pin right angle connector, initially only solder a couple of pins at opposite ends of the connector so that you can make any adjustments if the board is not vertical when fitted to the backplane.
 
-Note that J1 & J4 are only needed when if debugging the ATF1502AS CPLD.
+Note that J1 & J4 are only needed when debugging the ATF1502AS CPLD.
 
 # Firmware
 The board uses an ATMEL ATF1502AS CPLD device to contain the bulk of the logic required. The device can easily be programmed using a simple USB adapter - look for an FT232H breakout board. Mine looks like this one:

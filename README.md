@@ -81,6 +81,7 @@ Supporting vectored interrupts requires additional logic on the processor board 
 | RC207 | 1M ROM & 1M RAM board | manual BOOT ROM switching |
 | RC208 | 1M ROM & 1M RAM board | automatic BOOT ROM switching |
 | RC209 | 1M ROM & 3M RAM board | some SMD devices & automatic BOOT ROM switching |
+| RC215 | 68EC030 processor card | uses the PGA package |
 
 Some of these boards are now working whilst others are on the desk waiting to be populated. For the working boards, there are all the details in their respective boards folder. For the boards under test, I've put some very basic details in their boards folder for now.
 
@@ -104,12 +105,13 @@ I'm trying to keep this global address map as up to date as I can. The current a
 | RC202 | DUART | 0xD00000..0xD027FF | Jumper selectable address range - See note #1 |
 | RC203 | DUAL PI/Ts | 0xD08000..0xD0BFFF | Jumper selectable address range |
 | RC204 | 1M FLASH & 3M RAM | ROM: 0x000000..0x0FFFFF<br>RAM: 0x100000..0x3FFFFF | See note #2 |
-| RC205 | 68020 CPU | TBD | |
+| RC205 | 68020 CPU | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | Supports vectored interrupts |
 | RC206 | 68008 CPU | TBD | |
 | RC207 | 1M FLASH & 1M RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #3 |
 | RC208 | 1M FLASH & 1M RAM | RAM: 0x000000..0x0FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
 | RC209 | 1M FLASH & 3M RAM | RAM: 0x000000..0x2FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
 | RC210 | 68302 CPU | MREQ: 0xFD0000..0xFDFFFF<br>IORQ: 0xFE0000..0xFEFFFF | Software programmable via /CS3<br>Supports vectored interrupts |
+| RC215 | 68EC030 CPU | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | Supports vectored interrupts |
 
 1. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
 2. RAM addresses 0x100000..0x1003FF hold the exception vector table.

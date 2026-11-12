@@ -40,13 +40,14 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | Abandoned - use RC208 instead |
 | RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching | |
 | RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching | |
+| RC215 | 68EC030 processor card using the PGA package | |
 
 Several of the series 2 boards are now working and I've put details in their respectove folders whilst others are still very much at the prototype stage.
 
 ## Notes
 Make sure to look at the readme files in each board folder as they will detail any errors and corrections I've noticed so far as well as any thoughts on future enhancements etc.
 
-A minimal 68000 (or 68010) system would comprise of a 68000/68010 CPU board, ROM/RAM board and SIO board.
+A minimal series 2 system using a 68000, 68010, 68020 or 68EC030 processor requires an RC208 ROM/RAM board and a series 2 serial I/O board.
 
 A minimal 68302 system would comprise of a 68302 CPU board and a ROM/RAM board.
 
