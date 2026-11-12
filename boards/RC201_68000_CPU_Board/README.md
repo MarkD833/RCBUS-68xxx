@@ -101,7 +101,7 @@ In order to use your own exception handler, simply overwrite the RAM exception v
 Nothing yet.
 
 # Errors
-Nothing yet - but give it time :-(
++ The 4K7 pullup on /DTACK isn't strong enough - solder a 1K3 between RN1 pin 1 & pin 2 to create approx 1K pullup.
 
 # History
 + v1.1 - changed RCBus MEM & IO space decoding to avoid conflict with vectored interrupt sequence
