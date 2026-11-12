@@ -9,6 +9,8 @@ The processor board consists of a PLCC packaged MC68000 processor, bits of glue 
 
 The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards.
 
+**Note:** Please see the errors list at the end of this page, especially the one about the 4K7 pullup.
+
 ## Reset
 The reset signal for the processor board must be supplied externally, entering the board via pin 20 of the RCBus connector. This should not be an issue if you are using one of Steve Cousins's backplanes.
 
