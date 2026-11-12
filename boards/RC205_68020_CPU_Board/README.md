@@ -1,25 +1,21 @@
 # RC205 - 68020 Processor Board
 
----
-**NOTE: There is an issue with this design that creates eratic operation when using speeds above 7.3728MHz - please do not use these board files until I sort it out.** 
----
-
 Actual image of the processor board under test with IRQ2 & IRQ6 configured for autovectored interrupts and IRQ3 & IRQ5 configured for vectored interrupts.
 
-![](../../images/RC205-68020_CPU_2.JPG)
+![](../../images/RC205_1.JPG)
 
 # Details
 The processor board consists of a PGA packaged MC68020 processor, a single CPLD, bits of glue logic and the processor clock source.
 
 The processor board is designed to plug into an RCBus-80 backplane and expects to find the stack pointer and initial program counter addresses at location 0x000000 onwards.
 
-**Note:** Please see the errors list at the end of this page, especially the one about the 4K7 pullup.
+**Note:** Please see the errors list at the end of this page, especially the one about the 4K7 pullup resistor.
 
 ## Reset
 The reset signal for the processor board must be supplied externally, entering the board via pin 20 of the RCBus connector. This should not be an issue if you are using one of Steve Cousins's backplanes.
 
 ## Processor Clock
-The processor/system clock source is an oscillator in an 8-pin DIL/DIP can (X1 in the schematic). Basic testing was done with a 7.3728MHz oscillator. 
+The processor/system clock source is an oscillator in an 8-pin DIL/DIP can (X1 in the schematic). Basic testing was done with a 7.3728MHz oscillator and, as confidence grew, a 16MHz oscillator. I don't intend to go beyond 16MHz as the RCBus backplane wasn't designed for such speeds.
 
 ## DTACK & Bus Error
 A /DTACK signal is generated using a counter within the ATF1502 CPLD only when an address within the /MREQ or /IORQ address windows are activated. At all other times, the external board is expected to provide its own /DTACK signal.
