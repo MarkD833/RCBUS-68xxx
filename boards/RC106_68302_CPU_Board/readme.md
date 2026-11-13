@@ -135,7 +135,3 @@ A fundamental flaw in the way interrupts are handled has come to light. This app
 + SCC2 provides software control of RTS2 (Port pin PA5) and CTS2 (Port pin PA4). Therefore can tell host PC to stop transmitting via software if our Rx buffers fill up.
 + SCC3 has no handshaking as the pins are used for the SPI interface.
 + For 115200 baud with RTS/CTS handshaking for quick xfer of srec files then it looks like SCC2 would be the better choice.
-
-# To Do
-+ Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-+ Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.

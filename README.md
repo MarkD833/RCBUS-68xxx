@@ -67,7 +67,7 @@ There are no programable logic devices (PALs, GALs, CPLDs etc) in my series 1 de
 ## Series 2 Boards
 These boards are based on my expereince with the earlier series 1 boards and are an attempt to introduce vectored interrupts to the boards that use chips such as the MC68681 DUART or the MC68230 PIO. The introduction of vectored interrupts requires additional interrupt acknowledge signals on the RCBus-80 backplane. In order to not run out of pins, I have chosen to use IRQ2, IRQ3, IRQ5 and IRQ6 as vectored interrupts, leaving IRQ1, IRQ4 and IRQ7 as autovectored interrupts. 
 
-Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. My 68000 board currently under test appears to successfully handle vectored interrupts without the need for SMD package variants of the DIL chips or any CPLD device - although there is one bug that will hopefully be corrected with the next version of the board.
+Supporting vectored interrupts requires additional logic on the processor board which in turn requires additional board space which is in very short supply. My 680x0 boards currently under test all appear to successfully handle vectored interrupts without the need for SMD package variants of the DIL chips or any CPLD device.
 
 | ID | Type | Description |
 | :---- | :---- | :---- |

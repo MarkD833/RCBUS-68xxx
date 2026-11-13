@@ -62,16 +62,10 @@ Note the orientation of the two PI/T chips - they are effectively upside down.
 + J15: All contacts connected to +5V
 
 # Reliability Issues
-For some reason the 68230 board is very unreliable, even with the error mentioned below corrected. The issue seems to be with the write timing as the chips always report the correct port pin levels during a read of the alternate data registers.
+The numerous reliablity issues with my 68230 boards have been resolved. The fault was eventually tracked down to the 4K7 pullup resistor for the /DTACK signal on the processor board. With a value of 4K7, there wasn't a strong enough pull up on the /DTACK line and frequently the /DTACK signal from the previous bus access was being interpreted as a /DTACK on the current bus access. Wiring a 1K3 resistor in parallel with the 4K7 - resulting in about a 1K pull up - caused /DTACK to rise much faster and the 68230 responded correctly.
 
-I've tried 68230s from ST and Mostek with a simple test program with the timer configured to output a square wave on PC3 whilst also toggling pin PA0 in software. I'm getting all combinations of results from no pin activity, only PA0 toggles, only PC3 toggles and both PA0 and PC3 toggling.
-
-I know the code works as a PLCC 68230 (Freescale badged) on another 68000 system I have works correctly.
+The /DTACK pull up correction has now been applied to all my processor boards and they all seem to behave correctly.
 
 # Errors
 + The 68230 chip select has to include one of the /nDS signals not just /AS. Fix by cutting the /AS track between RCBus pin 41 and the 74LS688 pin 1. Add a wire link between RCBus pin 43 (/LDS) and the 74LS688 pin 1.
 + The +5V right angle female header (J15) is quite fragile and on my board, it breaks off quite easily.
-
-# To Do
-+ Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-+ Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.

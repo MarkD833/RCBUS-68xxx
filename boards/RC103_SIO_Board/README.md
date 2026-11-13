@@ -113,7 +113,4 @@ None so far.
 + Jumpers to allow TXD2 & RXD2 to route to the RCBus TX2 & RX2 signals.
 + Board would support a wider range of compatible 68681s with a solder jumper between the X2 pin and GND.
 
-# To Do
-+ Experiment to find the maximum width of board that JLCPCB will accept to keep the low price.
-+ Modify the RCBus80 medium board footprint in Kicad so that pins 1,40,41 & 80 don't throw DRC warnings/errors.
 

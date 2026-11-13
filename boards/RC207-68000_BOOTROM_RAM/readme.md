@@ -1,5 +1,7 @@
 # BOOT ROM & RAM board - 1M ROM + 1M RAM
 
+**NOTE:** Work on this board has been abandoned after the success of RC208 which switches ROM & RAM automatically.
+
 ![](../../images/RC207-1.png)
 
 The additional 2 chips hidden under one of the ROMs.
@@ -15,7 +17,6 @@ This memory board requires a software write to remap the memory chips.
 
 This is very much a prototype at the moment and I need to see if the manual write works or causes issues.
 
-**NOTE:** Work on this board has been abandoned after the success of RC208 which switches ROM & RAM automatically.
 
   
 
