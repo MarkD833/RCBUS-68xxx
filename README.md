@@ -74,16 +74,17 @@ However, the 68020 and 68EC030 boards do require the use of a CPLD device in ord
 | ID | Type | Description |
 | :---- | :---- | :---- |
 | RC200 | 8-Slot RCBus Backplane | integrated CompactFlash, buttons & LED interfaces |
-| RC201 | CPU | MC68000 CPU Board |
-| RC202 | Serial | MC68681 DUART Serial Board (inc bit-bang SPI & I2C) |
-| RC203 | Parallel | Dual MC68230 PI/T Board |
-| RC204 | 1M ROM & 3M RAM board | fixed ROM & some SMD devices |
-| RC205 | 68020 processor card | uses the PGA package |
-| RC206 | 68008 processor card | using the PLCC package |
-| RC207 | 1M ROM & 1M RAM board | manual BOOT ROM switching |
+| RC201 | 68000 PLCC processor board | Supports vectored interrupts |
+| RC202 | SCC68692 DUART board | Bit banged SPI & I2C ports |
+| RC203 | Dual MC68230 parallel interface / timer board | |
+| RC204 | 1M ROM & 3M RAM board | Untested but likely replaced with RC209 shortly |
+| RC205 | 68020 PGA processor board | Supports vectored interrupts |
+| RC206 | 68008 PLCC processor board | |
+| RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | Abandoned - use RC208 instead |
 | RC208 | 1M ROM & 1M RAM board | automatic BOOT ROM switching |
 | RC209 | 1M ROM & 3M RAM board | some SMD devices & automatic BOOT ROM switching |
-| RC215 | 68EC030 processor card | uses the PGA package |
+| RC215 | 68EC030 PGA processor board | Supports vectored interrupts |
+| RC216 | SCC68692 DUART + MC68882 Maths coprocessor | Bit banged I2C port |
 
 Some of these boards are now working whilst others are on the desk waiting to be populated. For the working boards, there are all the details in their respective boards folder. For the boards under test, I've put some very basic details in their boards folder for now.
 
@@ -114,6 +115,7 @@ I'm trying to keep this global address map as up to date as I can. The current a
 | RC209 | 1M FLASH & 3M RAM | RAM: 0x000000..0x2FFFFF<br>ROM: 0x700000..0x7FFFFF | See note #4 |
 | RC210 | 68302 CPU | MREQ: 0xFD0000..0xFDFFFF<br>IORQ: 0xFE0000..0xFEFFFF | Software programmable via /CS3<br>Supports vectored interrupts |
 | RC215 | 68EC030 CPU | MREQ: 0xF80000..0xF9FFFF<br>IORQ: 0xFA0000..0xFBFFFF | Supports vectored interrupts |
+| RC216 | DUART + MATHS | DUART: 0xD00000..0xD007FF<br>MATHS: 0xD03800..0xD03FFF | Fixed DUART address - See note #1 |
 
 1. These boards share the same address range so that the same monitor code can be used with the MC68681 DUARTs on each of the boards.
 2. RAM addresses 0x100000..0x1003FF hold the exception vector table.
