@@ -11,9 +11,9 @@ The monitor assumes that there is an MC68681 (or compatible) DUART present at ad
 
 **Note:** 115200 baud can only be achieved when using a DUART that supports the test mode - i.e. one of the Philips devices.
 
-The monitor uses RTS/CTS flow control to control the flow of data from the host PC. In order to use hardware flow control, the solder jumper JP2 on the rear of the SIO board needs to be bridged to allow the DUART OP0 signal to control the CTS signal.
+The monitor uses the hardware CTS flow control signal to control the flow of data from the host PC on serial port #1. This is controlled by the DUART output signal OP0. In order to use hardware flow control, the solder jumper on the rear of the serial board that connects DUART output pin OP0 to the CTS pin needs to be bridged.
 
-**Note:** The serial receive routines are now interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
+**Note:** The serial receive routines are now autovectored interrupt driven and require the IRQ2 jumper to be fitted on the SIO board.
 
 # Memory Usage
 The monitor uses the first 1K of RAM (0x100000..0x1003FF) to hold the exception vector table. When developing code, make sure that you do not overwrite it with any of your s-records. If you use a specific exception, then it is better to insert the exception handler address via software.

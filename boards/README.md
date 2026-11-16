@@ -31,16 +31,17 @@ The series 2 boards are based on my time spent with the series 1 boards and the 
 | ID | Description | Notes |
 | :---- | :---- | :---- |
 | RC200 | RCBus-80 Developers Backplane | |
-| RC201 | 68000 processor card using the PLCC package variant of the 68000 | Supports vectored interrupts |
-| RC202 | Single SCC68692 DUART + SPI & I2C board - 2 serial ports | |
+| RC201 | 68000 PLCC processor board | Supports vectored interrupts |
+| RC202 | SCC68692 DUART board | Bit banged SPI & I2C ports |
 | RC203 | Dual MC68230 parallel interface / timer board | |
 | RC204 | 1M ROM & 3M RAM board | Untested but likely replaced with RC209 shortly |
-| RC205 | 68020 processor card using the PGA package | |
-| RC206 | 68008 processor card using the PLCC package variant of the 68008 | |
+| RC205 | 68020 PGA processor board | Supports vectored interrupts |
+| RC206 | 68008 PLCC processor board | |
 | RC207 | 1M ROM & 1M RAM board - manual BOOT ROM switching | Abandoned - use RC208 instead |
 | RC208 | 1M ROM & 1M RAM board - automatic BOOT ROM switching | |
 | RC209 | 1M ROM & 3M RAM board - automatic BOOT ROM switching | |
-| RC215 | 68EC030 processor card using the PGA package | |
+| RC215 | 68EC030 PGA processor board | Supports vectored interrupts |
+| RC216 | SCC68692 DUART + MC68882 Maths coprocessor | Bit banged I2C port |
 
 Several of the series 2 boards are now working and I've put details in their respectove folders whilst others are still very much at the prototype stage.
 
