@@ -1,0 +1,1986 @@
+00704970 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 21/11/2026 14:56:30
+
+00000000                             1  *******************************************************************************
+00000000                             2  *
+00000000                             3  *  ######   #####  #     #                      #####   #####  #    # 
+00000000                             4  *  #     # #     # ##   ##  ####  #    #       #     # #     # #   #  
+00000000                             5  *  #     # #       # # # # #    # ##   #       #       #     # #  #   
+00000000                             6  *  ######  #       #  #  # #    # # #  # ##### ######   #####  ###    
+00000000                             7  *  #   #   #       #     # #    # #  # #       #     # #     # #  #   
+00000000                             8  *  #    #  #     # #     # #    # #   ##       #     # #     # #   #  
+00000000                             9  *  #     #  #####  #     #  ####  #    #        #####   #####  #    # v2.1
+00000000                            10  *
+00000000                            11  *******************************************************************************
+00000000                            12  * This is my own simple monitor program for my RCBus 68000 board. It supports
+00000000                            13  * simple S-Record loading as well as memory display & simple memory editing.
+00000000                            14  * In addition it allows reading and writing bytes to the RCBus IO space.
+00000000                            15  *
+00000000                            16  * There's no breakpoints, single stepping or disassembly stuff.
+00000000                            17  *******************************************************************************
+00000000                            18  * Hardware assumptions:
+00000000                            19  *
+00000000                            20  * + RC208 ROM/RAM board is used (implements ROM remapping after boot)
+00000000                            21  * + My RCBus SIO board is used and an MC68681 (or equivalent) SIO chip is
+00000000                            22  *   present at the address DUART1 (see devices.inc)
+00000000                            23  * + ROM is present at address 0x700000 (see memory3.inc)
+00000000                            24  * + RAM is present at address 0x000000 (see memory3.inc)
+00000000                            25  *******************************************************************************
+00000000                            26  * EEPROM programming:
+00000000                            27  *
+00000000                            28  * Use EASyBIN to split the S-Record into ODD and EVEN bytes.
+00000000                            29  * + The *_0.BIN file goes in the U ROM socket - holding D08..D15
+00000000                            30  * + The *_1.BIN file goes in the L ROM socket - holding D00..D07
+00000000                            31  *******************************************************************************
+00000000                            32  * Exception Handling:
+00000000                            33  *
+00000000                            34  * The exception vector table is copied from ROM into RAM at startup and from
+00000000                            35  * then on, normal 68000 exception vector processing occurs.
+00000000                            36  * Initially the vector table entries all point back to handlers in ROM but can
+00000000                            37  * be overwritten to point to a user supplied handler in RAM. 
+00000000                            38  *
+00000000                            39  * Some Easy68k TRAP #15 text I/O routines are implemented as follows:
+00000000                            40  * Currently only tasks 0,1,5,6,13 & 14 are supported.
+00000000                            41  *******************************************************************************
+00000000                            42  * EhBASIC Support:
+00000000                            43  *
+00000000                            44  * The EhBASIC s-record file can be programmed into the EEPROMs at the same
+00000000                            45  * time as this monitor and should reside at address EHBASIC_BASE (see memory.inc).
+00000000                            46  *******************************************************************************
+00000000                            47  * Interrupts:
+00000000                            48  *
+00000000                            49  * An interrupt handler is setup to handle autovector level 2 interrupts from
+00000000                            50  * the DUART. Make sure that the jumper is set on the SIO board for level 2
+00000000                            51  * interrupts.
+00000000                            52  *******************************************************************************
+00000000                            53  * CP/M-68K Support
+00000000                            54  * V1.3 of CP/M-68K is supported. The CPM400 s-record file should be
+00000000                            55  * programmed into the EEPROMs at the same time as this monitor. CP/M will
+00000000                            56  * reside at address 0x0400 onwards.
+00000000                            57  *
+00000000                            58  * The hardware specific BIOS should also be programmed into the EEPROMs. The
+00000000                            59  * BIOS must reside at address 0x6000 onwards. 
+00000000                            60  *******************************************************************************
+00000000                            61  * Change Log:
+00000000                            62  * 2.1 - Private monitor variables now referenced as an offset from A6
+00000000                            63  * 2.0 - Updated to support RC208 auto switching memory board
+00000000                            64  * 1.5 - Reinstated CP/M-68K boot!
+00000000                            65  * 1.4 - Interrupt driven serial Rx added - CP/M-68K boot removed
+00000000                            66  * 1.3 - Added 'B' command to boot EhBASIC from EEPROM/FLASH
+00000000                            67  * 1.2 - Added 'C' command to boot CP/M-68K from EEPROM/FLASH
+00000000                            68  * 1.1 - Added some EASY68K TRAP #15 functions
+00000000                            69  * 1.0 - Initial release
+00000000                            70  *******************************************************************************
+00000000                            71  
+00000000                            72      INCLUDE "..\asm-inc\memory3.inc"
+00000000                            73  
+00000000  =00700000                 74  ROM_BASE        EQU     $700000
+00000000  =00100000                 75  ROM_LEN         EQU     $100000
+00000000                            76  
+00000000  =00704000                 77  MON_BASE        EQU     $704000
+00000000                            78  
+00000000  =00700400                 79  EHBASIC_BASE    EQU     $700400
+00000000                            80  
+00000000  =00000000                 81  RAM_BASE        EQU     $000000
+00000000  =00100000                 82  RAM_LEN         EQU     $100000
+00000000                            83  
+00000000  =00000000                 84  VEC_BASE        EQU     RAM_BASE
+00000000  =00000400                 85  VEC_SIZE        EQU     $400         * table takes up 1024 bytes
+00000000                            86  
+00000000  =00FA0000                 87  IO_BASE         EQU     $FA0000
+00000000                            88  
+00000000  =00F80000                 89  MEM_BASE        EQU     $F80000
+00000000                            90  
+00000000  =00700400                 91  CPM_BASE        EQU     $700400     * CP/M-68K entry point
+00000000                            92  
+00000000  =001FD800                 93  CCP_BSS_BASE    EQU     $1FD800
+00000000  =00001000                 94  CCP_PRIV        EQU     4096
+00000000                            95  
+00000000  =00000800                 96  MON_PRIV        EQU     2048
+00000000                            97  
+00000000  =000FF800                 98  STACK_START     EQU     RAM_BASE+RAM_LEN-MON_PRIV
+00000000                            99  
+00000000                           100  -------------------- end include --------------------
+00000000                           101      INCLUDE "..\asm-inc\devices.inc"
+00000000                           102  
+00000000  =00D00000                103  DUART1      EQU     $D00000
+00000000                           104  
+00000000  =00000010                105  SC145ADDR   EQU     $10           * SC145 base address is 0x10
+00000000                           106  
+00000000  =00FA0020                107  SC145       EQU     IO_BASE+(SC145ADDR<<1)
+00000000                           108  
+00000000                           109  
+00000000  =00D00001                110  MRA         EQU DUART1+1           * Mode Register A             (R/W)
+00000000  =00D00003                111  SRA         EQU DUART1+3           * Status Register A           (R)
+00000000  =00D00003                112  CSRA        EQU DUART1+3           * Clock Select Register A     (W)
+00000000  =00D00005                113  CRA         EQU DUART1+5           * Commands Register A         (W)
+00000000  =00D00007                114  RBA         EQU DUART1+7           * Receiver Buffer A           (R)
+00000000  =00D00007                115  TBA         EQU DUART1+7           * Transmitter Buffer A        (W)
+00000000  =00D00009                116  ACR         EQU DUART1+9           * Aux. Control Register       (R/W)
+00000000  =00D0000B                117  ISR         EQU DUART1+11          * Interrupt Status Register   (R)
+00000000  =00D0000B                118  IMR         EQU DUART1+11          * Interrupt Mask Register     (W)
+00000000  =00D00011                119  MRB         EQU DUART1+17          * Mode Register B             (R/W)
+00000000  =00D00013                120  SRB         EQU DUART1+19          * Status Register B           (R)
+00000000  =00D00013                121  CSRB        EQU DUART1+19          * Clock Select Register B     (W)
+00000000  =00D00015                122  CRB         EQU DUART1+21          * Commands Register B         (W)
+00000000  =00D00017                123  RBB         EQU DUART1+23          * Reciever Buffer B           (R)
+00000000  =00D00017                124  TBB         EQU DUART1+23          * Transmitter Buffer B        (W)
+00000000  =00D00019                125  IVR         EQU DUART1+25          * Interrupt Vector Register   (R/W)
+00000000  =00D0001B                126  IPR         EQU DUART1+27          * Input Port Register         (R)
+00000000  =00D0001B                127  OPCR        EQU DUART1+27          * Output Port Config Register (W)
+00000000  =00D0001D                128  BCNT        EQU DUART1+29          * Start Counter               (R)
+00000000  =00D0001D                129  SOPR        EQU DUART1+29          * Set Output Port Register    (W)
+00000000  =00D0001F                130  ECNT        EQU DUART1+31          * Stop Counter                (R)
+00000000  =00D0001F                131  ROPR        EQU DUART1+31          * Reset Output Port Register  (W)
+00000000                           132  
+00000000  =00000066                133  BAUD_1200       EQU     $66         * 1200 baud
+00000000  =00000088                134  BAUD_2400       EQU     $88         * 2400 baud
+00000000  =00000099                135  BAUD_4800       EQU     $99         * 4800 baud
+00000000  =000000BB                136  BAUD_9600       EQU     $BB         * 9600 baud
+00000000  =000000CC                137  BAUD_38400      EQU     $CC         * 38400 baud
+00000000                           138  
+00000000  =000000CC                139  BAUD_RATE       EQU     BAUD_38400
+00000000                           140  
+00000000  =00FA0021                141  CF_DATA     EQU SC145+1           * Data               (R/W)
+00000000  =00FA0023                142  CF_FEATURES EQU SC145+3           * Features           (W)
+00000000  =00FA0023                143  CF_ERROR    EQU SC145+3           * Error              (R)
+00000000  =00FA0025                144  CF_SECCOUNT EQU SC145+5           * Sector Count       (R/W)
+00000000  =00FA0027                145  CF_SECTOR   EQU SC145+7           * Sector Number      (R/W)
+00000000  =00FA0029                146  CF_CYL_LOW  EQU SC145+9           * Cylinder Low Byte  (R/W) 
+00000000  =00FA002B                147  CF_CYL_HI   EQU SC145+11          * Cylinder High Byte (R/W)
+00000000  =00FA002D                148  CF_HEAD     EQU SC145+13          * Drive / Head       (R/W)
+00000000  =00FA002F                149  CF_STATUS   EQU SC145+15          * Status             (R)
+00000000  =00FA002F                150  CF_COMMAND  EQU SC145+15          * Command            (W)
+00000000                           151  
+00000000  =00FA0027                152  CF_LBA0007  EQU SC145+7           * LBA bits 07..00    (R/W)
+00000000  =00FA0029                153  CF_LBA0815  EQU SC145+9           * LBA bits 15..08    (R/W)
+00000000  =00FA002B                154  CF_LBA1623  EQU SC145+11          * LBA bits 23..16    (R/W)
+00000000  =00FA002D                155  CF_LBA2427  EQU SC145+13          * LBA bits 27..24    (R/W)
+00000000                           156  
+00000000  =00000001                157  CF_8BIT     EQU 1                 * Set 8-bit mode
+00000000  =00000082                158  CF_NOCACHE  EQU $82               * Disable the cache
+00000000                           159  
+00000000  =00000020                160  CF_RD_SEC   EQU $20               * Read Sector Command
+00000000  =00000030                161  CF_WR_SEC   EQU $30               * Write Sector Command
+00000000  =000000EF                162  CF_SET_FEAT EQU $EF               * Set Feature Command
+00000000  =000000E0                163  CF_LBAMODE  EQU $E0               * LBA mode
+00000000  =000000E0                164  -------------------- end include --------------------
+00000000                           165  
+00000000                           166  *******************************************************************************
+00000000                           167  * The serial port originally ran at 38400 baud for the MC68681 SIO chip.
+00000000                           168  * Alternative compatibe chips were made by Philips (SCC68681,SCN68681 & SCC68692)
+00000000                           169  * that supported higher baud rates using a special test mode.
+00000000                           170  * Set HI_SPEED to 1 to enable 115200 baud or 0 for standard 38400 baud.  
+00000000                           171  *******************************************************************************
+00000000  =00000001                172  HI_SPEED    equ 1
+00000000                           173  
+00000000                           174  *------------------------------------------------------------------------------
+00000000                           175  * ASCII control characters
+00000000                           176  *------------------------------------------------------------------------------
+00000000  =0000000A                177  LF    equ $0A
+00000000  =0000000D                178  CR    equ $0D
+00000000                           179  
+00000000                           180  *------------------------------------------------------------------------------
+00000000                           181  * Serial port receive buffer size - must be multiples of 2!
+00000000                           182  * UPPER sets max chars in buffer before asking host PC to stop sending.
+00000000                           183  * LOWER sets min chars in buffer before asking host PC to start sending again.
+00000000                           184  *------------------------------------------------------------------------------
+00000000  =00000100                185  SERIAL_BUFFER_SIZE  equ 256
+00000000  =000000FF                186  SERIAL_BUFFER_MASK  equ SERIAL_BUFFER_SIZE-1
+00000000  =000000C8                187  SERIAL_BUFFER_UPPER equ 200
+00000000  =00000019                188  SERIAL_BUFFER_LOWER equ 25
+00000000                           189  
+00000000                           190  *******************************************************************************
+00000000                           191  *
+00000000                           192  *  ######     #    #     #       #     # #######  #####  ####### ####### ######   #####  
+00000000                           193  *  #     #   # #   ##   ##       #     # #       #     #    #    #     # #     # #     # 
+00000000                           194  *  #     #  #   #  # # # #       #     # #       #          #    #     # #     # #       
+00000000                           195  *  ######  #     # #  #  #       #     # #####   #          #    #     # ######   #####  
+00000000                           196  *  #   #   ####### #     #        #   #  #       #          #    #     # #   #         # 
+00000000                           197  *  #    #  #     # #     #         # #   #       #     #    #    #     # #    #  #     # 
+00000000                           198  *  #     # #     # #     #          #    #######  #####     #    ####### #     #  #####  
+00000000                           199  *                                                                                       
+00000000                           200  *******************************************************************************
+00000000                           201  * 68000 Exception Vector Table (to be copied into RAM at address 0x000000.
+00000000                           202  *******************************************************************************
+00000000                           203  
+00700000                           204      ORG     ROM_BASE
+00700000                           205  
+00700000= 000FF800                 206      DC.L    STACK_START    *00 Supervisor stack pointer
+00700004= 00704970                 207      DC.L    START          *01 Initial PC    
+00700008                           208  
+00700008= 00704000                 209      DC.L    handleBusErr   *02 Bus Error
+0070000C= 00704018                 210      DC.L    handleAddrErr  *03 Address Error
+00700010= 00704030                 211      DC.L    handleIllInst  *04 Illegal Instruction
+00700014= 00704038                 212      DC.L    handleZeroDiv  *05 Zero Divide
+00700018= 00704040                 213      DC.L    handleChkInst  *06 CHK Instruction
+0070001C= 00704048                 214      DC.L    handleTrapV    *07 TRAPV Instruction
+00700020= 00704050                 215      DC.L    handlePriv     *08 Privilege Violation
+00700024= 00704058                 216      DC.L    handleTrace    *09 Trace
+00700028= 00704060                 217      DC.L    handleLineA    *0A Line 1010 Emulator
+0070002C= 00704068                 218      DC.L    handleLineF    *0B Line 1111 Emulator
+00700030= 00704070                 219      DC.L    handleRes1     *0C (Unassigned, Reserved)
+00700034= 00704070                 220      DC.L    handleRes2     *0D (Unassigned, Reserved)
+00700038= 00704070                 221      DC.L    handleRes3     *0E (Unassigned, Reserved)
+0070003C= 00704078                 222      DC.L    handleUnInit   *0F Uninitialized Interrupt Vector
+00700040= 00704070                 223      DC.L    handleRes4     *10 (Unassigned, Reserved)
+00700044= 00704070                 224      DC.L    handleRes5     *11 (Unassigned, Reserved)
+00700048= 00704070                 225      DC.L    handleRes6     *12 (Unassigned, Reserved)
+0070004C= 00704070                 226      DC.L    handleRes7     *13 (Unassigned, Reserved)
+00700050= 00704070                 227      DC.L    handleRes8     *14 (Unassigned, Reserved)
+00700054= 00704070                 228      DC.L    handleRes9     *15 (Unassigned, Reserved)
+00700058= 00704070                 229      DC.L    handleRes10    *16 (Unassigned, Reserved)
+0070005C= 00704070                 230      DC.L    handleRes11    *17 (Unassigned, Reserved)
+00700060= 00704080                 231      DC.L    handleSpur     *18 Spurious Interrupt
+00700064= 00704088                 232      DC.L    handleAV1      *19 Level 1 Interrupt Autovector
+00700068= 00704E02                 233      DC.L    serISR         *1A Level 2 Interrupt Autovector
+0070006C= 00704098                 234      DC.L    handleAV3      *1B Level 3 Interrupt Autovector
+00700070= 007040A0                 235      DC.L    handleAV4      *1C Level 4 Interrupt Autovector
+00700074= 007040A8                 236      DC.L    handleAV5      *1D Level 5 Interrupt Autovector
+00700078= 007040B0                 237      DC.L    handleAV6      *1E Level 6 Interrupt Autovector
+0070007C= 007040B8                 238      DC.L    handleAV7      *1F Level 7 Interrupt Autovector
+00700080= 007040C0                 239      DC.L    handleTrap0    *20 TRAP #0  Instruction Vector
+00700084= 007040C8                 240      DC.L    handleTrap1    *21 TRAP #1  Instruction Vector
+00700088= 007040D0                 241      DC.L    handleTrap2    *22 TRAP #2  Instruction Vector
+0070008C= 007040D8                 242      DC.L    handleTrap3    *23 TRAP #3  Instruction Vector
+00700090= 007040E0                 243      DC.L    handleTrap4    *24 TRAP #4  Instruction Vector
+00700094= 007040E8                 244      DC.L    handleTrap5    *25 TRAP #5  Instruction Vector
+00700098= 007040F0                 245      DC.L    handleTrap6    *26 TRAP #6  Instruction Vector
+0070009C= 007040F8                 246      DC.L    handleTrap7    *27 TRAP #7  Instruction Vector
+007000A0= 00704100                 247      DC.L    handleTrap8    *28 TRAP #8  Instruction Vector
+007000A4= 00704108                 248      DC.L    handleTrap9    *29 TRAP #9  Instruction Vector
+007000A8= 00704110                 249      DC.L    handleTrap10   *2A TRAP #10 Instruction Vector
+007000AC= 00704118                 250      DC.L    handleTrap11   *2B TRAP #11 Instruction Vector
+007000B0= 00704120                 251      DC.L    handleTrap12   *2C TRAP #12 Instruction Vector
+007000B4= 00704128                 252      DC.L    handleTrap13   *2D TRAP #13 Instruction Vector
+007000B8= 00704130                 253      DC.L    handleTrap14   *2E TRAP #14 Instruction Vector
+007000BC= 00704F94                 254      DC.L    easy68kTrap15  *2F TRAP #15 Instruction Vector
+007000C0                           255  
+007000C0                           256      * All our RAM vectored interrupts initially point to the one handler
+007000C0= 00704140 00704140 ...    257      DCB.L   208,handleUnused
+00700400                           258  
+00700400                           259  *******************************************************************************
+00700400                           260  * Place the monitor program after the CP/M BIOS code.
+00700400                           261  *******************************************************************************
+00700400                           262  
+00704000                           263      ORG     MON_BASE
+00704000                           264  
+00704000                           265  *******************************************************************************
+00704000                           266  * Below are the actual exception handlers that the RAM based vector table
+00704000                           267  * initially points to. The user can overwrite the RAM vector table addresses
+00704000                           268  * with the address of their own exception handler. These basic handlers simply
+00704000                           269  * write a message to the serial port and enter an endless loop.
+00704000                           270  *******************************************************************************
+00704000                           271  
+00704000                           272  *------------------------------------------------------------------------------
+00704000                           273  * BUS ERROR handler
+00704000                           274  * Print a message showing the PC and address being accessed
+00704000                           275  *------------------------------------------------------------------------------
+00704000                           276  handleBusErr:
+00704000  41FA 0372                277      lea     bemsg1(PC), a0      * A0 = first message address
+00704004  6100 0FF2                278      bsr.w   putString           * display it
+00704008  202F 000A                279      move.l  10(a7),d0           * get the program counter 
+0070400C  6100 0FA6                280      bsr.w   writeAddr32         * display it
+00704010                           281      
+00704010  41FA 03A1                282      lea     bemsg2(PC), a0      * A0 = second message address
+00704014  6000 0132                283      bra.w   handleCleanUp
+00704018                           284      
+00704018                           285  *------------------------------------------------------------------------------
+00704018                           286  * ADDRESS ERROR handler
+00704018                           287  * Print a message showing the PC and address being accessed
+00704018                           288  *------------------------------------------------------------------------------
+00704018                           289  handleAddrErr:
+00704018  41FA 0140                290      lea     aemsg1(PC), a0      * A0 = first message address
+0070401C  6100 0FDA                291      bsr.w   putString           * display it
+00704020  202F 000A                292      move.l  10(a7),d0           * get the program counter 
+00704024  6100 0F8E                293      bsr.w   writeAddr32         * display it
+00704028                           294      
+00704028  41FA 0174                295      lea     aemsg2(PC), a0      * A0 = second message address
+0070402C  6000 011A                296      bra.w   handleCleanUp
+00704030                           297      
+00704030                           298  *------------------------------------------------------------------------------
+00704030                           299  * ILLEGAL INSTRUCTION handler
+00704030                           300  *------------------------------------------------------------------------------
+00704030                           301  handleIllInst:
+00704030  41FA 03E0                302      lea     iimsg(PC), a0       * A0 = address of message to display
+00704034  6000 0112                303      bra.w   handleCleanUp
+00704038                           304      
+00704038                           305  *------------------------------------------------------------------------------
+00704038                           306  * DIVISION BY ZERO handler
+00704038                           307  *------------------------------------------------------------------------------
+00704038                           308  handleZeroDiv:
+00704038  41FA 0901                309      lea     zdmsg(PC), a0       * A0 = address of message to display
+0070403C  6000 010A                310      bra.w   handleCleanUp
+00704040                           311      
+00704040                           312  *------------------------------------------------------------------------------
+00704040                           313  * CHK handler
+00704040                           314  *------------------------------------------------------------------------------
+00704040                           315  handleChkInst:
+00704040  41FA 03A3                316      lea     cimsg(PC), a0       * A0 = address of message to display
+00704044  6000 0102                317      bra.w   handleCleanUp
+00704048                           318      
+00704048                           319  *------------------------------------------------------------------------------
+00704048                           320  * TRAPV handler
+00704048                           321  *------------------------------------------------------------------------------
+00704048                           322  handleTrapV:
+00704048  41FA 0853                323      lea     tvmsg(PC), a0       * A0 = address of message to display
+0070404C  6000 00FA                324      bra.w   handleCleanUp
+00704050                           325      
+00704050                           326  *------------------------------------------------------------------------------
+00704050                           327  * PRIVILEGE VIOLATION handler
+00704050                           328  *------------------------------------------------------------------------------
+00704050                           329  handlePriv:
+00704050  41FA 045B                330      lea     pvmsg(PC), a0       * A0 = address of message to display
+00704054  6000 00F2                331      bra.w   handleCleanUp
+00704058                           332      
+00704058                           333  *------------------------------------------------------------------------------
+00704058                           334  * TRACE handler
+00704058                           335  *------------------------------------------------------------------------------
+00704058                           336  handleTrace:
+00704058  41FA 04FE                337      lea     trmsg(PC), a0       * A0 = address of message to display
+0070405C  6000 00EA                338      bra.w   handleCleanUp
+00704060                           339      
+00704060                           340  *------------------------------------------------------------------------------
+00704060                           341  * Unimplementd Instruction - Line A handler
+00704060                           342  *------------------------------------------------------------------------------
+00704060                           343  handleLineA:
+00704060  41FA 03EB                344      lea     lamsg(PC), a0       * A0 = address of message to display
+00704064  6000 00E2                345      bra.w   handleCleanUp
+00704068                           346      
+00704068                           347  *------------------------------------------------------------------------------
+00704068                           348  * Unimplementd Instruction - Line F handler
+00704068                           349  *------------------------------------------------------------------------------
+00704068                           350  handleLineF:
+00704068  41FA 0413                351      lea     lfmsg(PC), a0       * A0 = address of message to display
+0070406C  6000 00DA                352      bra.w   handleCleanUp
+00704070                           353      
+00704070                           354  *------------------------------------------------------------------------------
+00704070                           355  * Reserved Instruction handler
+00704070                           356  *------------------------------------------------------------------------------
+00704070                           357  handleRes1:
+00704070                           358  handleRes2:
+00704070                           359  handleRes3:
+00704070                           360  handleRes4:
+00704070                           361  handleRes5:
+00704070                           362  handleRes6:
+00704070                           363  handleRes7:
+00704070                           364  handleRes8:
+00704070                           365  handleRes9:
+00704070                           366  handleRes10:
+00704070                           367  handleRes11:
+00704070  41FA 0478                368      lea     rimsg(PC), a0       * A0 = address of message to display
+00704074  6000 00D2                369      bra.w   handleCleanUp
+00704078                           370      
+00704078                           371  *------------------------------------------------------------------------------
+00704078                           372  * Uninitialised Interrupt handler
+00704078                           373  *------------------------------------------------------------------------------
+00704078                           374  handleUnInit:
+00704078  41FA 0852                375      lea     uimsg(PC), a0       * A0 = address of message to display
+0070407C  6000 00CA                376      bra.w   handleCleanUp
+00704080                           377      
+00704080                           378  *------------------------------------------------------------------------------
+00704080                           379  * Spurious Interrupt handler
+00704080                           380  *------------------------------------------------------------------------------
+00704080                           381  handleSpur:
+00704080  41FA 049A                382      lea     simsg(PC), a0       * A0 = address of message to display
+00704084  6000 00C2                383      bra.w   handleCleanUp
+00704088                           384      
+00704088                           385  *------------------------------------------------------------------------------
+00704088                           386  * Autovector Level 1 Exception handler
+00704088                           387  *------------------------------------------------------------------------------
+00704088                           388  handleAV1:
+00704088  41FA 0146                389      lea     av1msg(PC), a0      * A0 = address of message to display
+0070408C  6000 00BA                390      bra.w   handleCleanUp
+00704090                           391  
+00704090                           392  *------------------------------------------------------------------------------
+00704090                           393  * Autovector Level 2 Exception handler
+00704090                           394  *------------------------------------------------------------------------------
+00704090                           395  handleAV2:
+00704090  41FA 017A                396      lea     av2msg(PC), a0      * A0 = address of message to display
+00704094  6000 00B2                397      bra.w   handleCleanUp
+00704098                           398  
+00704098                           399  *------------------------------------------------------------------------------
+00704098                           400  * Autovector Level 3 Exception handler
+00704098                           401  *------------------------------------------------------------------------------
+00704098                           402  handleAV3:
+00704098  41FA 01AE                403      lea     av3msg(PC), a0      * A0 = address of message to display
+0070409C  6000 00AA                404      bra.w   handleCleanUp
+007040A0                           405  
+007040A0                           406  *------------------------------------------------------------------------------
+007040A0                           407  * Autovector Level 4 Exception handler
+007040A0                           408  *------------------------------------------------------------------------------
+007040A0                           409  handleAV4:
+007040A0  41FA 01E2                410      lea     av4msg(PC), a0      * A0 = address of message to display
+007040A4  6000 00A2                411      bra.w   handleCleanUp
+007040A8                           412  
+007040A8                           413  *------------------------------------------------------------------------------
+007040A8                           414  * Autovector Level 5 Exception handler
+007040A8                           415  *------------------------------------------------------------------------------
+007040A8                           416  handleAV5:
+007040A8  41FA 0216                417      lea     av5msg(PC), a0      * A0 = address of message to display
+007040AC  6000 009A                418      bra.w   handleCleanUp
+007040B0                           419  
+007040B0                           420  *------------------------------------------------------------------------------
+007040B0                           421  * Autovector Level 6 Exception handler
+007040B0                           422  *------------------------------------------------------------------------------
+007040B0                           423  handleAV6:
+007040B0  41FA 024A                424      lea     av6msg(PC), a0      * A0 = address of message to display
+007040B4  6000 0092                425      bra.w   handleCleanUp
+007040B8                           426  
+007040B8                           427  *------------------------------------------------------------------------------
+007040B8                           428  * Autovector Level 7 Exception handler
+007040B8                           429  *------------------------------------------------------------------------------
+007040B8                           430  handleAV7:
+007040B8  41FA 027E                431      lea     av7msg(PC), a0      * A0 = address of message to display
+007040BC  6000 008A                432      bra.w   handleCleanUp
+007040C0                           433      
+007040C0                           434  *------------------------------------------------------------------------------
+007040C0                           435  * TRAP #0 Exception handler
+007040C0                           436  *------------------------------------------------------------------------------
+007040C0                           437  handleTrap0:
+007040C0  41FA 04C5                438      lea     tr0msg(PC), a0      * A0 = address of message to display
+007040C4  6000 0082                439      bra.w   handleCleanUp
+007040C8                           440  
+007040C8                           441  *------------------------------------------------------------------------------
+007040C8                           442  * TRAP #1 Exception handler
+007040C8                           443  *------------------------------------------------------------------------------
+007040C8                           444  handleTrap1:
+007040C8  41FA 04EE                445      lea     tr1msg(PC), a0      * A0 = address of message to display
+007040CC  6000 007A                446      bra.w   handleCleanUp
+007040D0                           447  
+007040D0                           448  *------------------------------------------------------------------------------
+007040D0                           449  * TRAP #2 Exception handler
+007040D0                           450  *------------------------------------------------------------------------------
+007040D0                           451  handleTrap2:
+007040D0  41FA 0517                452      lea     tr2msg(PC), a0      * A0 = address of message to display
+007040D4  6000 0072                453      bra.w   handleCleanUp
+007040D8                           454  
+007040D8                           455  *------------------------------------------------------------------------------
+007040D8                           456  * TRAP #3 Exception handler
+007040D8                           457  *------------------------------------------------------------------------------
+007040D8                           458  handleTrap3:
+007040D8  41FA 0540                459      lea     tr3msg(PC), a0      * A0 = address of message to display
+007040DC  6000 006A                460      bra.w   handleCleanUp
+007040E0                           461  
+007040E0                           462  *------------------------------------------------------------------------------
+007040E0                           463  * TRAP #4 Exception handler
+007040E0                           464  *------------------------------------------------------------------------------
+007040E0                           465  handleTrap4:
+007040E0  41FA 0569                466      lea     tr4msg(PC), a0      * A0 = address of message to display
+007040E4  6000 0062                467      bra.w   handleCleanUp
+007040E8                           468  
+007040E8                           469  *------------------------------------------------------------------------------
+007040E8                           470  * TRAP #5 Exception handler
+007040E8                           471  *------------------------------------------------------------------------------
+007040E8                           472  handleTrap5:
+007040E8  41FA 0592                473      lea     tr5msg(PC), a0      * A0 = address of message to display
+007040EC  6000 005A                474      bra.w   handleCleanUp
+007040F0                           475  
+007040F0                           476  *------------------------------------------------------------------------------
+007040F0                           477  * TRAP #6 Exception handler
+007040F0                           478  *------------------------------------------------------------------------------
+007040F0                           479  handleTrap6:
+007040F0  41FA 05BB                480      lea     tr6msg(PC), a0      * A0 = address of message to display
+007040F4  6000 0052                481      bra.w   handleCleanUp
+007040F8                           482  
+007040F8                           483  *------------------------------------------------------------------------------
+007040F8                           484  * TRAP #7 Exception handler
+007040F8                           485  *------------------------------------------------------------------------------
+007040F8                           486  handleTrap7:
+007040F8  41FA 05E4                487      lea     tr7msg(PC), a0      * A0 = address of message to display
+007040FC  6000 004A                488      bra.w   handleCleanUp
+00704100                           489  
+00704100                           490  *------------------------------------------------------------------------------
+00704100                           491  * TRAP #8 Exception handler
+00704100                           492  *------------------------------------------------------------------------------
+00704100                           493  handleTrap8:
+00704100  41FA 060D                494      lea     tr8msg(PC), a0      * A0 = address of message to display
+00704104  6000 0042                495      bra.w   handleCleanUp
+00704108                           496  
+00704108                           497  *------------------------------------------------------------------------------
+00704108                           498  * TRAP #9 Exception handler
+00704108                           499  *------------------------------------------------------------------------------
+00704108                           500  handleTrap9:
+00704108  41FA 0636                501      lea     tr9msg(PC), a0      * A0 = address of message to display
+0070410C  6000 003A                502      bra.w   handleCleanUp
+00704110                           503  
+00704110                           504  *------------------------------------------------------------------------------
+00704110                           505  * TRAP #10 Exception handler
+00704110                           506  *------------------------------------------------------------------------------
+00704110                           507  handleTrap10:
+00704110  41FA 065F                508      lea     tr10msg(PC), a0     * A0 = address of message to display
+00704114  6000 0032                509      bra.w   handleCleanUp
+00704118                           510  
+00704118                           511  *------------------------------------------------------------------------------
+00704118                           512  * TRAP #11 Exception handler
+00704118                           513  *------------------------------------------------------------------------------
+00704118                           514  handleTrap11:
+00704118  41FA 0689                515      lea     tr11msg(PC), a0     * A0 = address of message to display
+0070411C  6000 002A                516      bra.w   handleCleanUp
+00704120                           517  
+00704120                           518  *------------------------------------------------------------------------------
+00704120                           519  * TRAP #12 Exception handler
+00704120                           520  *------------------------------------------------------------------------------
+00704120                           521  handleTrap12:
+00704120  41FA 06B3                522      lea     tr12msg(PC), a0     * A0 = address of message to display
+00704124  6000 0022                523      bra.w   handleCleanUp
+00704128                           524      
+00704128                           525  *------------------------------------------------------------------------------
+00704128                           526  * TRAP #13 Exception handler
+00704128                           527  *------------------------------------------------------------------------------
+00704128                           528  handleTrap13:
+00704128  41FA 06DD                529      lea     tr13msg(PC), a0     * A0 = address of message to display
+0070412C  6000 001A                530      bra.w   handleCleanUp
+00704130                           531      
+00704130                           532  *------------------------------------------------------------------------------
+00704130                           533  * TRAP #14 Exception handler
+00704130                           534  *------------------------------------------------------------------------------
+00704130                           535  handleTrap14:
+00704130  41FA 0707                536      lea     tr14msg(PC), a0     * A0 = address of message to display
+00704134  6000 0012                537      bra.w   handleCleanUp
+00704138                           538      
+00704138                           539  *------------------------------------------------------------------------------
+00704138                           540  * TRAP #15 Exception handler
+00704138                           541  *------------------------------------------------------------------------------
+00704138                           542  handleTrap15:
+00704138  41FA 0731                543      lea     tr15msg(PC), a0     * A0 = address of message to display
+0070413C  6000 000A                544      bra.w   handleCleanUp
+00704140                           545      
+00704140                           546  *------------------------------------------------------------------------------
+00704140                           547  * User Exception handler - all remaining exception handlers land here
+00704140                           548  *------------------------------------------------------------------------------
+00704140                           549  handleUnused:
+00704140  41FA 07CB                550      lea     usermsg(PC), a0     * A0 = address of message to display
+00704144  6000 0002                551      bra.w   handleCleanUp
+00704148                           552      
+00704148                           553  *------------------------------------------------------------------------------
+00704148                           554  * All exception handlers jump here to output the PC of the next instruction
+00704148                           555  * after the exception occured.
+00704148                           556  * A0 holds the address of a null terminated message to be displayed first.
+00704148                           557  *------------------------------------------------------------------------------
+00704148                           558  handleCleanUp:
+00704148  6100 0EAE                559      bsr.w   putString           * print out the relevant message
+0070414C  202F 0002                560      move.l  2(a7),d0            * get the saved PC address
+00704150  6100 0E62                561      bsr.w   writeAddr32         * and display it
+00704154  6100 0E9E                562      bsr.w   putCRLF
+00704158                           563  .infloop:
+00704158  60FE                     564      bra.s   .infloop            * and stay here forever ...
+0070415A                           565  
+0070415A                           566  *******************************************************************************
+0070415A                           567  * Exception handler messages
+0070415A                           568  *******************************************************************************
+0070415A= 0A 0D 53 54 4F 50 ...    569  aemsg1:  dc.b   10,13,'STOP: An Address Error occured whilst executing code at address $',0
+0070419E= 0A 0D 53 54 4F 50 ...    570  aemsg2:  dc.b   10,13,'STOP: The address location being accessed was $',0
+007041D0= 0A 0D 53 54 4F 50 ...    571  av1msg:  dc.b   10,13,'STOP: Autovector Level 1 exception occured near address $',0
+0070420C= 0A 0D 53 54 4F 50 ...    572  av2msg:  dc.b   10,13,'STOP: Autovector Level 2 exception occured near address $',0
+00704248= 0A 0D 53 54 4F 50 ...    573  av3msg:  dc.b   10,13,'STOP: Autovector Level 3 exception occured near address $',0
+00704284= 0A 0D 53 54 4F 50 ...    574  av4msg:  dc.b   10,13,'STOP: Autovector Level 4 exception occured near address $',0
+007042C0= 0A 0D 53 54 4F 50 ...    575  av5msg:  dc.b   10,13,'STOP: Autovector Level 5 exception occured near address $',0
+007042FC= 0A 0D 53 54 4F 50 ...    576  av6msg:  dc.b   10,13,'STOP: Autovector Level 6 exception occured near address $',0
+00704338= 0A 0D 53 54 4F 50 ...    577  av7msg:  dc.b   10,13,'STOP: Autovector Level 7 exception occured near address $',0
+00704374= 0A 0D 53 54 4F 50 ...    578  bemsg1:  dc.b   10,13,'STOP: A Bus Error occured whilst executing code at address $',0
+007043B3= 0A 0D 20 20 20 20 ...    579  bemsg2:  dc.b   10,13,'    : The address location being accessed was $',0
+007043E5= 0A 0D 53 54 4F 50 ...    580  cimsg:   dc.b   10,13,'STOP: CHK exception occured near address $',0
+00704412= 0A 0D 53 54 4F 50 ...    581  iimsg:   dc.b   10,13,'STOP: Illegal Instruction was encountered near address $',0
+0070444D= 0A 0D 53 54 4F 50 ...    582  lamsg:   dc.b   10,13,'STOP: LINE A exception occured near address $',0
+0070447D= 0A 0D 53 54 4F 50 ...    583  lfmsg:   dc.b   10,13,'STOP: LINE F exception occured near address $',0
+007044AD= 0A 0D 53 54 4F 50 ...    584  pvmsg:   dc.b   10,13,'STOP: Privilege Viloation exception occured near address $',0
+007044EA= 0A 0D 53 54 4F 50 ...    585  rimsg:   dc.b   10,13,'STOP: Reserved exception occured near address $',0
+0070451C= 0A 0D 53 54 4F 50 ...    586  simsg:   dc.b   10,13,'STOP: Spurious Interrupt exception occured near address $',0
+00704558= 0A 0D 53 54 4F 50 ...    587  trmsg:   dc.b   10,13,'STOP: TRACE exception occured near address $',0
+00704587= 0A 0D 53 54 4F 50 ...    588  tr0msg:  dc.b   10,13,'STOP: TRAP #0 exception occured near address $',0
+007045B8= 0A 0D 53 54 4F 50 ...    589  tr1msg:  dc.b   10,13,'STOP: TRAP #1 exception occured near address $',0
+007045E9= 0A 0D 53 54 4F 50 ...    590  tr2msg:  dc.b   10,13,'STOP: TRAP #2 exception occured near address $',0
+0070461A= 0A 0D 53 54 4F 50 ...    591  tr3msg:  dc.b   10,13,'STOP: TRAP #3 exception occured near address $',0
+0070464B= 0A 0D 53 54 4F 50 ...    592  tr4msg:  dc.b   10,13,'STOP: TRAP #4 exception occured near address $',0
+0070467C= 0A 0D 53 54 4F 50 ...    593  tr5msg:  dc.b   10,13,'STOP: TRAP #5 exception occured near address $',0
+007046AD= 0A 0D 53 54 4F 50 ...    594  tr6msg:  dc.b   10,13,'STOP: TRAP #6 exception occured near address $',0
+007046DE= 0A 0D 53 54 4F 50 ...    595  tr7msg:  dc.b   10,13,'STOP: TRAP #7 exception occured near address $',0
+0070470F= 0A 0D 53 54 4F 50 ...    596  tr8msg:  dc.b   10,13,'STOP: TRAP #8 exception occured near address $',0
+00704740= 0A 0D 53 54 4F 50 ...    597  tr9msg:  dc.b   10,13,'STOP: TRAP #9 exception occured near address $',0
+00704771= 0A 0D 53 54 4F 50 ...    598  tr10msg: dc.b   10,13,'STOP: TRAP #10 exception occured near address $',0
+007047A3= 0A 0D 53 54 4F 50 ...    599  tr11msg: dc.b   10,13,'STOP: TRAP #11 exception occured near address $',0
+007047D5= 0A 0D 53 54 4F 50 ...    600  tr12msg: dc.b   10,13,'STOP: TRAP #12 exception occured near address $',0
+00704807= 0A 0D 53 54 4F 50 ...    601  tr13msg: dc.b   10,13,'STOP: TRAP #13 exception occured near address $',0
+00704839= 0A 0D 53 54 4F 50 ...    602  tr14msg: dc.b   10,13,'STOP: TRAP #14 exception occured near address $',0
+0070486B= 0A 0D 53 54 4F 50 ...    603  tr15msg: dc.b   10,13,'STOP: TRAP #15 exception occured near address $',0
+0070489D= 0A 0D 53 54 4F 50 ...    604  tvmsg:   dc.b   10,13,'STOP: TRAPV exception occured near address $',0
+007048CC= 0A 0D 53 54 4F 50 ...    605  uimsg:   dc.b   10,13,'STOP: Uninitialised Interrupt exception occured near address $',0
+0070490D= 0A 0D 53 54 4F 50 ...    606  usermsg: dc.b   10,13,'STOP: User exception occured near address $',0
+0070493B= 0A 0D 53 54 4F 50 ...    607  zdmsg:   dc.b   10,13,'STOP: Divide By Zero error occured near address $',0
+0070496F                           608  
+0070496F                           609  *******************************************************************************
+0070496F                           610  *
+0070496F                           611  *   #####  ####### #       ######         #####  #######    #    ######  ####### 
+0070496F                           612  *  #     # #     # #       #     #       #     #    #      # #   #     #    #    
+0070496F                           613  *  #       #     # #       #     #       #          #     #   #  #     #    #    
+0070496F                           614  *  #       #     # #       #     #        #####     #    #     # ######     #    
+0070496F                           615  *  #       #     # #       #     #             #    #    ####### #   #      #    
+0070496F                           616  *  #     # #     # #       #     #       #     #    #    #     # #    #     #    
+0070496F                           617  *   #####  ####### ####### ######         #####     #    #     # #     #    #    
+0070496F                           618  *                                                                               
+0070496F                           619  *******************************************************************************
+0070496F                           620  * Monitor execution starts here after power-on or a reset.
+0070496F                           621  *******************************************************************************
+0070496F                           622  
+00704970                           623      ORG     (*+1)&-2    * make sure we start on a word aligned address
+00704970                           624  START:
+00704970  4FF9 000FF800            625      lea     STACK_START, sp     * Set the stack pointer just in case
+00704976  4DF9 000FF800            626      lea     STACK_START, a6     * A6 points to start of the monitor private variables area
+0070497C                           627      
+0070497C                           628      * copy the exception vector table into RAM
+0070497C  207C 00700000            629      move.l  #ROM_BASE,a0        * start of exception table in ROM
+00704982  227C 00000000            630      move.l  #VEC_BASE,a1        * location in RAM to copy table to
+00704988  203C 000000FF            631      move.l  #255,d0             * 256 entries to copy
+0070498E                           632  .copy:
+0070498E  22D8                     633      move.l  (a0)+,(a1)+         * copy the longword address from ROM to RAM
+00704990  51C8 FFFC                634      dbra    d0,.copy
+00704994                           635  
+00704994  6100 0406                636      bsr.w   serInit             * initialise serial port
+00704998  46FC 2000                637      move.w  #$2000,sr           * enable interrupts
+0070499C                           638  
+0070499C                           639  *------------------------------------------------------------------------------
+0070499C                           640  * Warm Restart entry point
+0070499C                           641  *------------------------------------------------------------------------------
+0070499C                           642  monStart:
+0070499C  41FA 0666                643      lea     strBanner1(PC), a0  * Show the monitor details
+007049A0  6100 0656                644      bsr.w   putString
+007049A4                           645  
+007049A4  41FA 06BC                646      lea     strCommands(PC), a0 * And the command help message
+007049A8  6100 064E                647      bsr.w   putString
+007049AC                           648  
+007049AC                           649  monLoop:
+007049AC  41FA 0859                650      lea     strPrompt(PC), a0   * Prompt
+007049B0  6100 0646                651      bsr.w   putString
+007049B4                           652  
+007049B4                           653  monLoop_NP:
+007049B4  6100 04B0                654      bsr.w   getc                * get a character into D0
+007049B8  6100 0346                655      bsr.w   chToUpper           * convert character to upper case
+007049BC                           656      
+007049BC  0C00 000A                657      cmpi.b  #LF,d0              * ignore Line-Feed
+007049C0  67EA                     658      beq.s   monLoop
+007049C2                           659      
+007049C2  B03C 0042                660      cmp.b   #'B', d0            * Boot EhBASIC v3.54
+007049C6  6700 005E                661      beq.w   cmdBootEHBASIC
+007049CA                           662  
+007049CA  B03C 0043                663      cmp.b   #'C', d0            * Boot CP/M-68K
+007049CE  6700 007E                664      beq.w   cmdBootCPM
+007049D2                           665  
+007049D2  B03C 0044                666      cmp.b   #'D', d0            * Dump memory command
+007049D6  6700 00B2                667      beq.w   cmdDispMemory
+007049DA                           668  
+007049DA  B03C 0049                669      cmp.b   #'I', d0            * Read from I/O space address
+007049DE  6700 00F4                670      beq.w   cmdIORead
+007049E2                           671  
+007049E2  B03C 004D                672      cmp.b   #'M', d0            * Modify memory command
+007049E6  6700 012E                673      beq.w   cmdModifyMemory
+007049EA                           674  
+007049EA  B03C 004F                675      cmp.b   #'O', d0            * Write to I/O space address
+007049EE  6700 0184                676      beq.w   cmdIOWrite
+007049F2                           677  
+007049F2  B03C 0053                678      cmp.b   #'S', d0            * S record download
+007049F6  6700 01C6                679      beq.w   cmdDownload
+007049FA                           680  
+007049FA  B03C 0047                681      cmp.b   #'G', d0            * Go command
+007049FE  6700 00AC                682      beq.w   cmdRun
+00704A02                           683  
+00704A02  B03C 003F                684      cmp.b   #'?', d0            * Help command
+00704A06  6700 028A                685      beq.w   cmdHelp
+00704A0A                           686  
+00704A0A  B03C 0020                687      cmp.b   #' ', d0            * Ignore spaces
+00704A0E  6FA4                     688      ble.s   monLoop_NP          * go back without printing prompt    
+00704A10                           689  
+00704A10  1200                     690      move.b  d0,d1               * save the unknown char
+00704A12  41FA 07F6                691      lea     strUnkCmd(PC), a0   * unknown command
+00704A16  6100 05E0                692      bsr.w   putString
+00704A1A  1001                     693      move.b  d1,d0               * get unnknown char back
+00704A1C  6100 05B4                694      bsr.w   writeByte           * print it
+00704A20                           695      
+00704A20                           696  monLoop_CRLF:
+00704A20  6100 05D2                697      bsr.w   putCRLF
+00704A24  6086                     698      bra.s   monLoop
+00704A26                           699      
+00704A26                           700  *------------------------------------------------------------------------------
+00704A26                           701  * (B) Boot EhBASIC v3.54
+00704A26                           702  *------------------------------------------------------------------------------
+00704A26                           703  cmdBootEHBASIC:
+00704A26                           704      * Perform a simple check to see if EhBASIC has been programmed into the
+00704A26                           705      * EEPROM by reading the first address of EhBASIC in the EEPROM. If it
+00704A26                           706      * contains 0xFFFF, then EhBASIC hasn't been programmed in!
+00704A26  0C79 FFFF 00700400       707      cmpi.w  #$FFFF,EHBASIC_BASE
+00704A2E  660C                     708      bne.s   .bootEHBASIC
+00704A30  41FA 0904                709      lea     strBASICErr1(PC), a0
+00704A34  6100 05C2                710      bsr.w   putString
+00704A38  6000 FF72                711      bra.w   monLoop
+00704A3C                           712  
+00704A3C                           713  .bootEHBASIC:
+00704A3C  207C 00700400            714      move.l  #EHBASIC_BASE,a0
+00704A42  4E90                     715      jsr     (a0)                * jump to EhBASIC 
+00704A44                           716  
+00704A44                           717      * I don't think EhBASIC can return back to the monitor but just in case it can
+00704A44                           718      * print out a message and wait for a reset.
+00704A44  41FA 0923                719      lea     strBASICReturn(PC), a0
+00704A48  6100 05AE                720      bsr.w   putString
+00704A4C                           721  .forever:
+00704A4C  60FE                     722      bra.s   .forever
+00704A4E                           723  
+00704A4E                           724  *------------------------------------------------------------------------------
+00704A4E                           725  * (C) Boot CP/M-68K v1.3
+00704A4E                           726  *------------------------------------------------------------------------------
+00704A4E                           727  cmdBootCPM:
+00704A4E                           728      * perform a simple check to see if CP/M has been programmed into the EEPROM
+00704A4E                           729      * by reading address 0x0400 in the EEPROM. If it contains 0xFFFF then CP/M
+00704A4E                           730      * hasn't been programmed in!
+00704A4E  0C79 FFFF 00700400       731      cmpi.w  #$FFFF,CPM_BASE
+00704A56  660C                     732      bne.s   .chkBIOS
+00704A58  41FA 0833                733      lea     strCPMErr1(PC), a0
+00704A5C  6100 059A                734      bsr.w   putString
+00704A60  6000 FF4A                735      bra.w   monLoop
+00704A64                           736      
+00704A64                           737  .chkBIOS:   
+00704A64                           738      * perform a simple check to see if the BIOS has been programmed into the EEPROM
+00704A64                           739      * by reading address 0x0400 in the EEPROM. If it contains 0xFFFF then the CP/M
+00704A64                           740      * BIOS hasn't been programmed in!
+00704A64  0C78 FFFF 6000           741      cmpi.w  #$FFFF,$6000
+00704A6A  660C                     742      bne.s   .bootCPM
+00704A6C  41FA 0854                743      lea     strCPMErr2(PC), a0
+00704A70  6100 0586                744      bsr.w   putString
+00704A74  6000 FF36                745      bra.w   monLoop
+00704A78                           746      
+00704A78                           747  .bootCPM:
+00704A78  207C 00700400            748      move.l  #CPM_BASE,a0
+00704A7E  4E90                     749      jsr     (a0)            * jump to CP/M-68K 
+00704A80                           750      
+00704A80                           751      * I don't think CP/M-68K can return back to the moitor but just in case it can
+00704A80                           752      * print out a message and wait for a reset.
+00704A80  41FA 087A                753      lea     strCPMReturn(PC), a0
+00704A84  6100 0572                754      bsr.w   putString
+00704A88                           755  .forever:
+00704A88  60FE                     756      bra.s   .forever
+00704A8A                           757      
+00704A8A                           758  *------------------------------------------------------------------------------
+00704A8A                           759  * (D)ump memory
+00704A8A                           760  * Display 256 bytes of memory as ASCII-HEX characters
+00704A8A                           761  *------------------------------------------------------------------------------
+00704A8A                           762  cmdDispMemory:
+00704A8A  6100 03C8                763      bsr.w   putc                * echo back the command character in D0
+00704A8E  103C 0020                764      move.b  #' ',d0
+00704A92  6100 03C0                765      bsr.w   putc
+00704A96                           766      
+00704A96  4282                     767      clr.l   d2                  * pre-set D2 to 0
+00704A98  7208                     768      move.l  #8,d1               * read up to 8 digits
+00704A9A  6100 02C2                769      bsr.w   hexToIntEcho        * from the serial port into D0
+00704A9E  6500 FF0C                770      bcs.w   monLoop             * back to prompt if there's an error
+00704AA2                           771      
+00704AA2  2040                     772      move.l  d0,a0               * A0 holds the start address
+00704AA4  6100 01F8                773      bsr.w   dumpRAM
+00704AA8                           774  
+00704AA8  6000 FF02                775      bra.w   monLoop
+00704AAC                           776  
+00704AAC                           777  *------------------------------------------------------------------------------
+00704AAC                           778  * (G)o - execute code in memory starting at the specified address
+00704AAC                           779  *------------------------------------------------------------------------------
+00704AAC                           780  cmdRun:
+00704AAC  6100 03A6                781      bsr.w   putc                * echo back the command character in D0
+00704AB0  103C 0020                782      move.b  #' ',d0
+00704AB4  6100 039E                783      bsr.w   putc
+00704AB8                           784  
+00704AB8  4282                     785      clr.l   d2                  * pre-set D2 to 0
+00704ABA  7208                     786      move.l  #8,d1               * read up to 8 digits
+00704ABC  6100 02A0                787      bsr.w   hexToIntEcho        * from the serial port
+00704AC0  6500 FEEA                788      bcs.w   monLoop             * back to prompt if there's an error
+00704AC4                           789  
+00704AC4  2040                     790      move.l  d0, a0              * copy start address into A0
+00704AC6  4E90                     791      jsr     (a0)                * jump to user code
+00704AC8                           792      
+00704AC8  41FA 076F                793      lea     strUserReturn(PC),a0
+00704ACC  6100 052A                794      bsr.w   putString
+00704AD0                           795      
+00704AD0  6000 FEDA                796      bra.w   monLoop
+00704AD4                           797  
+00704AD4                           798  *------------------------------------------------------------------------------
+00704AD4                           799  * (I)nput a byte from I/O space address
+00704AD4                           800  *------------------------------------------------------------------------------
+00704AD4                           801  cmdIORead:
+00704AD4  6100 037E                802      bsr.w   putc                * echo back the command character in D0
+00704AD8  103C 0020                803      move.b  #' ',d0
+00704ADC  6100 0376                804      bsr.w   putc
+00704AE0                           805  
+00704AE0  4282                     806      clr.l   d2                  * pre-set D2 to 0
+00704AE2  7202                     807      move.l  #2,d1               * read up to 2 digit address
+00704AE4  6100 0278                808      bsr.w   hexToIntEcho        * from the serial port
+00704AE8  6500 FEC2                809      bcs.w   monLoop             * back to prompt if there's an error
+00704AEC  1600                     810      move.b  d0,d3               * save the typed in 8-bit address
+00704AEE  103C 003D                811      move.b  #'=',d0
+00704AF2  6100 0360                812      bsr.w   putc                * send an EQUALS
+00704AF6                           813  
+00704AF6                           814      ; D3 = 8-bit address
+00704AF6  207C 00FA0000            815      movea.l #IO_BASE,a0
+00704AFC  0283 000000FF            816      andi.l  #$FF,d3             * clear all the unused bits
+00704B02  E383                     817      asl.l   #1,d3               * make it a word offset
+00704B04  5283                     818      addi.l  #1,d3               * make it an odd address to read from D0..D7
+00704B06  1030 3000                819      move.b  (0,a0,d3),d0        * and read the new value in
+00704B0A  6100 04C6                820      bsr.w   writeByte           * display the value
+00704B0E  6100 04E4                821      bsr.w   putCRLF
+00704B12  6000 FE98                822      bra.w   monLoop
+00704B16                           823  
+00704B16                           824  *------------------------------------------------------------------------------
+00704B16                           825  * (M)odify memory
+00704B16                           826  * Change memory contents 1 byte at a time
+00704B16                           827  *------------------------------------------------------------------------------
+00704B16                           828  cmdModifyMemory:
+00704B16  6100 033C                829      bsr.w   putc                * echo back the command character in D0
+00704B1A  103C 0020                830      move.b  #' ',d0
+00704B1E  6100 0334                831      bsr.w   putc
+00704B22                           832  
+00704B22  4282                     833      clr.l   d2                  * pre-set D2 to 0
+00704B24  7208                     834      move.l  #8,d1               * read up to 8 digits
+00704B26  6100 0236                835      bsr.w   hexToIntEcho        * from the serial port
+00704B2A  6500 FE80                836      bcs.w   monLoop             * back to prompt if there's an error
+00704B2E  1200                     837      move.b  d0,d1               * save the typed in address
+00704B30  6100 04C2                838      bsr.w   putCRLF
+00704B34  1001                     839      move.b  d1,d0               * restore the typed in address
+00704B36                           840      
+00704B36  2040                     841      move.l  d0,a0               * copy address into A0
+00704B38                           842  .cMM_1:
+00704B38  6100 047A                843      bsr.w   writeAddr32         * display the memory location address
+00704B3C  103C 0020                844      move.b  #' ',d0
+00704B40  6100 0312                845      bsr.w   putc
+00704B44  1010                     846      move.b  (a0),d0             * get the current memory contents
+00704B46  1400                     847      move.b  d0,d2               * pre-set D2 to the existing memory value
+00704B48  6100 0488                848      bsr.w   writeByte           * display the byte
+00704B4C  103C 0020                849      move.b  #' ',d0
+00704B50  6100 0302                850      bsr.w   putc
+00704B54  7202                     851      move.l  #2,d1               * read up to 2 digits
+00704B56  6100 0206                852      bsr.w   hexToIntEcho        * from the serial port
+00704B5A  6500 0010                853      bcs.w   .cMM_2              * back to prompt if there's an error
+00704B5E                           854  
+00704B5E  10C0                     855      move.b  d0,(a0)+            * write out the new byte and move on
+00704B60  2F08                     856      move.l  a0,-(SP)            * save our address
+00704B62  6100 0490                857      bsr.w   putCRLF
+00704B66  205F                     858      move.l  (SP)+,a0            * restore our address
+00704B68  2008                     859      move.l  a0,d0               * copy address back into D0 for printing
+00704B6A  60CC                     860      bra.s   .cMM_1
+00704B6C                           861  
+00704B6C                           862  .cMM_2:
+00704B6C  6100 0486                863      bsr.w   putCRLF
+00704B70  6000 FE3A                864      bra.w   monLoop
+00704B74                           865      
+00704B74                           866  *------------------------------------------------------------------------------
+00704B74                           867  * (O)utput a byte to I/O space address
+00704B74                           868  *------------------------------------------------------------------------------
+00704B74                           869  cmdIOWrite:
+00704B74  6100 02DE                870      bsr.w   putc                * echo back the command character in D0
+00704B78  103C 0020                871      move.b  #' ',d0
+00704B7C  6100 02D6                872      bsr.w   putc
+00704B80                           873  
+00704B80  4282                     874      clr.l   d2                  * pre-set D2 to 0
+00704B82  7202                     875      move.l  #2,d1               * read up to 2 digit address
+00704B84  6100 01D8                876      bsr.w   hexToIntEcho        * from the serial port
+00704B88  6500 FE22                877      bcs.w   monLoop             * back to prompt if there's an error
+00704B8C  1600                     878      move.b  d0,d3               * save the typed in 8-bit address
+00704B8E  103C 003D                879      move.b  #'=',d0
+00704B92  6100 02C0                880      bsr.w   putc                * send an EQUALS
+00704B96                           881  
+00704B96  4282                     882      clr.l   d2                  * pre-set D2 to 0
+00704B98  7202                     883      move.l  #2,d1               * read up to 2 digit value
+00704B9A  6100 01C2                884      bsr.w   hexToIntEcho        * from the serial port
+00704B9E  6500 FE0C                885      bcs.w   monLoop             * back to prompt if there's an error
+00704BA2                           886  
+00704BA2                           887      ; D0 = value and D3 = 8-bit address
+00704BA2  207C 00FA0000            888      movea.l #IO_BASE,a0
+00704BA8  0283 000000FF            889      andi.l  #$FF,d3             * clear all the unused bits
+00704BAE  E383                     890      asl.l   #1,d3               * make it a word offset
+00704BB0  5283                     891      addi.l  #1,d3               * make it an odd address to write to D0..D7
+00704BB2  1180 3000                892      move.b  d0,(0,a0,d3)        * and write the new value out
+00704BB6                           893  
+00704BB6  6100 043C                894      bsr.w   putCRLF
+00704BBA  6000 FDF0                895      bra.w   monLoop
+00704BBE                           896  
+00704BBE                           897  *------------------------------------------------------------------------------
+00704BBE                           898  * (S) - download a single line of a Motorola S-Record
+00704BBE                           899  *------------------------------------------------------------------------------
+00704BBE                           900  cmdDownload:
+00704BBE  6100 02A6                901      bsr.w   getc                * get the S-Record type
+00704BC2  B03C 0031                902      cmp.b   #'1', d0
+00704BC6  671A                     903      beq.s   .cdl_S1             * read in an S1 record
+00704BC8  B03C 0032                904      cmp.b   #'2', d0
+00704BCC  6738                     905      beq.s   .cdl_S2             * read in an S2 record
+00704BCE  B03C 0038                906      cmp.b   #'8', d0
+00704BD2  6700 00A8                907      beq.w   .cdl_EOL89          * handle S8 SRec terminator
+00704BD6  B03C 0039                908      cmp.b   #'9', d0
+00704BDA  6700 00A0                909      beq.w   .cdl_EOL89          * handle S9 SRec terminator
+00704BDE                           910  
+00704BDE  6600 008A                911      bne     .cdl_EOL            * not S1 or S2 so ignore to end of line
+00704BE2                           912              
+00704BE2                           913  .cdl_S1:        
+00704BE2  4282                     914      clr.l   d2
+00704BE4  123C 0002                915      move.b  #2, d1              * 2 characters to read
+00704BE8  6100 013A                916      bsr     hexToInt            * convert to byte count
+00704BEC  2C00                     917      move.l  d0, d6              * D6 = byte count
+00704BEE  2E00                     918      move.l  d0, d7              * D7 = byte count (running checksum)
+00704BF0                           919  
+00704BF0  4282                     920      clr.l   d2
+00704BF2  123C 0004                921      move.b  #4, d1              * 4 characters to read
+00704BF6  6100 012C                922      bsr     hexToInt            * convert to address
+00704BFA  2640                     923      movea.l d0, a3              * A3 = destination address
+00704BFC  DE00                     924      add.b   d0, d7              * update checksum with bits 00..07
+00704BFE  E088                     925      lsr.l   #8, d0
+00704C00  DE00                     926      add.b   d0, d7              * update checksum with bits 08..15
+00704C02                           927  
+00704C02  5746                     928      subq.w  #3, D6              * take off the 3 bytes we just read in
+00704C04                           929  
+00704C04  6026                     930      bra.s   .cdl_1              
+00704C06                           931                  
+00704C06                           932  .cdl_S2:            
+00704C06  4282                     933      clr.l   d2
+00704C08  123C 0002                934      move.b  #2, d1              * 2 characters to read
+00704C0C  6100 0116                935      bsr     hexToInt            * convert to byte count
+00704C10  2C00                     936      move.l  d0, d6              * D6 = byte count
+00704C12  2E00                     937      move.l  d0, d7              * D7 = byte count (running checksum)
+00704C14                           938  
+00704C14  4282                     939      clr.l   d2
+00704C16  123C 0006                940      move.b  #6, d1              * 6 characters to read
+00704C1A  6100 0108                941      bsr     hexToInt            * convert to address
+00704C1E  2640                     942      movea.l d0, a3              * A3 = destination address
+00704C20  DE00                     943      add.b   d0, d7              * update checksum with bits 00..07
+00704C22  E088                     944      lsr.l   #8, d0
+00704C24  DE00                     945      add.b   d0, d7              * update checksum with bits 08..15
+00704C26  E088                     946      lsr.l   #8, d0
+00704C28  DE00                     947      add.b   d0, d7              * update checksum with bits 16..23
+00704C2A                           948  
+00704C2A  5946                     949      subq.w  #4, d6              * take off the 4 bytes we just read in
+00704C2C                           950  
+00704C2C                           951  .cdl_1:
+00704C2C  4A46                     952      tst.w   d6                  * read all the bytes yet?
+00704C2E  6712                     953      beq.s   .cdl_2
+00704C30                           954  
+00704C30  4282                     955      clr.l   d2
+00704C32  323C 0002                956      move.w  #2, d1              * 2 characters to read
+00704C36  6100 00EC                957      bsr     hexToInt            * convert to data byte
+00704C3A  16C0                     958      move.b  d0, (a3)+           * write the byte to memory
+00704C3C  DE00                     959      add.b   d0, d7              * update checksum
+00704C3E  5346                     960      subq.w  #1, d6              * decrement byte count
+00704C40  60EA                     961      bra.s   .cdl_1
+00704C42                           962  
+00704C42                           963  .cdl_2:
+00704C42  4282                     964      clr.l   d2
+00704C44  323C 0002                965      move.w  #2, d1              * 2 characters to read
+00704C48  6100 00DA                966      bsr     hexToInt            * convert to checksum byte
+00704C4C  DE00                     967      add.b   d0, d7              * D7 = calc checksum + srec checksum
+00704C4E  5207                     968      addq.b  #1, d7              * checksum + 1 should = 0 if OK
+00704C50  670C                     969      beq.s   .cdl_X
+00704C52                           970  
+00704C52  103C 0058                971      move.b  #'X', d0            * checksum fail - print an X
+00704C56  6100 01FC                972      bsr     putc
+00704C5A  6000 FD58                973      bra.w   monLoop_NP          * return to main loop without prompt
+00704C5E                           974  
+00704C5E                           975  .cdl_X
+00704C5E  103C 002E                976      move.b  #'.', d0            * checksum good - print a dot
+00704C62  6100 01F0                977      bsr     putc
+00704C66  6000 FD4C                978      bra.w   monLoop_NP          * return to main loop without prompt
+00704C6A                           979  
+00704C6A                           980  .cdl_EOL
+00704C6A  6100 01FA                981      bsr.w   getc                * discard chars until CR or LF
+00704C6E  0C00 000D                982      cmpi.b  #CR,d0
+00704C72  67EA                     983      beq.s   .cdl_X
+00704C74  0C00 000A                984      cmpi.b  #LF,d0
+00704C78  67E4                     985      beq.s   .cdl_X
+00704C7A  60EE                     986      bra.s   .cdl_EOL
+00704C7C                           987  
+00704C7C                           988  .cdl_EOL89
+00704C7C  6100 01E8                989      bsr.w   getc                * discard chars until CR or LF
+00704C80  0C00 000D                990      cmpi.b  #CR,d0
+00704C84  6700 FD9A                991      beq.w   monLoop_CRLF        * return to main loop with prompt
+00704C88  0C00 000A                992      cmpi.b  #LF,d0
+00704C8C  6700 FD92                993      beq.w   monLoop_CRLF        * return to main loop with prompt
+00704C90  60EA                     994      bra.s   .cdl_EOL89
+00704C92                           995      
+00704C92                           996  *------------------------------------------------------------------------------
+00704C92                           997  * Display the supported commands
+00704C92                           998  *------------------------------------------------------------------------------
+00704C92                           999  cmdHelp:
+00704C92  41FA 03CE               1000      lea     strCommands(PC), a0
+00704C96  6100 0360               1001      bsr.w   putString
+00704C9A  6000 FD10               1002      bra.w   monLoop
+00704C9E                          1003  
+00704C9E                          1004  *------------------------------------------------------------------------------
+00704C9E                          1005  * Dumps a 256 section of RAM to the screen
+00704C9E                          1006  * Displays both hex values and ASCII characters
+00704C9E                          1007  * a0 - Start Address
+00704C9E                          1008  *------------------------------------------------------------------------------
+00704C9E                          1009  dumpRAM:
+00704C9E  48E7 E040               1010      movem.l d0-d2/a1, -(SP)     * Save registers
+00704CA2  2248                    1011      move.l  a0,a1               * move the start address to A1
+00704CA4                          1012  
+00704CA4  6100 034E               1013      bsr.w   putCRLF             * new line - trashes D0 & A0
+00704CA8                          1014      
+00704CA8  323C 000F               1015      move.w  #15,d1              * 16 rows of data (DBRA needs 1 less!)
+00704CAC                          1016  .dr_1:
+00704CAC  343C 000F               1017      move.w  #15,d2              * 16 bytes of data per row (DBRA needs 1 less!)
+00704CB0  2009                    1018      move.l  a1, d0              * copy the start address of the line into D0          
+00704CB2  6100 0300               1019      bsr.w   writeAddr32         * Display as a 32-bit hex value
+00704CB6  41FA 0567               1020      lea     strColonSpace(PC), a0
+00704CBA  6100 033C               1021      bsr.w   putString
+00704CBE  41EE 0106               1022      lea     msgASCIIDump(a6), a0
+00704CC2                          1023  .dr_2:
+00704CC2  1019                    1024      move.b  (a1)+, d0           * Read a byte from RAM
+00704CC4  6100 030C               1025      bsr.w   writeByte           * display byte as 2 hex digits  
+00704CC8  6100 0048               1026      bsr.w   makePrintable       * convert to printable character
+00704CCC  10C0                    1027      move.b  d0,(a0)+            * save the printable char in output string
+00704CCE  103C 0020               1028      move.b  #' ', d0
+00704CD2  6100 0180               1029      bsr.w   putc                * insert a space
+00704CD6  51CA FFEA               1030      dbra    d2,.dr_2
+00704CDA                          1031  
+00704CDA  103C 0020               1032      move.b  #' ', d0
+00704CDE  6100 0174               1033      bsr.w   putc                * insert a space
+00704CE2                          1034  
+00704CE2  10FC 000D               1035      move.b  #CR,(a0)+
+00704CE6  10FC 000A               1036      move.b  #LF,(a0)+
+00704CEA  10FC 0000               1037      move.b  #0,(a0)+
+00704CEE  41EE 0106               1038      lea     msgASCIIDump(a6), a0
+00704CF2  6100 0304               1039      bsr.w   putString           * print out the printable bytes
+00704CF6  51C9 FFB4               1040      dbra    d1,.dr_1
+00704CFA                          1041  
+00704CFA  4CDF 0207               1042      movem.l (SP)+, d0-d2/a1     * Restore registers
+00704CFE  4E75                    1043      rts
+00704D00                          1044              
+00704D00                          1045  *------------------------------------------------------------------------------
+00704D00                          1046  * Convert character in D0 to upper case
+00704D00                          1047  * Only changes D0 if char is between 'a'..'z'
+00704D00                          1048  *------------------------------------------------------------------------------
+00704D00                          1049  chToUpper:
+00704D00  B03C 0061               1050      cmp.b   #'a', d0         
+00704D04  6D0A                    1051      blt.s   .done               * less than lower-case 'a' so leave alone
+00704D06  B03C 007A               1052      cmp.b   #'z', d0
+00704D0A  6E04                    1053      bgt.s   .done               * greater than lower-case 'z' so leave alone
+00704D0C  0400 0020               1054      sub.b   #$20, d0            * convert to upper case
+00704D10                          1055  .done:
+00704D10  4E75                    1056      rts
+00704D12                          1057      
+00704D12                          1058  *------------------------------------------------------------------------------
+00704D12                          1059  * Convert a byte into a print safe character
+00704D12                          1060  * Substitute a '.' for any byte <32 or >126
+00704D12                          1061  * D0 holds the byte
+00704D12                          1062  *------------------------------------------------------------------------------
+00704D12                          1063  makePrintable:
+00704D12  B03C 0020               1064      cmp.b   #' ', d0         
+00704D16  6D06                    1065      blt.s   .mp_1               * less than a SPACE (char 32)
+00704D18                          1066  
+00704D18  B03C 007E               1067      cmp.b   #'~', d0         
+00704D1C  6F04                    1068      ble.s   .mp_x               * less than a DEL (char 127)
+00704D1E                          1069  
+00704D1E                          1070  .mp_1:
+00704D1E  103C 002E               1071      move.b  #'.',d0             * substitute a DOT (char 46)
+00704D22                          1072  .mp_x:
+00704D22  4E75                    1073      rts
+00704D24                          1074      
+00704D24                          1075  *--------------------------------------------------------------------------
+00704D24                          1076  * Read in an ASCII-HEX number - no echo back
+00704D24                          1077  *
+00704D24                          1078  * D2 = Value to return if no digits read in
+00704D24                          1079  * D1 = Max no of ASCII digits to read in
+00704D24                          1080  * D0 = Result
+00704D24                          1081  * Carry flag set if an error occurs / not ASCII-HEX digit
+00704D24                          1082  *--------------------------------------------------------------------------
+00704D24                          1083  hexToInt:
+00704D24                          1084  *   move.l  d2,-(SP)            * save D2
+00704D24                          1085  *   clr.l   d2                  * D2 used to accumulate the final value
+00704D24                          1086  .h2i_1:
+00704D24  6100 0140               1087      bsr.w   getc                * get a character
+00704D28  61D6                    1088      bsr.s   chToUpper           * convert to upper case if needed
+00704D2A                          1089  
+00704D2A  0C00 000A               1090      cmpi.b  #10,d0              * finish if it's CR or LF
+00704D2E  6724                    1091      beq.s   .h2i_x
+00704D30  0C00 000D               1092      cmpi.b  #13,d0
+00704D34  671E                    1093      beq.s   .h2i_x
+00704D36                          1094      
+00704D36  0400 0030               1095      subi.b  #'0',d0
+00704D3A  6B1C                    1096      bmi.s   .h2i_err            * quit if char is less than '0'
+00704D3C                          1097  
+00704D3C  0C00 0009               1098      cmpi.b  #9,d0
+00704D40  6F0A                    1099      ble.s   .h2i_2              * is it <= 9
+00704D42                          1100      
+00704D42  5F00                    1101      subi.b  #7,d0
+00704D44  6B12                    1102      bmi.s   .h2i_err            * quit if char is >'9' and <'A'
+00704D46                          1103  
+00704D46  0C00 000F               1104      cmpi.b  #15,d0
+00704D4A  6E0C                    1105      bgt.s   .h2i_err            * quit if char is >'F'
+00704D4C                          1106  
+00704D4C                          1107  .h2i_2:
+00704D4C  E98A                    1108      lsl.l   #4, d2
+00704D4E  8400                    1109      or.b    d0, d2              * insert the new digit
+00704D50                          1110  
+00704D50  5301                    1111      subq.b  #1, d1              * decrement the digit count
+00704D52  66D0                    1112      bne.s   .h2i_1              * go back for another digit?
+00704D54                          1113  
+00704D54                          1114  .h2i_x:
+00704D54  2002                    1115      move.l  d2,d0               * put the answer back into D0
+00704D56                          1116  *   move.l  (SP)+,d2            * restore D2
+00704D56  4E75                    1117      rts
+00704D58                          1118  
+00704D58                          1119  .h2i_err:
+00704D58                          1120  *   move.l  (SP)+,d2            * restore D2
+00704D58  003C 0001               1121      ori.b   #1,CCR              * set the CARRY flag to signal an error
+00704D5C  4E75                    1122      rts
+00704D5E                          1123  
+00704D5E                          1124  *--------------------------------------------------------------------------
+00704D5E                          1125  * Read in an ASCII-HEX number with echo back
+00704D5E                          1126  *
+00704D5E                          1127  * D2 = Value to return if no digits read in
+00704D5E                          1128  * D1 = Max no of ASCII digits to read in
+00704D5E                          1129  * D0 = Result
+00704D5E                          1130  * Carry flag set if an error occurs / not ASCII-HEX digit
+00704D5E                          1131  *--------------------------------------------------------------------------
+00704D5E                          1132  hexToIntEcho:
+00704D5E                          1133  *   move.l  d2,-(SP)            * save D2
+00704D5E                          1134  *   clr.l   d2                  * D2 used to accumulate the final value
+00704D5E                          1135  .h2i_1:
+00704D5E  6100 0106               1136      bsr.w   getc                * get a character
+00704D62  6100 00F0               1137      bsr.w   putc                * echo it back
+00704D66  6198                    1138      bsr.s   chToUpper           * convert to upper case if needed
+00704D68                          1139  
+00704D68  0C00 000A               1140      cmpi.b  #10,d0              * finish if it's CR or LF
+00704D6C  6724                    1141      beq.s   .h2i_x
+00704D6E  0C00 000D               1142      cmpi.b  #13,d0
+00704D72  671E                    1143      beq.s   .h2i_x
+00704D74                          1144      
+00704D74  0400 0030               1145      subi.b  #'0',d0
+00704D78  6B1C                    1146      bmi.s   .h2i_err            * quit if char is less than '0'
+00704D7A                          1147  
+00704D7A  0C00 0009               1148      cmpi.b  #9,d0
+00704D7E  6F0A                    1149      ble.s   .h2i_2              * is it <= 9
+00704D80                          1150      
+00704D80  5F00                    1151      subi.b  #7,d0
+00704D82  6B12                    1152      bmi.s   .h2i_err            * quit if char is >'9' and <'A'
+00704D84                          1153  
+00704D84  0C00 000F               1154      cmpi.b  #15,d0
+00704D88  6E0C                    1155      bgt.s   .h2i_err            * quit if char is >'F'
+00704D8A                          1156  
+00704D8A                          1157  .h2i_2:
+00704D8A  E98A                    1158      lsl.l   #4, d2
+00704D8C  8400                    1159      or.b    d0, d2              * insert the new digit
+00704D8E                          1160  
+00704D8E  5301                    1161      subq.b  #1, d1              * decrement the digit count
+00704D90  66CC                    1162      bne.s   .h2i_1              * go back for another digit?
+00704D92                          1163  
+00704D92                          1164  .h2i_x:
+00704D92  2002                    1165      move.l  d2,d0               * put the answer back into D0
+00704D94                          1166  *   move.l  (SP)+,d2            * restore D2
+00704D94  4E75                    1167      rts
+00704D96                          1168  
+00704D96                          1169  .h2i_err:
+00704D96                          1170  *   move.l  (SP)+,d2            * restore D2
+00704D96  003C 0001               1171      ori.b   #1,CCR              * set the CARRY flag to signal an error
+00704D9A  4E75                    1172      rts
+00704D9C                          1173  
+00704D9C                          1174  *******************************************************************************
+00704D9C                          1175  *
+00704D9C                          1176  *   #####  ####### ######  ###    #    #          ######  ####### ######  ####### 
+00704D9C                          1177  *  #     # #       #     #  #    # #   #          #     # #     # #     #    #    
+00704D9C                          1178  *  #       #       #     #  #   #   #  #          #     # #     # #     #    #    
+00704D9C                          1179  *   #####  #####   ######   #  #     # #          ######  #     # ######     #    
+00704D9C                          1180  *        # #       #   #    #  ####### #          #       #     # #   #      #    
+00704D9C                          1181  *  #     # #       #    #   #  #     # #          #       #     # #    #     #    
+00704D9C                          1182  *   #####  ####### #     # ### #     # #######    #       ####### #     #    #    
+00704D9C                          1183  *                                                                                                   
+00704D9C                          1184  *******************************************************************************
+00704D9C                          1185  
+00704D9C                          1186  *------------------------------------------------------------------------------
+00704D9C                          1187  * Initialise the serial port
+00704D9C                          1188  *
+00704D9C                          1189  * Assumes that there is a 68681 DUART at the address defined by DUART1 in
+00704D9C                          1190  * devices.inc and initialises port A and enables the rx interrupt.
+00704D9C                          1191  *------------------------------------------------------------------------------
+00704D9C                          1192  serInit:
+00704D9C  13FC 0030 00D00005      1193      move.b  #$30, CRA           * Reset Transmitter
+00704DA4  13FC 0020 00D00005      1194      move.b  #$20, CRA           * Reset Receiver
+00704DAC  13FC 0010 00D00005      1195      move.b  #$10, CRA           * Reset Mode Register Pointer
+00704DB4                          1196      
+00704DB4  2D7C 00000000 0000      1197      move.l  #0,ser0RxHead(a6)   * Set queue head and tail ptrs to 0
+00704DBC  3D7C 0000 0004          1198      move.w  #0,ser0RxSize(a6)   * No chars in receive queue
+00704DC2                          1199  
+00704DC2  13FC 0000 00D00009      1200      move.b  #$00, ACR           * Baud Rate Set #1
+00704DCA  13FC 0013 00D00001      1201      move.b  #$13, MRA           * No Parity & 8-bit
+00704DD2  13FC 0007 00D00001      1202      move.b  #$07, MRA           * Normal Mode, No CTS/RTS & 1 stop bit
+00704DDA                          1203  
+00704DDA                          1204      * if HI_SPEED = 0 then set 38400 baud
+00704DDA                 FALSE    1205      ifeq HI_SPEED
+00704DDA                          1206      endc
+00704DDA                          1207  
+00704DDA                          1208      * if HI_SPEED > 0 then set 115200 baud
+00704DDA                 TRUE     1209      ifgt HI_SPEED
+00704DDA  1039 00D00005           1210      move.b  CRA,d0              * Read CRA - sets BRG test mode
+00704DE0  13FC 0066 00D00003      1211      move.b  #BAUD_1200, CSRA    * Set Tx and Rx baud rates to 115200 (old 1200)
+00704DE8                          1212      endc
+00704DE8                          1213      
+00704DE8  13FC 0002 00D0000B      1214      move.b  #$02, IMR           * Rx interrupt enabled
+00704DF0  13FC 0005 00D00005      1215      move.b  #$05, CRA           * Enable Transmit/Recieve
+00704DF8  13FC 0001 00D0001D      1216      move.b  #$01, SOPR          * set OP0 low - i.e. CTS low
+00704E00  4E75                    1217      rts
+00704E02                          1218  
+00704E02                          1219  *------------------------------------------------------------------------------
+00704E02                          1220  * Serial port interrupt handler
+00704E02                          1221  *
+00704E02                          1222  * Should only be called when a char has been received.
+00704E02                          1223  *
+00704E02                          1224  *------------------------------------------------------------------------------
+00704E02                          1225  serISR:
+00704E02                          1226      * save registers we are about to trash
+00704E02  48E7 E080               1227      movem.l d0-d2/a0,-(sp)
+00704E06                          1228  
+00704E06  0839 0001 00D0000B      1229      btst.b  #1,ISR              * check the RXRDYA bit
+00704E0E  6700 003E               1230      beq.w   serExit
+00704E12                          1231  
+00704E12                          1232      * a char has been received so save it in the rx queue
+00704E12  1039 00D00007           1233      move.b  RBA,d0              * get the character
+00704E18  222E 0000               1234      move.l  ser0RxQueue(a6),d1  * D1.L MSW = head and LSW = tail
+00704E1C  4841                    1235      swap    d1                  * D1.L MSW = tail and LSW = head
+00704E1E  3401                    1236      move.w  d1,d2               * D2.W holds the queue head index
+00704E20  4841                    1237      swap    d1                  * D1.L MSW = head and LSW = tail
+00704E22                          1238  
+00704E22                          1239  
+00704E22  5242                    1240      addq.w  #1,d2               * advance the head index
+00704E24  0242 00FF               1241      andi.w  #SERIAL_BUFFER_MASK,d2
+00704E28  B441                    1242      cmp.w   d1,d2               * if head = tail then buffer full
+00704E2A  6604                    1243      bne.s   serSave             * if head <> tail then add char to buffer
+00704E2C                          1244  
+00704E2C                          1245      * the serial buffer is full - what now?
+00704E2C  6000 0020               1246      bra.w   serExit
+00704E30                          1247  
+00704E30                          1248  serSave:
+00704E30  4841                    1249      swap    d1                  * D1.L MSW = tail and LSW = head
+00704E32  1D80 1006               1250      move.b  d0,ser0RxBuf(a6,d1.w) * save the char to the rx queue
+00704E36  3D42 0000               1251      move.w  d2,ser0RxHead(a6)   * save the updated head index
+00704E3A  526E 0004               1252      addq.w  #1,ser0RxSize(a6)   * increment number of chars in rx queue
+00704E3E                          1253  
+00704E3E                          1254      * check if rx queue is nearly full
+00704E3E  0C6E 00C8 0004          1255      cmpi.w  #SERIAL_BUFFER_UPPER,ser0RxSize(a6)
+00704E44  6F08                    1256      ble.s   serExit
+00704E46                          1257  
+00704E46                          1258      * no of chars in queue has reached the upper threshold
+00704E46                          1259      * set CTS HIGH to hopefully tell the host to stop sending.
+00704E46  13FC 0001 00D0001F      1260      move.b  #$01, ROPR          * set OP0 high
+00704E4E                          1261  
+00704E4E                          1262  serExit:
+00704E4E                          1263      * restore registers
+00704E4E  4CDF 0107               1264      movem.l (sp)+,d0-d2/a0
+00704E52  4E73                    1265      rte
+00704E54                          1266  
+00704E54                          1267  *------------------------------------------------------------------------------
+00704E54                          1268  * Write a character directly to UART Port A, blocking if UART is not ready
+00704E54                          1269  *
+00704E54                          1270  * D0 = char to send
+00704E54                          1271  *------------------------------------------------------------------------------
+00704E54                          1272  putc:
+00704E54  0839 0002 00D00003      1273      btst.b  #2, SRA             * Check if transmitter ready bit is set
+00704E5C  67F6                    1274      beq     putc     
+00704E5E  13C0 00D00007           1275      move.b  d0, TBA             * Transmit Character
+00704E64  4E75                    1276      rts
+00704E66                          1277  
+00704E66                          1278  *------------------------------------------------------------------------------
+00704E66                          1279  * Read a character from the rx queue - blocking call so will wait for character
+00704E66                          1280  *
+00704E66                          1281  * D0 = recevied char
+00704E66                          1282  *------------------------------------------------------------------------------
+00704E66                          1283  getc:
+00704E66  0C6E 0000 0004          1284      cmpi.w  #0,ser0RxSize(a6)   * check number of chars in rx queue
+00704E6C  67F8                    1285      beq.s   getc                * keep checking till there is a char available
+00704E6E                          1286  
+00704E6E                          1287      * save registers we are about to trash
+00704E6E  48E7 4080               1288      movem.l d1/a0,-(sp)
+00704E72                          1289      
+00704E72                          1290      * get the character from the tail of the queue
+00704E72  222E 0000               1291      move.l  ser0RxQueue(a6),d1  * D1.L MSW = head and LSW = tail
+00704E76  1036 1006               1292      move.b  6(a6,d1.w),d0       * read the char from the queue tail
+00704E7A  5241                    1293      addq.w  #1,d1               * advance the tail index
+00704E7C  0241 00FF               1294      andi.w  #SERIAL_BUFFER_MASK,d1
+00704E80  3D41 0002               1295      move.w  d1,ser0RxTail(a6)   * save the updated tail index
+00704E84  536E 0004               1296      subq.w  #1,ser0RxSize(a6)   * decrement number of chars in rx queue
+00704E88                          1297  
+00704E88                          1298      * check if rx queue is nearly empty
+00704E88  0C6E 0019 0004          1299      cmpi.w  #SERIAL_BUFFER_LOWER,ser0RxSize(a6)
+00704E8E  6C08                    1300      bge.s   getExit
+00704E90                          1301  
+00704E90                          1302      * no of chars in queue has reached the lower threshold
+00704E90                          1303      * set CTS LOW to hopefully tell the host to start sending.
+00704E90  13FC 0001 00D0001D      1304      move.b  #$01, SOPR          * set OP0 low
+00704E98                          1305  
+00704E98                          1306  getExit:
+00704E98                          1307      * restore registers
+00704E98  4CDF 0102               1308      movem.l (sp)+,d1/a0
+00704E9C  4E75                    1309      rts
+00704E9E                          1310  
+00704E9E                          1311  *******************************************************************************
+00704E9E                          1312  *
+00704E9E                          1313  *  #######    #     #####  #     #  #####   #####  #    #    ####### ######     #    ######   #####  
+00704E9E                          1314  *  #         # #   #     #  #   #  #     # #     # #   #        #    #     #   # #   #     # #     # 
+00704E9E                          1315  *  #        #   #  #         # #   #       #     # #  #         #    #     #  #   #  #     # #       
+00704E9E                          1316  *  #####   #     #  #####     #    ######   #####  ###          #    ######  #     # ######   #####  
+00704E9E                          1317  *  #       #######       #    #    #     # #     # #  #         #    #   #   ####### #             # 
+00704E9E                          1318  *  #       #     # #     #    #    #     # #     # #   #        #    #    #  #     # #       #     # 
+00704E9E                          1319  *  ####### #     #  #####     #     #####   #####  #    #       #    #     # #     # #        #####  
+00704E9E                          1320  *                                                                                                   
+00704E9E                          1321  *******************************************************************************
+00704E9E                          1322  
+00704E9E                          1323  *------------------------------------------------------------------------------
+00704E9E                          1324  * This is the jump table for the TRAP #15 tasks - not all tasks are supported!
+00704E9E                          1325  *------------------------------------------------------------------------------
+00704E9E                          1326  
+00704E9E                          1327  easy68kTaskTable:
+00704E9E  6000 008A               1328      bra.w   easyTask0 
+00704EA2  6000 009E               1329      bra.w   easyTask1 
+00704EA6  6000 005E               1330      bra.w   easyTask2 
+00704EAA  6000 005A               1331      bra.w   easyTask3 
+00704EAE  6000 0056               1332      bra.w   easyTask4 
+00704EB2  6000 00A2               1333      bra.w   easyTask5 
+00704EB6  6000 00A6               1334      bra.w   easyTask6 
+00704EBA  6000 00AA               1335      bra.w   easyTask7 
+00704EBE  6000 0046               1336      bra.w   easyTask8 
+00704EC2  6000 0042               1337      bra.w   easyTask9 
+00704EC6  6000 003E               1338      bra.w   easyTask10
+00704ECA  6000 003A               1339      bra.w   easyTask11
+00704ECE  6000 0036               1340      bra.w   easyTask12
+00704ED2  6000 00A4               1341      bra.w   easyTask13
+00704ED6  6000 00B0               1342      bra.w   easyTask14
+00704EDA  6000 002A               1343      bra.w   easyTask15
+00704EDE  6000 0026               1344      bra.w   easyTask16
+00704EE2  6000 0022               1345      bra.w   easyTask17
+00704EE6  6000 001E               1346      bra.w   easyTask18
+00704EEA  6000 001A               1347      bra.w   easyTask19
+00704EEE  6000 0016               1348      bra.w   easyTask20
+00704EF2  6000 0012               1349      bra.w   easyTask21
+00704EF6  6000 000E               1350      bra.w   easyTask22
+00704EFA  6000 000A               1351      bra.w   easyTask23
+00704EFE  6000 0006               1352      bra.w   easyTask24
+00704F02  6000 0002               1353      bra.w   easyTask25
+00704F06                          1354  
+00704F06                          1355  *------------------------------------------------------------------------------
+00704F06                          1356  * These are the EASy68K tasks that are not yet implemented
+00704F06                          1357  * Simply print out a message showing the task number and stop in an endless loop.
+00704F06                          1358  *------------------------------------------------------------------------------
+00704F06                          1359  
+00704F06                          1360  easyTask2: 
+00704F06                          1361  easyTask3:
+00704F06                          1362  easyTask4:
+00704F06                          1363  easyTask8: 
+00704F06                          1364  easyTask9: 
+00704F06                          1365  easyTask10:
+00704F06                          1366  easyTask11:
+00704F06                          1367  easyTask12:
+00704F06                          1368  easyTask15:
+00704F06                          1369  easyTask16:
+00704F06                          1370  easyTask17:
+00704F06                          1371  easyTask18:
+00704F06                          1372  easyTask19:
+00704F06                          1373  easyTask20:
+00704F06                          1374  easyTask21:
+00704F06                          1375  easyTask22:
+00704F06                          1376  easyTask23:
+00704F06                          1377  easyTask24:
+00704F06                          1378  easyTask25:
+00704F06                          1379  easyTaskUnsupported:
+00704F06  C141                    1380      exg     d0,d1               * put the task number into D1
+00704F08  41FA 034B               1381      lea     strEasyTask1(PC), a0
+00704F0C  6100 00EA               1382      bsr.w   putString
+00704F10  C141                    1383      exg     d0,d1               * put the task number back into D0
+00704F12  80FC 000A               1384      divu    #10,d0              * divide task number by 10
+00704F16  6100 00C2               1385      bsr.w   writeNibble         * output the 10's digit
+00704F1A  4840                    1386      swap    d0
+00704F1C  6100 00BC               1387      bsr.w   writeNibble         * output the 1's digit
+00704F20  41FA 0354               1388      lea     strEasyTask2(PC), a0
+00704F24  6100 00D2               1389      bsr.w   putString
+00704F28                          1390  .infloop:
+00704F28  60FE                    1391      bra.s   .infloop
+00704F2A                          1392  
+00704F2A                          1393  *------------------------------------------------------------------------------
+00704F2A                          1394  * EASy68K TRAP #15 - Task 0
+00704F2A                          1395  * Display n characters of string at (A1), n is D1.W (stops on NULL or max 255) with CR, LF.
+00704F2A                          1396  *------------------------------------------------------------------------------
+00704F2A                          1397  easyTask0:
+00704F2A  0241 00FF               1398      andi.w  #$00FF,d1           * DBRA works on a WORD so make sure upper byte is zero
+00704F2E  5301                    1399      sub.b   #1,d1               * DBRA requires 1 less than actual number
+00704F30                          1400  .loop:
+00704F30  1019                    1401      move.b  (a1)+, d0           * Read in character
+00704F32  6708                    1402      beq.s   .end                * Check for the null
+00704F34                          1403      
+00704F34  6100 FF1E               1404      bsr.w   putc                * Otherwise write the character
+00704F38  51C9 FFF6               1405      dbra    d1,.loop            * And continue
+00704F3C                          1406  .end:
+00704F3C  6100 00B6               1407      bsr.w   putCRLF             * append CR & LF
+00704F40  4E75                    1408      rts
+00704F42                          1409  
+00704F42                          1410  *------------------------------------------------------------------------------
+00704F42                          1411  * EASy68K TRAP #15 - Task 1
+00704F42                          1412  * Display n characters of string at (A1), n is D1.W (stops on NULL or max 255) without CR, LF.
+00704F42                          1413  *------------------------------------------------------------------------------
+00704F42                          1414  easyTask1:
+00704F42  0241 00FF               1415      andi.w  #$00FF,d1           * DBRA works on a WORD so make sure upper byte is zero
+00704F46  5301                    1416      sub.b   #1,d1               * DBRA requires 1 less than actual number
+00704F48                          1417  .loop:
+00704F48  1019                    1418      move.b  (a1)+, d0           * Read in character
+00704F4A  6708                    1419      beq.s   .end                * Check for the null
+00704F4C                          1420      
+00704F4C  6100 FF06               1421      bsr.w   putc                * Otherwise write the character
+00704F50  51C9 FFF6               1422      dbra    d1,.loop            * And continue
+00704F54                          1423  .end:
+00704F54  4E75                    1424      rts
+00704F56                          1425  
+00704F56                          1426  *------------------------------------------------------------------------------
+00704F56                          1427  * EASy68K TRAP #15 - Task 5
+00704F56                          1428  * Read single ASCII character from the keyboard into D1.B. 
+00704F56                          1429  *------------------------------------------------------------------------------
+00704F56                          1430  easyTask5:
+00704F56  6100 FF0E               1431      bsr.w   getc                * wait for char - returned in D0
+00704F5A  1200                    1432      move.b  d0,d1               * move the char into D1
+00704F5C  4E75                    1433      rts
+00704F5E                          1434      
+00704F5E                          1435  *------------------------------------------------------------------------------
+00704F5E                          1436  * EASy68K TRAP #15 - Task 6
+00704F5E                          1437  * Display single ASCII character in D1.B.   
+00704F5E                          1438  *------------------------------------------------------------------------------
+00704F5E                          1439  easyTask6:
+00704F5E  1001                    1440      move.b  d1,d0               * move the char into D0
+00704F60  6100 FEF2               1441      bsr.w   putc                * output the char
+00704F64  4E75                    1442      rts
+00704F66                          1443  
+00704F66                          1444  *------------------------------------------------------------------------------
+00704F66                          1445  * EASy68K TRAP #15 - Task 7
+00704F66                          1446  * Check for keyboard input. Set D1.B to 1 if keyboard input is pending,
+00704F66                          1447  * otherwise set to 0.
+00704F66                          1448  *------------------------------------------------------------------------------
+00704F66                          1449  easyTask7:
+00704F66  123C 0000               1450      move.b  #0,d1               * assume no char available
+00704F6A  0C6E 0000 0004          1451      cmpi.w  #0,ser0RxSize(a6)   * check number of chars in rx queue
+00704F70  6704                    1452      beq.s   .end
+00704F72  123C 0001               1453      move.b  #1,d1               * there is at least 1 char available
+00704F76                          1454  .end
+00704F76  4E75                    1455      rts
+00704F78                          1456  
+00704F78                          1457  *------------------------------------------------------------------------------
+00704F78                          1458  * EASy68K TRAP #15 - Task 13
+00704F78                          1459  * Display the NULL terminated string at (A1) with CR, LF.
+00704F78                          1460  *------------------------------------------------------------------------------
+00704F78                          1461  easyTask13:
+00704F78                          1462  .loop:
+00704F78  1019                    1463      move.b  (a1)+, d0           * Read in character
+00704F7A  6706                    1464      beq.s   .end                * Check for the null
+00704F7C                          1465      
+00704F7C  6100 FED6               1466      bsr.w   putc                * Otherwise write the character
+00704F80  60F6                    1467      bra.s   .loop               * And continue
+00704F82                          1468  .end:
+00704F82  6100 0070               1469      bsr.w   putCRLF             * append CR & LF
+00704F86  4E75                    1470      rts
+00704F88                          1471  
+00704F88                          1472  *------------------------------------------------------------------------------
+00704F88                          1473  * EASy68K TRAP #15 - Task 14
+00704F88                          1474  * Display the NULL terminated string pointed to by (A1).
+00704F88                          1475  *------------------------------------------------------------------------------
+00704F88                          1476  easyTask14:
+00704F88                          1477  .loop:
+00704F88  1019                    1478      move.b  (a1)+, d0           * Read in character
+00704F8A  6706                    1479      beq.s   .end                * Check for the null
+00704F8C                          1480      
+00704F8C  6100 FEC6               1481      bsr.w   putc                * Otherwise write the character
+00704F90  60F6                    1482      bra.s   .loop               * And continue
+00704F92                          1483  .end:
+00704F92  4E75                    1484      rts
+00704F94                          1485  
+00704F94                          1486  *------------------------------------------------------------------------------
+00704F94                          1487  * This is the entry point for the TRAP #15 handler that gets called when any
+00704F94                          1488  * TRAP #15 services are required. Only a few tasks are implemented.
+00704F94                          1489  * Unimplemented tasks will produce an error message.
+00704F94                          1490  *------------------------------------------------------------------------------
+00704F94                          1491  easy68kTrap15:
+00704F94  48E7 10A0               1492      movem.l d3/a0/a2,-(sp)
+00704F98  45FA FF04               1493      lea     easy68kTaskTable(PC),a2
+00704F9C  B03C 0019               1494      cmp.b   #25,d0              * is task number greater than 25?
+00704FA0  6E00 FF64               1495      bgt     easyTaskUnsupported
+00704FA4                          1496      
+00704FA4  4283                    1497      clr.l   d3
+00704FA6  1600                    1498      move.b  d0,d3               * task number into D3
+00704FA8  E58B                    1499      lsl.l   #2,d3               * convert task number into longword offset
+00704FAA  4EB2 3000               1500      jsr     (a2,d3)             * jump to the specific task handler
+00704FAE                          1501      
+00704FAE  4CDF 0508               1502      movem.l (sp)+,d3/a0/a2
+00704FB2  4E73                    1503      rte
+00704FB4                          1504  
+00704FB4                          1505  *******************************************************************************
+00704FB4                          1506  *
+00704FB4                          1507  *  ######  ######  ### #     # #######    ######  ####### #     # ####### ### #     # #######  #####  
+00704FB4                          1508  *  #     # #     #  #  ##    #    #       #     # #     # #     #    #     #  ##    # #       #     # 
+00704FB4                          1509  *  #     # #     #  #  # #   #    #       #     # #     # #     #    #     #  # #   # #       #       
+00704FB4                          1510  *  ######  ######   #  #  #  #    #       ######  #     # #     #    #     #  #  #  # #####    #####  
+00704FB4                          1511  *  #       #   #    #  #   # #    #       #   #   #     # #     #    #     #  #   # # #             # 
+00704FB4                          1512  *  #       #    #   #  #    ##    #       #    #  #     # #     #    #     #  #    ## #       #     # 
+00704FB4                          1513  *  #       #     # ### #     #    #       #     # #######  #####     #    ### #     # #######  #####    
+00704FB4                          1514  *
+00704FB4                          1515  *******************************************************************************
+00704FB4                          1516  * These are the various printing routines that handle displaying of bytes,
+00704FB4                          1517  * words, long words and 24-bit values as ASCII hexadecimal text. The routines
+00704FB4                          1518  * must be kept in this order as program flow is meant to fall out of one
+00704FB4                          1519  * routine and into the next, often without a return statement.
+00704FB4                          1520  *******************************************************************************
+00704FB4                          1521  
+00704FB4                          1522  *------------------------------------------------------------------------------
+00704FB4                          1523  * Output a 32-bit address as 8 ASCII hexadecimal digits
+00704FB4                          1524  * D0 holds the 32-bit address
+00704FB4                          1525  *------------------------------------------------------------------------------
+00704FB4                          1526  writeAddr32:
+00704FB4  2F00                    1527      move.l  d0,-(sp)            * save D0 first
+00704FB6  E098                    1528      ror.l   #8,d0
+00704FB8  E098                    1529      ror.l   #8,d0
+00704FBA  610E                    1530      bsr.s   writeWord           * write bits 16..31
+00704FBC  201F                    1531      move.l  (sp)+,d0            * restore D0
+00704FBE  600A                    1532      bra.s   writeWord
+00704FC0                          1533      
+00704FC0                          1534  *------------------------------------------------------------------------------
+00704FC0                          1535  * Output a 24-bit address as 6 ASCII hexadecimal digits
+00704FC0                          1536  * D0 holds the address in bits 0..23
+00704FC0                          1537  * NOTE: the writeWord function must be directly after this function
+00704FC0                          1538  *------------------------------------------------------------------------------
+00704FC0                          1539  writeAddr24:
+00704FC0  2F00                    1540      move.l  d0,-(sp)            * save D0 first
+00704FC2  E098                    1541      ror.l   #8,d0
+00704FC4  E098                    1542      ror.l   #8,d0
+00704FC6  610A                    1543      bsr.s   writeByte           * write bits 16..23
+00704FC8  201F                    1544      move.l  (sp)+,d0            * restore D0
+00704FCA                          1545      
+00704FCA                          1546  *------------------------------------------------------------------------------
+00704FCA                          1547  * Output a word as 4 ASCII hexadecimal digits
+00704FCA                          1548  * D0 holds the word in bits 0..15
+00704FCA                          1549  * NOTE: the writeByte function must be directly after this function
+00704FCA                          1550  *------------------------------------------------------------------------------
+00704FCA                          1551  writeWord:
+00704FCA  3F00                    1552      move.w  d0,-(sp)            * save D0 first
+00704FCC  E058                    1553      ror.w   #8,d0               * get upper byte (0 => shift 8 times)
+00704FCE  6102                    1554      bsr.s   writeByte
+00704FD0  301F                    1555      move.w  (sp)+,d0            * restore D0
+00704FD2                          1556  
+00704FD2                          1557  *------------------------------------------------------------------------------
+00704FD2                          1558  * Output a byte as 2 ASCII hexadecimal digits
+00704FD2                          1559  * D0 holds the byte in bits 0..7
+00704FD2                          1560  * NOTE: the writeNibble function must be directly after this function
+00704FD2                          1561  *------------------------------------------------------------------------------
+00704FD2                          1562  writeByte:
+00704FD2  3F00                    1563      move.w  d0,-(sp)            * save D0 first
+00704FD4  E818                    1564      ror.b   #4,d0               * get upper nibble
+00704FD6  6102                    1565      bsr.s   writeNibble
+00704FD8  301F                    1566      move.w  (sp)+,d0            * restore D0
+00704FDA                          1567      
+00704FDA                          1568  *------------------------------------------------------------------------------
+00704FDA                          1569  * Output 4 bits as an ASCII hexadecimal digit
+00704FDA                          1570  * D0 holds the nibble in bits 0..3
+00704FDA                          1571  *------------------------------------------------------------------------------
+00704FDA                          1572  writeNibble:
+00704FDA  3F00                    1573      move.w  d0,-(sp)            * save D0 first
+00704FDC  0200 000F               1574      andi.b  #$0F,d0             * make sure we only have the lower 4 bits
+00704FE0  0C00 000A               1575      cmpi.b  #10,d0              * compare D0 to 10
+00704FE4  6502                    1576      bcs.b   .wn1                * less than 10 so don't add 7
+00704FE6  5E00                    1577      addi.b  #07,d0              * add 7
+00704FE8                          1578  .wn1:
+00704FE8  0600 0030               1579      addi.b  #'0',d0             * add ASCII code for char zero
+00704FEC  6100 FE66               1580      bsr.w   putc                * write the ASCII digit out
+00704FF0  301F                    1581      move.w  (sp)+,d0            * restore D0
+00704FF2  4E75                    1582      rts
+00704FF4                          1583  
+00704FF4                          1584  *------------------------------------------------------------------------------
+00704FF4                          1585  * Prints a newline (CR, LF)
+00704FF4                          1586  * NOTE: the putString function must follow this function
+00704FF4                          1587  *------------------------------------------------------------------------------
+00704FF4                          1588  putCRLF:
+00704FF4  41FA 0226               1589      lea     strNewline(PC), a0
+00704FF8                          1590  
+00704FF8                          1591  *------------------------------------------------------------------------------
+00704FF8                          1592  * Print a null terminated string
+00704FF8                          1593  * A0 holds the address of the first character of the null terminated string
+00704FF8                          1594  *------------------------------------------------------------------------------
+00704FF8                          1595  putString:
+00704FF8                          1596  .loop:
+00704FF8  1018                    1597      move.b  (a0)+, d0           * Read in character
+00704FFA  6706                    1598      beq.s   .end                * Check for the null
+00704FFC                          1599      
+00704FFC  6100 FE56               1600      bsr.w   putc                * Otherwise write the character
+00705000  60F6                    1601      bra.s   .loop               * And continue
+00705002                          1602  .end:
+00705002  4E75                    1603      rts
+00705004                          1604  
+00705004                          1605  *******************************************************************************
+00705004                          1606  *
+00705004                          1607  *   #####  ####### ######  ### #     #  #####   #####  
+00705004                          1608  *  #     #    #    #     #  #  ##    # #     # #     # 
+00705004                          1609  *  #          #    #     #  #  # #   # #       #       
+00705004                          1610  *   #####     #    ######   #  #  #  # #  ####  #####  
+00705004                          1611  *        #    #    #   #    #  #   # # #     #       # 
+00705004                          1612  *  #     #    #    #    #   #  #    ## #     # #     # 
+00705004                          1613  *   #####     #    #     # ### #     #  #####   #####  
+00705004                          1614  *
+00705004                          1615  *******************************************************************************
+00705004                          1616  strBanner1:
+00705004= 0A 0D                   1617      dc.b 10,13
+00705006= 53 69 6D 70 6C 65 ...   1618      dc.b 'Simple RCBus 68000 ROM Monitor v2.1',10,13
+0070502B= 52 41 4D 3A 20 30 ...   1619      dc.b 'RAM: 0x000000 .. 0x0FFFFF',10,13
+00705046= 52 4F 4D 3A 20 30 ...   1620      dc.b 'ROM: 0x070000 .. 0x07FFFF',10,13,0
+00705062                          1621  strCommands:
+00705062= 0A 0D 43 6F 6D 6D ...   1622      dc.b 10,13,'Commands: ',10,13
+00705070= 42 20 20 20 20 20 ...   1623      dc.b 'B     : Start EhBASIC v3.54',10,13
+0070508D= 43 20 20 20 20 20 ...   1624      dc.b 'C     : Start CP/M-68K v1.3',10,13
+007050AA= 44 6E 6E 6E 6E 20 ...   1625      dc.b 'Dnnnn : Display 256 bytes of memory starting at address nnnn',10,13
+007050E8= 47 6E 6E 6E 6E 20 ...   1626      dc.b 'Gnnnn : Execute code starting at address nnnn',10,13
+00705117= 49 61 61 20 20 20 ...   1627      dc.b 'Iaa   : Read a byte from address aa in I/O space',10,13
+00705149= 4D 6E 6E 6E 6E 20 ...   1628      dc.b 'Mnnnn : Modify memory starting at address nnnn',10,13
+00705179= 4F 61 61 62 62 20 ...   1629      dc.b 'Oaabb : Write byte bb to address aa in I/O space',10,13
+007051AB= 53 31 78 78 78 20 ...   1630      dc.b 'S1xxx : Receive S1 Hex Record ',10,13          
+007051CB= 53 32 78 78 78 20 ...   1631      dc.b 'S2xxx : Receive S2 Hex Record ',10,13 
+007051EB= 3F 20 20 20 20 20 ...   1632      dc.b '?     : Display this help',10,13
+00705206= 00                      1633      dc.b 0
+00705207                          1634  strPrompt:
+00705207= 3E 20 00                1635      dc.b '> ',0
+0070520A                          1636  strUnkCmd:
+0070520A= 55 6E 6B 6E 6F 77 ...   1637      dc.b 'Unknown Command: ',0
+0070521C                          1638  strNewline:
+0070521C= 0A 0D 00                1639      dc.b 10,13,0
+0070521F                          1640  strColonSpace:
+0070521F= 3A 20 00                1641      dc.b ': ',0
+00705222                          1642  strUninitInt:
+00705222= 55 6E 68 61 6E 64 ...   1643      dc.b 'Unhandled interrupt.',10,13,0
+00705239                          1644  strUserReturn:
+00705239= 0A 0D 55 73 65 72 ...   1645      dc.b 10,13,'User program completed.',10,13,0
+00705255                          1646  strEasyTask1:
+00705255= 0A 0D 53 54 4F 50 ...   1647      dc.b    10,13,'STOP: EASy68K TRAP #15 - Task ',0
+00705276                          1648  strEasyTask2:
+00705276= 20 6E 6F 74 20 79 ...   1649      dc.b    ' not yet implemented',10,13,0
+0070528D                          1650  strCPMErr1:
+0070528D= 0A 0D 43 61 6E 6E ...   1651      dc.b    10,13,'Cannot boot CP/M-68K - CP/M-68K missing from ROM',10,13,0
+007052C2                          1652  strCPMErr2:
+007052C2= 0A 0D 43 61 6E 6E ...   1653      dc.b    10,13,'Cannot boot CP/M-68K - CP/M-68K BIOS missing from ROM',10,13,0
+007052FC                          1654  strCPMReturn:
+007052FC= 0A 0D 43 50 2F 4D ...   1655      dc.b    10,13,'CP/M-68K returned to Monitor. Press RESET to restart.',10,13,0
+00705336                          1656  strBASICErr1:
+00705336= 0A 0D 43 61 6E 6E ...   1657      dc.b    10,13,'Cannot boot EhBASIC - EhBASIC missing from ROM',10,13,0
+00705369                          1658  strBASICReturn:
+00705369= 0A 0D 45 68 42 41 ...   1659      dc.b    10,13,'EhBASIC returned to Monitor. Press RESET to restart.',10,13,0
+007053A2                          1660  
+007053A2                          1661  *******************************************************************************
+007053A2                          1662  *
+007053A2                          1663  *  #     # ####### #     # ### ####### ####### ######     #     #    #    ######   #####  
+007053A2                          1664  *  ##   ## #     # ##    #  #     #    #     # #     #    #     #   # #   #     # #     # 
+007053A2                          1665  *  # # # # #     # # #   #  #     #    #     # #     #    #     #  #   #  #     # #       
+007053A2                          1666  *  #  #  # #     # #  #  #  #     #    #     # ######     #     # #     # ######   #####  
+007053A2                          1667  *  #     # #     # #   # #  #     #    #     # #   #       #   #  ####### #   #         # 
+007053A2                          1668  *  #     # #     # #    ##  #     #    #     # #    #       # #   #     # #    #  #     # 
+007053A2                          1669  *  #     # ####### #     # ###    #    ####### #     #       #    #     # #     #  #####  
+007053A2                          1670  *
+007053A2                          1671  *******************************************************************************
+007053A2                          1672  * Private monitor variables go here in a block of 2048 bytes (defined by MON_PRIV)
+007053A2                          1673  * and are located at the top of RAM (RAM_BASE+RAM_LEN-MON_PRIV).
+007053A2                          1674  *******************************************************************************
+007053A2                          1675  
+00000000                          1676      ORG     $0000
+00000000                          1677  
+00000000                          1678  * keep these serial rx queue variables in this order
+00000000                          1679  ser0RxQueue:
+00000000                          1680  ser0RxHead: ds.w    1
+00000002                          1681  ser0RxTail: ds.w    1
+00000004                          1682  ser0RxSize: ds.w    1
+00000006                          1683  ser0RxBuf:  ds.b    SERIAL_BUFFER_SIZE
+00000106                          1684  
+00000106                          1685  msgASCIIDump:
+00000106                          1686      ds.b 20
+0000011A                          1687  
+0000011A                          1688      
+0000011A                          1689      END    START                * last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ACR                 D00009
+AEMSG1              70415A
+AEMSG2              70419E
+AV1MSG              7041D0
+AV2MSG              70420C
+AV3MSG              704248
+AV4MSG              704284
+AV5MSG              7042C0
+AV6MSG              7042FC
+AV7MSG              704338
+BAUD_1200           66
+BAUD_2400           88
+BAUD_38400          CC
+BAUD_4800           99
+BAUD_9600           BB
+BAUD_RATE           CC
+BCNT                D0001D
+BEMSG1              704374
+BEMSG2              7043B3
+CCP_BSS_BASE        1FD800
+CCP_PRIV            1000
+CF_8BIT             1
+CF_COMMAND          FA002F
+CF_CYL_HI           FA002B
+CF_CYL_LOW          FA0029
+CF_DATA             FA0021
+CF_ERROR            FA0023
+CF_FEATURES         FA0023
+CF_HEAD             FA002D
+CF_LBA0007          FA0027
+CF_LBA0815          FA0029
+CF_LBA1623          FA002B
+CF_LBA2427          FA002D
+CF_LBAMODE          E0
+CF_NOCACHE          82
+CF_RD_SEC           20
+CF_SECCOUNT         FA0025
+CF_SECTOR           FA0027
+CF_SET_FEAT         EF
+CF_STATUS           FA002F
+CF_WR_SEC           30
+CHTOUPPER           704D00
+CHTOUPPER:DONE      704D10
+CIMSG               7043E5
+CMDBOOTCPM          704A4E
+CMDBOOTCPM:BOOTCPM  704A78
+CMDBOOTCPM:CHKBIOS  704A64
+CMDBOOTCPM:FOREVER  704A88
+CMDBOOTEHBASIC      704A26
+CMDBOOTEHBASIC:BOOTEHBASIC  704A3C
+CMDBOOTEHBASIC:FOREVER  704A4C
+CMDDISPMEMORY       704A8A
+CMDDOWNLOAD         704BBE
+CMDDOWNLOAD:CDL_1   704C2C
+CMDDOWNLOAD:CDL_2   704C42
+CMDDOWNLOAD:CDL_EOL  704C6A
+CMDDOWNLOAD:CDL_EOL89  704C7C
+CMDDOWNLOAD:CDL_S1  704BE2
+CMDDOWNLOAD:CDL_S2  704C06
+CMDDOWNLOAD:CDL_X   704C5E
+CMDHELP             704C92
+CMDIOREAD           704AD4
+CMDIOWRITE          704B74
+CMDMODIFYMEMORY     704B16
+CMDMODIFYMEMORY:CMM_1  704B38
+CMDMODIFYMEMORY:CMM_2  704B6C
+CMDRUN              704AAC
+CPM_BASE            700400
+CR                  D
+CRA                 D00005
+CRB                 D00015
+CSRA                D00003
+CSRB                D00013
+DUART1              D00000
+DUMPRAM             704C9E
+DUMPRAM:DR_1        704CAC
+DUMPRAM:DR_2        704CC2
+EASY68KTASKTABLE    704E9E
+EASY68KTRAP15       704F94
+EASYTASK0           704F2A
+EASYTASK0:END       704F3C
+EASYTASK0:LOOP      704F30
+EASYTASK1           704F42
+EASYTASK10          704F06
+EASYTASK11          704F06
+EASYTASK12          704F06
+EASYTASK13          704F78
+EASYTASK13:END      704F82
+EASYTASK13:LOOP     704F78
+EASYTASK14          704F88
+EASYTASK14:END      704F92
+EASYTASK14:LOOP     704F88
+EASYTASK15          704F06
+EASYTASK16          704F06
+EASYTASK17          704F06
+EASYTASK18          704F06
+EASYTASK19          704F06
+EASYTASK1:END       704F54
+EASYTASK1:LOOP      704F48
+EASYTASK2           704F06
+EASYTASK20          704F06
+EASYTASK21          704F06
+EASYTASK22          704F06
+EASYTASK23          704F06
+EASYTASK24          704F06
+EASYTASK25          704F06
+EASYTASK3           704F06
+EASYTASK4           704F06
+EASYTASK5           704F56
+EASYTASK6           704F5E
+EASYTASK7           704F66
+EASYTASK7:END       704F76
+EASYTASK8           704F06
+EASYTASK9           704F06
+EASYTASKUNSUPPORTED  704F06
+EASYTASKUNSUPPORTED:INFLOOP  704F28
+ECNT                D0001F
+EHBASIC_BASE        700400
+GETC                704E66
+GETEXIT             704E98
+HANDLEADDRERR       704018
+HANDLEAV1           704088
+HANDLEAV2           704090
+HANDLEAV3           704098
+HANDLEAV4           7040A0
+HANDLEAV5           7040A8
+HANDLEAV6           7040B0
+HANDLEAV7           7040B8
+HANDLEBUSERR        704000
+HANDLECHKINST       704040
+HANDLECLEANUP       704148
+HANDLECLEANUP:INFLOOP  704158
+HANDLEILLINST       704030
+HANDLELINEA         704060
+HANDLELINEF         704068
+HANDLEPRIV          704050
+HANDLERES1          704070
+HANDLERES10         704070
+HANDLERES11         704070
+HANDLERES2          704070
+HANDLERES3          704070
+HANDLERES4          704070
+HANDLERES5          704070
+HANDLERES6          704070
+HANDLERES7          704070
+HANDLERES8          704070
+HANDLERES9          704070
+HANDLESPUR          704080
+HANDLETRACE         704058
+HANDLETRAP0         7040C0
+HANDLETRAP1         7040C8
+HANDLETRAP10        704110
+HANDLETRAP11        704118
+HANDLETRAP12        704120
+HANDLETRAP13        704128
+HANDLETRAP14        704130
+HANDLETRAP15        704138
+HANDLETRAP2         7040D0
+HANDLETRAP3         7040D8
+HANDLETRAP4         7040E0
+HANDLETRAP5         7040E8
+HANDLETRAP6         7040F0
+HANDLETRAP7         7040F8
+HANDLETRAP8         704100
+HANDLETRAP9         704108
+HANDLETRAPV         704048
+HANDLEUNINIT        704078
+HANDLEUNUSED        704140
+HANDLEZERODIV       704038
+HEXTOINT            704D24
+HEXTOINT:H2I_1      704D24
+HEXTOINT:H2I_2      704D4C
+HEXTOINT:H2I_ERR    704D58
+HEXTOINT:H2I_X      704D54
+HEXTOINTECHO        704D5E
+HEXTOINTECHO:H2I_1  704D5E
+HEXTOINTECHO:H2I_2  704D8A
+HEXTOINTECHO:H2I_ERR  704D96
+HEXTOINTECHO:H2I_X  704D92
+HI_SPEED            1
+IIMSG               704412
+IMR                 D0000B
+IO_BASE             FA0000
+IPR                 D0001B
+ISR                 D0000B
+IVR                 D00019
+LAMSG               70444D
+LF                  A
+LFMSG               70447D
+MAKEPRINTABLE       704D12
+MAKEPRINTABLE:MP_1  704D1E
+MAKEPRINTABLE:MP_X  704D22
+MEM_BASE            F80000
+MONLOOP             7049AC
+MONLOOP_CRLF        704A20
+MONLOOP_NP          7049B4
+MONSTART            70499C
+MON_BASE            704000
+MON_PRIV            800
+MRA                 D00001
+MRB                 D00011
+MSGASCIIDUMP        106
+OPCR                D0001B
+PUTC                704E54
+PUTCRLF             704FF4
+PUTSTRING           704FF8
+PUTSTRING:END       705002
+PUTSTRING:LOOP      704FF8
+PVMSG               7044AD
+RAM_BASE            0
+RAM_LEN             100000
+RBA                 D00007
+RBB                 D00017
+RIMSG               7044EA
+ROM_BASE            700000
+ROM_LEN             100000
+ROPR                D0001F
+SC145               FA0020
+SC145ADDR           10
+SER0RXBUF           6
+SER0RXHEAD          0
+SER0RXQUEUE         0
+SER0RXSIZE          4
+SER0RXTAIL          2
+SEREXIT             704E4E
+SERIAL_BUFFER_LOWER  19
+SERIAL_BUFFER_MASK  FF
+SERIAL_BUFFER_SIZE  100
+SERIAL_BUFFER_UPPER  C8
+SERINIT             704D9C
+SERISR              704E02
+SERSAVE             704E30
+SIMSG               70451C
+SOPR                D0001D
+SRA                 D00003
+SRB                 D00013
+STACK_START         FF800
+START               704970
+START:COPY          70498E
+STRBANNER1          705004
+STRBASICERR1        705336
+STRBASICRETURN      705369
+STRCOLONSPACE       70521F
+STRCOMMANDS         705062
+STRCPMERR1          70528D
+STRCPMERR2          7052C2
+STRCPMRETURN        7052FC
+STREASYTASK1        705255
+STREASYTASK2        705276
+STRNEWLINE          70521C
+STRPROMPT           705207
+STRUNINITINT        705222
+STRUNKCMD           70520A
+STRUSERRETURN       705239
+TBA                 D00007
+TBB                 D00017
+TR0MSG              704587
+TR10MSG             704771
+TR11MSG             7047A3
+TR12MSG             7047D5
+TR13MSG             704807
+TR14MSG             704839
+TR15MSG             70486B
+TR1MSG              7045B8
+TR2MSG              7045E9
+TR3MSG              70461A
+TR4MSG              70464B
+TR5MSG              70467C
+TR6MSG              7046AD
+TR7MSG              7046DE
+TR8MSG              70470F
+TR9MSG              704740
+TRMSG               704558
+TVMSG               70489D
+UIMSG               7048CC
+USERMSG             70490D
+VEC_BASE            0
+VEC_SIZE            400
+WRITEADDR24         704FC0
+WRITEADDR32         704FB4
+WRITEBYTE           704FD2
+WRITENIBBLE         704FDA
+WRITENIBBLE:WN1     704FE8
+WRITEWORD           704FCA
+ZDMSG               70493B

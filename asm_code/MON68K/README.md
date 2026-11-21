@@ -4,6 +4,8 @@ This folder contains the simple monitor program I created to support my RCBus 68
 
 Look in the asm_code folder for pre-configured s-record files containing CP/M-68K, EhBASIC and MON68K.
 
+Please note that v2.x of the monitor requires the use of the RC208 auto switching ROM/RAM board.
+
 # Serial Communications
 The monitor assumes that there is an MC68681 (or compatible) DUART present at address $D00000. The baud rate is determined by the setting of HI_SPEED in the MON68K source code.
 + Setting HI_SPEED = 0 puts the DUART into normal operation mode and 38400 baud. 
@@ -27,11 +29,11 @@ Th basic commands that the monitor understands are as follows:
 
 ## B
 
-Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first. I need to provide a write-up on how to include EhBASIC and/or a ROM image that already includes it.
+Boots the embedded EhBASIC v3.54 from the ROM. It will check that EhBASIC is programmed into the ROM first and display a message if EhBASIC isn't programmed into the ROM. I need to provide a write-up on how to include EhBASIC and/or a ROM image that already includes it.
 
 ## C
 
-Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first. I need to provide a write-up on how to include CP/M-68K and/or a ROM image that already includes it.
+Boots the embedded CP/M-68K v1.3 from the ROM. It will check that CP/M and the BIOS are programmed into the ROM first and display a message if there are not programmed into the ROM. I need to provide a write-up on how to include CP/M-68K and/or a ROM image that already includes it.
 
 The CP/M68K v1.3 BIOS uses Steve Cousin's SC145 (or SC729) CompactFlash module to provide disk drives for CP/M. Please see the readme in the CP/M-68K code folder for more details.
  
